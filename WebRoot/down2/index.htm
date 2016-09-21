@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>down2-mysql演示页面</title>
+    <link href="js/down.css" type="text/css" rel="Stylesheet" />
+    <script type="text/javascript" src="js/json2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="js/down.file.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/down.folder.js" charset="utf-8"></script>    
+    <script type="text/javascript" src="js/down.js" charset="utf-8"></script>
+    <script language="javascript" type="text/javascript">
+        var downer = new DownloaderMgr();
+
+        function loadAllComplete()
+        {
+            $.ajax({
+                type: "GET"
+                , dataType: 'jsonp'
+                , jsonp: "callback" //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+                , url: downer.Config["UrlListCmp"]
+                , data: { uid: downer.Fields["uid"], time: new Date().getTime() }
+                , success: function (msg)
+                {
+                    if (msg.value == null) return;
+
+                    var files = JSON.parse( decodeURIComponent(msg.value) );
+                    var tb = $("#tbCmp");
+                    tb.find('a[name="btnSelAll"]').click(function () { });
+                    tb.find('a[name="btnUnSelAll"]').click(function () { });
+
+                    $.each(files, function (i, item)
+                    {
+                        var tmp = $("#tbHead").clone();
+                        var tdSel = tmp.find('td[name="sel"]').append('<input type="checkbox" name="cbSel" />');
+                        var tdType = tmp.find('td[name="type"]');
+                        var tdName = tmp.find('td[name="name"]');
+                        var tdSize = tmp.find('td[name="size"]');
+                        var tdOp = tmp.find('td[name="op"]');
+
+                        var f = item;
+                        var idSvr = f.idSvr;
+                        var url = downer.Config["UrlDown"] + "?fid=" + f.idSvr;
+
+                        if (f.fdTask ) { tdType.text("文件夹"); }
+                        else { tdType.text("文件"); }
+                        tdName.text(f.nameLoc);
+                        tdSize.text(f.sizeSvr);
+                        tdOp.text("下载").css("cursor", "pointer").click(function ()
+                        {
+                            //文件夹
+                            if ( f.fdTask )
+                            {
+                                var d = downer.add_folder(url, f, f.nameLoc);
+                                if (d == null) return;//
+                            }
+                            else
+                            {
+                                var d = downer.add_file(url, f.nameLoc);
+                                if (d == null) return;//
+                                d.ui.size.text(f.sizeSvr);
+                                d.ui.name.text(f.nameLoc);
+                            }
+                        });
+                        tb.append(tmp);
+                    });
+                }
+                , error: function (req, txt, err) { alert("加载上传数据失败！" + req.responseText); }
+                , complete: function (req, sta) { req = null; }
+            });
+        }
+
+    	$(document).ready(function ()
+    	{
+    	    downer.loadTo("downDiv");
+
+    	    //加载HttpUploader6上传的文件列表
+    	    loadAllComplete();
+    	});
+    </script>
+</head>
+<body>
+    <p>此页为下载控件演示页面，与HttpUploader6配合使用。可以下载HttpUploader6数据库中的文件和文件夹</p>
+    <ul>
+        <li><p><a target="_blank" href="../index.htm">打开上传页面</a></p></li>
+        <li><p><a target="_blank" href="../db/clear.jsp">清空上传数据库</a></p></li>
+        <li><p><a target="_blank" href="db/clear.jsp">清空下载数据库</a></p></li>
+    </ul>    
+    <table id="tbCmp" cellpadding="0" cellspacing="0" border="1" class="files-svr">
+        <tr id="tbHead">
+            <td name="sel" align="center"></td>
+            <td name="type">类型</td>
+            <td name="name">名称</td>
+            <td name="size">文件大小</td>
+            <td name="op">操作</td>
+        </tr>
+        <tfoot>
+            <tr>
+                <td><a name="btnSelAll">全选</a>/<a name="btnUnSelAll">反选</a></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    <div id="downDiv"></div>
+    <div id="msg"></div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>测试更新文件上传进度的页面</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=gb2312">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+  </head>
+  
+  <body>
+  <p>此页面用来测试更新文件上传进度的页面是否正常</p>
+		<form
+			action="../db/ajax_process.jsp"
+			method="post">
+			文件ID(fid):
+			<input name="fid" value="1" />
+			<br />
+			用户ID(uid):
+			<input name="uid" value="0" />
+			<br />
+			已上传长度(PostedLength):
+			<input name="PostedLength" value="100" />
+			<br/>
+			进度(Percent):
+			<input name="Percent" value="20%" />
+			<br />			
+			<input type="submit" value="提交" />
+		</form>
+  </body>
+</html>

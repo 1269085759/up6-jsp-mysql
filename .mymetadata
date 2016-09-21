@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="Uploader6.3MySQL"
+  id="myeclipse.1459737168323"
+  context-root="/Uploader6.3MySQL"
+  j2ee-spec="5.0"
+  archive="Uploader6.3MySQL.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

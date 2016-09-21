@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>up6.2单文件上传样式演示页面</title>
+    <link href="js/up6.css" type="text/css" rel="Stylesheet"/>
+    <script type="text/javascript" src="js/jquery-1.4.min.js"></script>
+    <script type="text/javascript" src="js/json2.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/up6-single.js" charset="utf-8"></script>
+    <script language="javascript" type="text/javascript">
+        var fileMgr = new HttpUploaderMgr();
+        fileMgr.event.md5Complete = function (obj, md5) { /*alert(md5);*/ };
+        fileMgr.event.postComplete = function (obj) { /*alert(obj.pathSvr);*/ };
+
+    	$(document).ready(function()
+    	{
+    	    fileMgr.loadAuto();
+
+    		$("#btnSel").click(function()
+    		{
+    		    fileMgr.postAuto("upPnl"); //
+    		});
+
+    		$("#btnPostLoc").click(function ()
+    		{
+    		    fileMgr.postLoc("D:\\Soft\\QQ2015.exe", "upPnl"); //
+    		});
+
+    	});
+    </script>
+</head>
+<body>
+    <p>此页面演示单个文件上传样式</p>
+    <p><a href="db/clear.jsp" target="_blank">清空数据库</a></p>
+    <p><a href="down2/index.htm" target="_blank">打开下载页面</a></p>
+    <div id="upPnl"></div>
+	<input id="btnSel" type="button" value="浏览" />
+    <input id="btnPostLoc" type="button" value="上传本地文件" />
+</body>
+</html>

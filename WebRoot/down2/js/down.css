@@ -1,0 +1,48 @@
+﻿body{ font:12px/12px 宋体,新宋体; color:#333333; margin:0; padding:0;}
+li{ list-style:none; }
+a{ text-decoration:none; color:#004477; cursor:pointer;}
+a:hover{ color:#004477; text-decoration:underline; }
+.btn-footer{text-decoration: none; color:#244281; cursor:pointer;display:inline-block;height:35px;line-height:35px;padding:0 5px;}
+.btn-footer:hover{text-decoration: none; background-color:#DADADA;}
+/*文件列表框*/
+.downPanel{border: 1px solid #6FBCE2;background-color: #FFFFFF;font:12px/12px 宋体,新宋体;/*防目外部样式破坏*/width: 100%;height:400px;overflow-x:hidden;overflow-y:scroll;}
+div.top-space{margin:3px 0 0 0;}
+.file-post-view{background-color: #FFF;font:12px/12px 宋体,新宋体;/*防目外部样式破坏*/overflow-x:hidden;overflow-y:scroll;}
+/*上传面板*/
+.files-panel{font:12px/12px 宋体;width:436px;height:425px;border:1px solid #ccc;}
+.files-panel .header{ height:31px; line-height:31px; background:#F2F2F2; padding:0 0 0 10px; font-weight:bold;}
+.files-panel .toolbar{height:43px;background:#F2F2F2; line-height:43px; border-bottom:1px solid #ccc;}
+.files-panel .toolbar input{margin:0 0 0 7px; }
+.files-panel .toolbar a.btn{padding:0 10px; height:43px; line-height:43px;cursor:pointer;text-decoration:none;display:inline-block;}
+.files-panel .toolbar a.btn:hover{background-color:#DADADA;padding:0 10px; height:43px; line-height:43px;cursor:pointer;text-decoration:none;display:inline-block;}
+.files-panel .content{ background:#FFF;}
+.files-panel .footer{height:35px; line-height:25px; color:#7A8F99; background:#F2F2F2;}
+/*单文件样式*/
+/*文件名称*/
+.file-item{font:12px/12px 新宋体;background-color: #FFFFFF; height:65px; margin:0;padding:0 0 0 2px; display:none;}
+.file-item-single{width:417px;}
+.file-item .name{font:bold 12px/20px 新宋体;width:180px; height:20px; float:left; overflow:hidden; text-overflow: ellipsis;overflow: hidden;white-space: nowrap; vertical-align:middle;}
+/*文件大小*/
+.file-item .size{font:12px/20px 新宋体;height:20px;color:#728089;float:right; text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+/*进度百分比*/
+.file-item .percent{font:12px/20px 新宋体;height:20px;float:right;}
+/*进度条边框*/
+.file-item .process-border{margin:0;padding: 0px;border: 1px solid #AAA;clear:both;}
+.file-item .process{ height:12px; background-color: #A5DF16;width:0;/*width:200px;*/}
+/*上传信息*/
+.file-item .msg{color: #7A8F99;margin:8px 0 0 0;}
+/*按钮：取消，暂停，续传*/
+.file-item .Btn,.file-item .Btn:hover{text-decoration: none; color:#244281; cursor:pointer;}
+.file-item .area-l {width:280px; float:left;padding:5px 10px 0 0;}
+.file-item .area-r {float:left;height:100%;}
+.file-item .img-box { width:32px;height:65px;float:left;margin:0 5px 0 0;}
+.file-item .img-box img{ width:32px;height:32px;margin:17px 0 0 0;}
+.file-item .file-head{width:280px; height:20px;overflow:hidden; vertical-align:middle;}
+.file-item .btn-box { width:45px;height:65px;float:left; overflow:hidden; text-align:center; text-decoration:none; vertical-align:middle;line-height:65px;}
+.file-item .btn-box:hover{width:45px;height:65px;background-color:#DADADA;cursor:pointer;text-align:center;text-decoration:none; line-height:65px;}
+.file-item .btn-box img{ width:32px;height:32px;margin:10px 0 0 0;}
+.file-line{background-color: #E3E6EB;overflow: hidden;display: none;height: 1px;}
+.hide{display:none;}
+/*文件列表*/
+.files-svr{font:12px/12px 宋体,新宋体;border:none;border-collapse:collapse;}
+.files-svr td{padding:5px 5px 5px 10px; line-height:12px; vertical-align:middle;}

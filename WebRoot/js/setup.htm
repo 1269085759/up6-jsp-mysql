@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>控件安装页面</title>
+    <script type="text/javascript" src="jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="HttpUploader.js" charset="utf-8"></script>
+	<script language ="javascript" type="text/javascript">
+		var cbMgr = new HttpUploaderMgr();
+
+		$(document).ready(function ()
+		{
+			cbMgr.Install();
+			$("#linkExe").attr("href", cbMgr.Config["ExePath"]);
+		});
+	</script>
+</head>
+<body>
+Chrome浏览器请下载<a id="linkExe" href="#" target="_blank">exe安装包</a>安装
+	<!--
+		IE强制安装代码。 
+	<object id="objHttpUpLoader" classid="clsid:AC982331-5018-4b65-86A7-CA5E312A0FB7" codebase="http://www.ncmem.com/HttpUploader.cab#version=2,7,63,64967" width="1" height="1" ></object>
+	<object id="objHttpPartition" classid="clsid:9FCC0A71-B2CF-4012-AA5A-E16E78A24785" codebase="http://www.ncmem.com/HttpUploader.cab#version=2,7,63,64967" width="1" height="1" ></object>
+	 -->
+</body>
+</html>
