@@ -366,8 +366,8 @@ public class fd_appender
         this.cmd_update_file.setString(14, f.sizeLoc);//f_sizeLoc
         this.cmd_update_file.setLong(15, f.pos);//f_pos
         this.cmd_update_file.setLong(16, f.lenSvr);//f_lenSvr
-        this.cmd_update_file.setString(17, f.perSvr);//f_perSvr
-        this.cmd_update_file.setBoolean(18, f.complete);//f_complete
+        this.cmd_update_file.setString(17, f.lenLoc > 0 ? f.perSvr : "100%");//f_perSvr
+        this.cmd_update_file.setBoolean(18, f.lenLoc > 0 ? f.complete : true);//f_complete
         this.cmd_update_file.setInt(19, f.idSvr);//f_id
         this.cmd_update_file.execute();
     }
