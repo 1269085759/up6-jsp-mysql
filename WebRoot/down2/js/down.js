@@ -47,41 +47,41 @@ function DownloaderMgr()
 		, "License"		: ""//
 		, "Cookie"		: ""//
 		, "ThreadCount"	: 1//并发数
-		, "DataBase"	: false//启用数据库支持
 		, "FilePart"	: 1048576//文件块大小，更新进度时使用，计算器：http://www.beesky.com/newsite/bit_byte.htm
-		, "FilePartTdr"	: 3//文件块线程数
         //file
-        , "UrlCreate"   : "http://localhost:8080/Uploader6.3MySQL/down3/db/f_create.jsp"
-        , "UrlDel"      : "http://localhost:8080/Uploader6.3MySQL/down3/db/f_del.jsp"
-        , "UrlList"     : "http://localhost:8080/Uploader6.3MySQL/down3/db/f_list.jsp"
-        , "UrlListCmp"  : "http://localhost:8080/Uploader6.3MySQL/down3/db/f_list_cmp.jsp"
-        , "UrlUpdate"   : "http://localhost:8080/Uploader6.3MySQL/down3/db/f_update.jsp"
-        , "UrlDown"     : "http://localhost:8080/Uploader6.3MySQL/down3/db/f_down.jsp"
+        , "UrlCreate"   : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_create.jsp"
+        , "UrlDel"      : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_del.jsp"
+        , "UrlList"     : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_list.jsp"
+        , "UrlListCmp"  : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_list_cmp.jsp"
+        , "UrlUpdate"   : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_update.jsp"
+        , "UrlDown"     : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_down.jsp"
 	    //folder
         , "UrlFdCreate" : "http://localhost:8080/Uploader6.3MySQL/down3/db/fd_create.jsp"
         //x86
-    	, "ClsidPart"	: "57FA11EE-5E98-415C-933D-BCA188B86B5E"
-		, "CabPath"		: "http://www.ncmem.com/download/down3/down3.cab"
+		, "ClsidDown"	: "E94D2BA0-37F4-4978-B9B9-A4F548300E48"
+		, "ClsidPart"	: "6528602B-7DF7-445A-8BA0-F6F996472569"
+		, "CabPath"		: "http://www.ncmem.com/download/down2/down2.cab"
 		//x64
+		, "ClsidDown64"	: "0DADC2F7-225A-4cdb-80E2-03E9E7981AF8"
 		, "ClsidPart64"	: "19799DD1-7357-49de-AE5D-E7A010A3172C"
-		, "CabPath64"	: "http://www.ncmem.com/download/down3/down64.cab"
+		, "CabPath64"	: "http://www.ncmem.com/download/down2/down64.cab"
 		//Firefox
-		, "XpiType"		: "application/npHttpDown3"
-		, "XpiPath"	    : "http://www.ncmem.com/download/down3/down3.xpi"
+		, "XpiType"		: "application/npHttpDown"
+		, "XpiPath"	    : "http://www.ncmem.com/download/down2/down2.xpi"
 		//Chrome
-		, "CrxName"		: "npHttpDown3"
-		, "CrxType"		: "application/npHttpDown3"
-		, "CrxPath"	    : "http://www.ncmem.com/download/down3/down3.crx"
+		, "CrxName"		: "npHttpDown"
+		, "CrxType"		: "application/npHttpDown"
+		, "CrxPath"	    : "http://www.ncmem.com/download/down2/down2.crx"
 	    //Chrome 45
-        , "NatHostName" : "com.xproer.down3"//
-	    , "NatPath"		: "http://www.ncmem.com/download/down3/down3.nat.crx"
-	    , "ExePath"		: "http://www.ncmem.com/download/down3/down3.exe"
+        , "NatHostName" : "com.xproer.down2"//
+	    , "NatPath"		: "http://www.ncmem.com/download/down2/down2.nat.crx"
+	    , "ExePath"		: "http://www.ncmem.com/download/down2/down2.exe"
 	};
 	
 	this.ActiveX = {
-		  "Part"	: "Xproer.DownloaderPartition3"
+		  "Part"	: "Xproer.DownloaderPartition"
 		//64bit
-		, "Part64"	: "Xproer.DownloaderPartition3x64"
+		, "Part64"	: "Xproer.DownloaderPartition64"
 	};
 
 	this.Fields = {
