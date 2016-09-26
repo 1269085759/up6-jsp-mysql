@@ -56,7 +56,7 @@ function DownloaderMgr()
         , "UrlUpdate"   : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_update.jsp"
         , "UrlDown"     : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_down.jsp"
 	    //folder
-        , "UrlFdCreate" : "http://localhost:8080/Uploader6.3MySQL/down3/db/fd_create.jsp"
+        , "UrlFdCreate" : "http://localhost:8080/Uploader6.3MySQL/down2/db/fd_create.jsp"
         //x86
 		, "ClsidDown"	: "E94D2BA0-37F4-4978-B9B9-A4F548300E48"
 		, "ClsidPart"	: "6528602B-7DF7-445A-8BA0-F6F996472569"

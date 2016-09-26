@@ -83,7 +83,7 @@ public class cmp_builder {
             //文件夹已存在
             if ( this.folders.containsKey(f.fdID) )
             {
-            	fd_index = this.folders.get(f.idSvr);
+            	fd_index = this.folders.get(f.fdID);
             	cmp_file fd = this.files.get(fd_index);
             	
                 fd.nameLoc = f.nameLoc;
