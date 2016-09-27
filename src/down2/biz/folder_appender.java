@@ -27,11 +27,11 @@ public class folder_appender
         stor.setInt(1, fd.files.size()+1);//单独增加一个文件夹
         stor.setInt(2, fd.uid);
         ResultSet rs = stor.executeQuery();
-        String[] ids = new String[fd.files.size()+1];
+        Integer[] ids = new Integer[fd.files.size()+1];
         int index = 0;
         while(rs.next())
         {
-        	ids[index++] = String.valueOf(rs.getInt(1));
+        	ids[index++] = rs.getInt(1);
         }
         rs.close();
         
@@ -52,14 +52,14 @@ public class folder_appender
         XDebug.Output("files总数",fd.files.size());
 
         //更新文件夹
-        fd.idSvr = Integer.parseInt(ids[0]);
+        fd.idSvr = ids[0];
         this.update_file(cmd, fd);
         
         //更新文件列表        
         for(int i = 1 , l = ids.length;i< l;++i)
         {
         	DnFileInf f = fd.files.get(i-1);
-        	f.idSvr = Integer.parseInt(ids[i]);
+        	f.idSvr = ids[i];
         	f.pidRoot = fd.idSvr;
             
             this.update_file(cmd, f);
