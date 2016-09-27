@@ -1,6 +1,8 @@
 package down2.biz;
 
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import down2.model.DnFileInf;
@@ -19,15 +21,20 @@ public class folder_appender
 	
 	public void add(DnFolderInf fd) throws SQLException
 	{
-        String sql = "call fd_add_batch(?,?)";
+        String sql = "{call fd_add_batch(?,?)}";
         DbHelper db = new DbHelper();
-        PreparedStatement cmd = db.GetCommandStored(sql);
-        cmd.setInt(1, fd.files.size());
-        cmd.setInt(2, fd.uid);
-        String f_ids = db.ExecuteString(cmd);
-        XDebug.Output("ids",f_ids);
+        CallableStatement stor = db.GetCommandStored(sql);
+        stor.setInt(1, fd.files.size()+1);//单独增加一个文件夹
+        stor.setInt(2, fd.uid);
+        ResultSet rs = stor.executeQuery();
+        String[] ids = new String[fd.files.size()+1];
+        int index = 0;
+        while(rs.next())
+        {
+        	ids[index++] = String.valueOf(rs.getInt(1));
+        }
+        rs.close();
         
-
         StringBuilder sb = new StringBuilder();
         sb.append("update down_files set");
         sb.append(" f_nameLoc=?");
@@ -39,9 +46,8 @@ public class folder_appender
         sb.append(",f_fdTask=?");
         sb.append(" where f_id=?");
         db = new DbHelper();
-        cmd = db.GetCommand(sb.toString());
+        PreparedStatement cmd = db.GetCommand(sb.toString());
         
-        String[] ids = f_ids.split(",");
         XDebug.Output("ids总数",ids.length);
         XDebug.Output("files总数",fd.files.size());
 

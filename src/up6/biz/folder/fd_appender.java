@@ -23,8 +23,8 @@ import up6.biz.PathMd5Builder;
 
 public class fd_appender 
 {
-	String[] fd_ids;
-	String[] f_ids;
+	Integer[] fd_ids;
+	Integer[] f_ids;
 	DbHelper db;
 	Connection con;	
 	PreparedStatement cmd_update_fd;
@@ -118,10 +118,21 @@ public class fd_appender
         cmd.setInt(1, this.m_root.files.size()+1);
         cmd.setInt(2, this.m_root.folders.size()+1);
         ResultSet rs = cmd.executeQuery();
-        rs.next();
-        XDebug.Output("分配的ID",rs.getString(1));
-        this.f_ids = StringUtils.split( rs.getString(1),",");
-        this.fd_ids = StringUtils.split( rs.getString(2),",");
+        List<Integer> arr_f = new ArrayList<Integer>();
+        List<Integer> arr_fd = new ArrayList<Integer>();
+        while(rs.next())
+        {
+        	if(rs.getBoolean(1))//文件
+        	{
+        		arr_f.add(rs.getInt(2));
+        	}
+        	else//文件夹
+        	{
+        		arr_fd.add(rs.getInt(2));
+        	}
+        }
+        this.f_ids = arr_f.toArray(new Integer[0]);
+        this.fd_ids = arr_fd.toArray(new Integer[0]);
         rs.close();
         cmd.close();
     }
@@ -137,15 +148,15 @@ public class fd_appender
     	XDebug.Output("文件夹总数：",this.m_root.folders.size());
     	XDebug.Output("文件ID总数：",this.f_ids.length);
     	XDebug.Output("文件夹ID总数：",this.fd_ids.length);
-        this.m_root.idSvr = Integer.parseInt(this.f_ids[this.m_root.files.size()].trim());//取最后一个
-        this.m_root.fdID = Integer.parseInt( this.fd_ids[this.m_root.folders.size()].trim()); //取最后一个
+        this.m_root.idSvr = this.f_ids[this.m_root.files.size()];//取最后一个
+        this.m_root.fdID = this.fd_ids[this.m_root.folders.size()]; //取最后一个
         this.map_pids.put( 0, this.m_root.fdID);
 
         //设置文件夹ID，
         for (int i = 0, l = this.m_root.folders.size(); i < l; ++i)
         {
         	fd_child cd = this.m_root.folders.get(i);
-        	cd.idSvr = Integer.parseInt( this.fd_ids[i].trim() );
+        	cd.idSvr = this.fd_ids[i];
         	cd.pidRoot = this.m_root.idSvr;
             this.map_pids.put(cd.idLoc, cd.idSvr);
             this.map_fd_ids.put(cd.idLoc, i);//添加idLoc,index索引
@@ -154,7 +165,7 @@ public class fd_appender
         for (int i = 0, l = this.m_root.files.size(); i < l; ++i)
         {
         	fd_file f = this.m_root.files.get(i);
-            f.idSvr = Integer.parseInt( this.f_ids[i].trim());
+            f.idSvr = this.f_ids[i];
             f.pidRoot = this.m_root.fdID;
             f.fdChild = true;//
         }
@@ -246,11 +257,14 @@ public class fd_appender
 
     protected void check_files_svr() throws SQLException
     {
-        String sql = "{call fd_files_check(?)}";
+    	if(this.m_root.files.size() < 1) return;//没有文件
+        String sql = "{call fd_files_check(?,?,?)}";
 
         CallableStatement cmd = this.con.prepareCall(sql);
         
         cmd.setString(1, this.m_md5s);
+        cmd.setInt(2, this.m_root.files.get(0).md5.length());
+        cmd.setInt(3, this.m_md5s.length());
         ResultSet rs = cmd.executeQuery();
         while(rs.next())
         {

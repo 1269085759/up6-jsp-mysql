@@ -1,23 +1,26 @@
 /*批量添加文件和文件夹*/
 DELIMITER $$
 CREATE PROCEDURE fd_add_batch(
- in fCount int	/*文件总数*/
-,in uid int		/*用户ID*/
+	in f_count int	/*文件总数，要单独增加一个文件夹*/
+   ,in uid int
 )
-begin
-	declare f_ids text default '0';/*文件ID列表*/
+BEGIN
 	declare i int;
-	set i = 0;
-	set fCount = fCount + 1;
+	/*使用临时表存ID*/
+	create temporary table if not exists tb_ids 
+         (  
+           t_id int primary key
+         )engine=memory;
+    truncate TABLE tb_ids;
 	
-	/*批量添加文件*/
-	while(i<fCount) do	
-		insert into down_files(f_uid) values(uid);	
-		set f_ids = concat( f_ids,",",last_insert_id() );
+	set i = 0;
+	
+	while(i<f_count) do	
+		insert into down_files(f_uid) values(uid);
+		insert into tb_ids(t_id) values(last_insert_id());	
 		set i = i + 1;
 	end while;
-	set f_ids = substring(f_ids,3);/*删除0,*/
 	
-	select f_ids;
-end$$
+	select * from tb_ids;
+END$$
 DELIMITER;/*--5.7.9版本MySQL必须加这一句，否则包含多条SQL语句的存储过程无法创建成功*/
