@@ -121,7 +121,7 @@ BEGIN
 	create temporary table if not exists tb_ids 
          (  
            t_file tinyint(1),
-           t_id int primary key
+           t_id int
          )engine=memory;
     truncate TABLE tb_ids;
 	
@@ -149,7 +149,7 @@ DELIMITER ;
 /*批量查询MD5*/
 DELIMITER $$
 CREATE PROCEDURE fd_files_check(
-	in md5s varchar(8000)	/*md5列表:a,b,c,d*/
+	in md5s mediumtext	/*md5列表:a,b,c,d。如果长度不够可以换更大的数据类型：longtext*/
    ,in md5_len int /*单个MD5长度*/
    ,in md5s_len	int /*md5字符串总长度*/
 )
