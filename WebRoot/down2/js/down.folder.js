@@ -133,10 +133,12 @@
     this.svr_create = function ()
     {
         //已记录将不再记录
-        if (this.fileSvr.idSvr) return;        
+        if (this.fileSvr.idSvr) return;
+        this.ui.btn.down.hide();
+        this.ui.msg.text("正在初始化...");
         var param = jQuery.extend({}, this.fields, {time: new Date().getTime() });
         jQuery.extend(param, {folder: encodeURIComponent(JSON.stringify(this.fileSvr) ) });
-
+        var ptr = this;
         $.ajax({
             type: "POST"
             , jsonp: "callback" //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
@@ -146,6 +148,8 @@
             {
                 var json = JSON.parse(decodeURIComponent(msg));
                 jQuery.extend(true,_this.fileSvr, json);
+                ptr.ui.btn.down.show();
+                ptr.ui.msg.text("初始化完毕...");
             }
             , error: function (req, txt, err) { alert("创建信息失败！" + req.responseText); }
             , complete: function (req, sta) { req = null; }

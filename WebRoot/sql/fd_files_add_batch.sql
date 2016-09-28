@@ -10,7 +10,7 @@ BEGIN
 	create temporary table if not exists tb_ids 
          (  
            t_file tinyint(1),
-           t_id int primary key
+           t_id int
          )engine=memory;
     truncate TABLE tb_ids;
 	
