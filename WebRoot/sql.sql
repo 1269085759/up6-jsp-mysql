@@ -21,9 +21,9 @@ CREATE TABLE IF NOT EXISTS `up6_files` (
   `f_uid` 				int(11) default '0',
   `f_nameLoc` 			varchar(255) default '',	
   `f_nameSvr` 			varchar(255) default '',	
-  `f_pathLoc` 			varchar(255) default '',	
-  `f_pathSvr` 			varchar(255) default '',	
-  `f_pathRel` 			varchar(255) default '',
+  `f_pathLoc` 			text,	
+  `f_pathSvr` 			text,	
+  `f_pathRel` 			text,
   `f_md5` 				varchar(40) default '',	
   `f_lenLoc` 			bigint(19) default '0',		
   `f_sizeLoc` 			varchar(10) default '0',	
@@ -62,8 +62,8 @@ CREATE TABLE IF NOT EXISTS up6_folders (
   `fd_uid` 				int(11) default '0',
   `fd_length` 			bigint(19) default '0',
   `fd_size` 			varchar(50) default '0',
-  `fd_pathLoc` 			varchar(255) default '',
-  `fd_pathSvr` 			varchar(255) default '',
+  `fd_pathLoc` 			text,
+  `fd_pathSvr` 			text,
   `fd_folders` 			int(11) default '0',
   `fd_files` 			int(11) default '0',
   `fd_filesComplete` 	int(11) default '0',
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS up6_folders (
   `fd_json` 			varchar(20000) default '',
   `timeUpload` 			timestamp NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `fd_pidRoot` 			int(11) default '0',
-  `fd_pathRel` 			varchar(255) default '',
+  `fd_pathRel` 			text,
   PRIMARY KEY  (`fd_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -83,7 +83,7 @@ CREATE TABLE down_files
 ,f_uid        	int(11) 	DEFAULT '0' 
 ,f_mac        	varchar(50) DEFAULT  '' 
 ,f_nameLoc		varchar(255)DEFAULT ''
-,f_pathLoc      varchar(255)DEFAULT '' 	
+,f_pathLoc      text 	
 ,f_fileUrl      varchar(255)DEFAULT '' 	
 ,f_perLoc    	varchar(6) 	DEFAULT '0' 
 ,f_lenLoc    	bigint(19) 	DEFAULT '0' 
@@ -102,7 +102,7 @@ CREATE TABLE down_folders
   ,fd_name  	varchar(50) 	DEFAULT ''   /*--文件夹名称。test*/
   ,fd_uid  		int(11) 		DEFAULT '0'  /*--用户ID */
   ,fd_mac  		varchar(50) 	DEFAULT ''   /*--用户电脑识别码*/
-  ,fd_pathLoc	varchar(255) 	DEFAULT ''   /*--文件夹信息文件在本地路径。D:\\Soft\\test.cfg*/
+  ,fd_pathLoc	text   /*--文件夹信息文件在本地路径。D:\\Soft\\test.cfg*/
   ,fd_complete  tinyint(1) 		DEFAULT '0'  /*--是否已经下载*/
   ,fd_id_old	varchar(512) 	DEFAULT ''   /*--对应表字段：xdb_folders.fd_id，用来获取文件夹JSON信息*/
   ,fd_percent	varchar(7) 		DEFAULT ''   /*--上传百分比。*/
@@ -194,15 +194,15 @@ CREATE PROCEDURE fd_update(
 ,in _uid			int
 ,in _length			bigint
 ,in _size			varchar(50)
-,in _pathLoc		varchar(255)
-,in _pathSvr		varchar(255)
+,in _pathLoc		text
+,in _pathSvr		text
 ,in _folders		int
 ,in _files			int
 ,in _filesComplete	int
 ,in _complete		tinyint
 ,in _delete			tinyint
 ,in _pidRoot		int
-,in _pathRel		varchar(255)
+,in _pathRel		text
 ,in _id				int
 )
 begin
@@ -251,8 +251,8 @@ CREATE PROCEDURE f_update(
 ,in _uid		int
 ,in _nameLoc	varchar(255)
 ,in _nameSvr	varchar(255)
-,in _pathLoc	varchar(255)
-,in _pathSvr	varchar(255)
+,in _pathLoc	text
+,in _pathSvr	text
 ,in _md5		varchar(40)
 ,in _lenLoc		bigint
 ,in _lenSvr		bigint
