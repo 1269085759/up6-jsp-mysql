@@ -102,7 +102,7 @@ CREATE TABLE down_folders
   ,fd_name  	varchar(50) 	DEFAULT ''   /*--文件夹名称。test*/
   ,fd_uid  		int(11) 		DEFAULT '0'  /*--用户ID */
   ,fd_mac  		varchar(50) 	DEFAULT ''   /*--用户电脑识别码*/
-  ,fd_pathLoc	text   /*--文件夹信息文件在本地路径。D:\\Soft\\test.cfg*/
+  ,fd_pathLoc	text						 /*--文件夹信息文件在本地路径。D:\\Soft\\test.cfg*/
   ,fd_complete  tinyint(1) 		DEFAULT '0'  /*--是否已经下载*/
   ,fd_id_old	varchar(512) 	DEFAULT ''   /*--对应表字段：xdb_folders.fd_id，用来获取文件夹JSON信息*/
   ,fd_percent	varchar(7) 		DEFAULT ''   /*--上传百分比。*/
@@ -149,7 +149,7 @@ DELIMITER ;
 /*批量查询MD5*/
 DELIMITER $$
 CREATE PROCEDURE fd_files_check(
-	in md5s mediumtext	/*md5列表:a,b,c,d。如果长度不够可以换更大的数据类型：longtext*/
+	in md5s longtext	/*md5列表:a,b,c,d。*/
    ,in md5_len int /*单个MD5长度*/
    ,in md5s_len	int /*md5字符串总长度*/
 )
