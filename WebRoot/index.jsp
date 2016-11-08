@@ -38,6 +38,7 @@ String clientCookie = request.getHeader("Cookie");
   <body>
 	<p>up6.2多文件上传演示页面</p>
 	<a href="db/clear.jsp" target="_blank">清空数据库</a>
+	<p><a href="index-single.htm" target="_blank">打开单面板上传页面</a></p>
 	<p><a href="down2/index.htm" target="_blank">打开下载页面</a></p>
 	<div id="FilePanel"></div>
 	<div id="msg"></div>

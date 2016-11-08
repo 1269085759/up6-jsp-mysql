@@ -66,15 +66,15 @@ function HttpUploaderMgr()
 		, "AppPath"			: ""//网站虚拟目录名称。子文件夹 web
         , "Cookie"			: ""//服务器cookie
 		//文件夹操作相关
-		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.2MySQL/db/fd_create.jsp"
-		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.2MySQL/db/fd_complete.jsp"
-		, "UrlFdDel"	    : "http://localhost:8080/Uploader6.2MySQL/db/fd_del.jsp"
+		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create.jsp"
+		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3MySQL/db/fd_complete.jsp"
+		, "UrlFdDel"	    : "http://localhost:8080/Uploader6.3MySQL/db/fd_del.jsp"
 		//文件操作相关
-		, "UrlCreate"		: "http://localhost:8080/Uploader6.2MySQL/db/f_create.jsp"
-		, "UrlPost"			: "http://localhost:8080/Uploader6.2MySQL/db/f_post.jsp"
-		, "UrlComplete"		: "http://localhost:8080/Uploader6.2MySQL/db/f_complete.jsp"
-		, "UrlList"			: "http://localhost:8080/Uploader6.2MySQL/db/f_list.jsp"
-		, "UrlDel"			: "http://localhost:8080/Uploader6.2MySQL/db/f_del.jsp"
+		, "UrlCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/f_create.jsp"
+		, "UrlPost"			: "http://localhost:8080/Uploader6.3MySQL/db/f_post.jsp"
+		, "UrlComplete"		: "http://localhost:8080/Uploader6.3MySQL/db/f_complete.jsp"
+		, "UrlList"			: "http://localhost:8080/Uploader6.3MySQL/db/f_list.jsp"
+		, "UrlDel"			: "http://localhost:8080/Uploader6.3MySQL/db/f_del.jsp"
 	    //x86
         , ie: {
               drop: { clsid: "0868BADD-C17E-4819-81DE-1D60E5E734A6", name: "Xproer.HttpDroper6" }
@@ -451,16 +451,35 @@ function HttpUploaderMgr()
     //oid,显示上传项的层ID
 	this.postAuto = function (oid)
 	{
-	    if (this.fileCur != null) return;//有上传项
-	    this.uiContainer = $("#" + oid);
-	    this.browser.openFiles();
+		var file_free = this.fileCur != null;
+		if(file_free)
+		{
+			file_free = this.fileCur.State == HttpUploaderState.Complete;
+			if(!file_free) file_free = this.fileCur.State == HttpUploaderState.Error;			
+		}		
+		if(this.fileCur == null) file_free = true;
+		if(file_free)
+		{
+			this.uiContainer = $("#" + oid);
+			this.browser.openFiles();
+		}
 	};
 	
 	//上传文件
 	this.postLoc = function (path_loc, oid)
 	{
-	    this.uiContainer = $("#" + oid);
-	    this.browser.addFile({ pathLoc: path_loc });
+		var file_free = this.fileCur != null;
+		if(file_free)
+		{
+			file_free = this.fileCur.State == HttpUploaderState.Complete;
+			if(!file_free) file_free = this.fileCur.State == HttpUploaderState.Error;			
+		}		
+		if(this.fileCur == null) file_free = true;
+		if(file_free)
+		{
+		    this.uiContainer = $("#" + oid);
+		    this.browser.addFile({ pathLoc: path_loc });
+		}
 	};
     
 	this.addFileLoc = function(fileLoc)
@@ -468,8 +487,13 @@ function HttpUploaderMgr()
 		var idLoc = this.idCount++;
 		var nameLoc = fileLoc.nameLoc;
 
-		var ui = _this.fileItem.clone();//文件信息
-		_this.uiContainer.append(ui);//添加文件信息
+		var ui = null;
+		if(this.fileCur != null) ui = this.fileCur.ui.div;
+		if(ui == null)
+		{
+			ui = _this.fileItem.clone();//文件信息
+			_this.uiContainer.append(ui);//添加文件信息
+		}
 		ui.css("display", "block");
 
 		var uiName      = ui.find("div[name='fileName']");
@@ -652,7 +676,7 @@ function FileUploader(fileLoc, mgr)
         this.ui.percent.text("(100%)");
         this.ui.msg.text("服务器存在相同文件，快速上传成功。");
         this.State = HttpUploaderState.Complete;
-        this.event.fileComplete(this);//触发事件
+        this.event.fileComplete(this);//触发事件        
     };
     this.post_error = function (json)
     {
