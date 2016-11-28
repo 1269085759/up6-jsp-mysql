@@ -6,9 +6,9 @@ import java.sql.*;
 */
 public class DbHelper {
 
-	String m_dbDriver = "com.mysql.jdbc.Driver";
+	public String m_dbDriver = "com.mysql.jdbc.Driver";
 	//数据库连接字符串，参考：http://blog.csdn.net/king_min007/article/details/6932494
-	String m_dbUrl = "jdbc:mysql://127.0.0.1:3306/HttpUploader6?user=root&characterEncoding=UTF-8";
+	public String m_dbUrl = "jdbc:mysql://127.0.0.1:3306/HttpUploader6?user=root&characterEncoding=UTF-8";
 
 	public DbHelper()
 	{
