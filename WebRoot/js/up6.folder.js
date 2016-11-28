@@ -33,7 +33,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
     this.svr_create = function (fdSvr)
     {
 		jQuery.extend(this.folderSvr,fdSvr);
-        if (null == fdSvr.files)
+        if (fdSvr.complete)
         {
             this.all_complete();
             return;
@@ -92,13 +92,24 @@ function FolderUploader(idLoc, fdLoc, mgr)
     };
     this.post_error = function (json)
     {
-        this.ui.btn.cancel.text("续传").show();
+        //this.ui.btn.cancel.text("续传").show();
         this.ui.msg.text(HttpUploaderErrorCode[json.value]);
         //文件大小超过限制,文件大小为0
-        if (10 == json.value || 201 == json.value){}
-        else{}
+        if (4 == json.value || 5 == json.value){}
+        if (6 == json.value) { this.ui.msg.text("文件被占用:" + json.pathLoc); }
+        debugMsg(JSON.stringify(json));
+
+        this.ui.btn.stop.hide();
+        this.ui.btn.post.show();
+        this.ui.btn.del.show();
+
         this.State = HttpUploaderState.Error;
-        setTimeout(function () { _this.post_next(); }, 500);
+        //从上传列表中删除
+        this.manager.RemoveQueuePost(this.idLoc);
+        //添加到未上传列表
+        this.manager.AppendQueueWait(this.idLoc);
+
+        setTimeout(function () { _this.manager.PostNext(); }, 500);
     };
     this.post_process = function (json)
     {
@@ -156,7 +167,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
 			, complete: function (req, sta) { req = null; }
         });
     };
-    this.md5_error = function ()
+    this.md5_error = function (json)
     {
         this.ui.btn.post.show();
         this.ui.btn.cancel.hide();
