@@ -52,11 +52,16 @@ public class fd_appender
 	{
         this.get_md5s();//提取所有文件的MD5
         this.make_ids();
-        this.check_files_svr();//查询相同MD5值。
+        //增加对空文件夹和0字节文件夹的处理
+        if(this.m_md5s.length() > 1) this.check_files_svr();//查询相同MD5值。
 
         this.set_ids();     //设置文件和文件夹id
         this.update_rel();  //更新结构关系
 
+        //对空文件夹的处理，或0字节文件夹的处理
+        if(this.m_root.lenLoc == 0) this.m_root.complete = true;
+        if(this.m_root.files.size() == 0) this.m_root.complete = true;
+        
         //更新文件夹信息
         this.pre_udpate_fd();
         for(int i = 0 , l = this.m_root.folders.size();i<l;++i)        
@@ -103,7 +108,7 @@ public class fd_appender
         for(int i=0,l=this.m_root.files.size();i<l;++i)
         {        
         	fd_file f = this.m_root.files.get(i);
-            if( !md5s.containsKey(f.md5) )
+            if( !md5s.containsKey(f.md5) && !StringUtils.isEmpty(f.md5) )
             {
                 md5s.put(f.md5, true);
                 md5_arr.add(f.md5);
@@ -268,24 +273,24 @@ public class fd_appender
         ResultSet rs = cmd.executeQuery();
         while(rs.next())
         {
-            fd_file f 	= new fd_file();
-            f.idSvr 	= rs.getInt("f_id");
-            f.nameLoc 	= rs.getString("f_nameLoc");
-            f.nameSvr 	= rs.getString("f_nameSvr");
-            f.pidSvr 	= rs.getInt("f_pid");
-            f.fdTask 	= rs.getBoolean("f_fdTask");
-            f.fdChild 	= rs.getBoolean("f_fdChild");
-            f.fdID 		= rs.getInt("f_fdID");
-            f.pathLoc 	= rs.getString("f_pathLoc");
-            f.pathSvr 	= rs.getString("f_pathSvr");
-            f.lenLoc 	= rs.getLong("f_lenLoc");
-            f.sizeLoc 	= rs.getString("f_sizeLoc");
-            f.lenSvr 	= rs.getLong("f_lenSvr");
-            f.perSvr 	= rs.getString("f_perSvr");
-            f.pos 		= rs.getLong("f_pos");
-            f.complete 	= rs.getBoolean("f_complete");
-            f.md5 		= rs.getString("f_md5");
-            this.svr_files.put(f.md5, f);
+            fd_file f = new fd_file();
+            f.idSvr = rs.getInt("f_id");
+            f.nameLoc = rs.getString("f_nameLoc");
+            f.nameSvr = rs.getString("f_nameSvr");
+            f.pidSvr = rs.getInt("f_pid");
+            f.fdTask = rs.getBoolean("f_fdTask");
+            f.fdChild = rs.getBoolean("f_fdChild");
+            f.fdID = rs.getInt("f_fdID");
+            f.pathLoc = rs.getString("f_pathLoc");
+            f.pathSvr = rs.getString("f_pathSvr");
+            f.lenLoc = rs.getLong("f_lenLoc");
+            f.sizeLoc = rs.getString("f_sizeLoc");
+            f.lenSvr = rs.getLong("f_lenSvr");
+            f.perSvr = rs.getString("f_perSvr");
+            f.pos = rs.getLong("f_pos");
+            f.complete = rs.getBoolean("f_complete");
+            f.md5 = rs.getString("f_md5");
+            if(!StringUtils.isEmpty(f.md5)) this.svr_files.put(f.md5, f);
         }
         rs.close();
         cmd.close();
