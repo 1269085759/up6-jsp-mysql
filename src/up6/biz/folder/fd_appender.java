@@ -268,23 +268,23 @@ public class fd_appender
         ResultSet rs = cmd.executeQuery();
         while(rs.next())
         {
-            fd_file f = new fd_file();
-            f.idSvr = rs.getInt("f_id");
-            f.nameLoc = rs.getString("f_nameLoc");
-            f.nameSvr = rs.getString("f_nameSvr");
-            f.pidSvr = rs.getInt("f_pid");
-            f.fdTask = rs.getBoolean("f_fdTask");
-            f.fdChild = rs.getBoolean("f_fdChild");
-            f.fdID = rs.getInt("f_fdID");
-            f.pathLoc = rs.getString("f_pathLoc");
-            f.pathSvr = rs.getString("f_pathSvr");
-            f.lenLoc = rs.getLong("f_lenLoc");
-            f.sizeLoc = rs.getString("f_sizeLoc");
-            f.lenSvr = rs.getLong("f_lenSvr");
-            f.perSvr = rs.getString("f_perSvr");
-            f.pos = rs.getLong("f_pos");
-            f.complete = rs.getBoolean("f_complete");
-            f.md5 = rs.getString("f_md5");
+            fd_file f 	= new fd_file();
+            f.idSvr 	= rs.getInt("f_id");
+            f.nameLoc 	= rs.getString("f_nameLoc");
+            f.nameSvr 	= rs.getString("f_nameSvr");
+            f.pidSvr 	= rs.getInt("f_pid");
+            f.fdTask 	= rs.getBoolean("f_fdTask");
+            f.fdChild 	= rs.getBoolean("f_fdChild");
+            f.fdID 		= rs.getInt("f_fdID");
+            f.pathLoc 	= rs.getString("f_pathLoc");
+            f.pathSvr 	= rs.getString("f_pathSvr");
+            f.lenLoc 	= rs.getLong("f_lenLoc");
+            f.sizeLoc 	= rs.getString("f_sizeLoc");
+            f.lenSvr 	= rs.getLong("f_lenSvr");
+            f.perSvr 	= rs.getString("f_perSvr");
+            f.pos 		= rs.getLong("f_pos");
+            f.complete 	= rs.getBoolean("f_complete");
+            f.md5 		= rs.getString("f_md5");
             this.svr_files.put(f.md5, f);
         }
         rs.close();
