@@ -197,9 +197,16 @@ function FolderUploader(idLoc, fdLoc, mgr)
 			, url: this.Config["UrlFdCreate"]
 			, data: f_data
 			, success: function (msg)
-			{				
-			    var json = JSON.parse(decodeURIComponent(msg));
-			    _this.svr_create(json);
+			{
+				try
+				{
+					var json = JSON.parse(decodeURIComponent(msg));
+					_this.svr_create(json);
+				}
+				catch(e)
+				{
+					_this.post_error({"value":"7"});
+				}
 			}
 			, error: function (req, txt, err)
 			{

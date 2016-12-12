@@ -24,6 +24,7 @@ var HttpUploaderErrorCode = {
 	, "4": "文件大小超过限制"
 	, "5": "文件大小为0"
 	, "6": "文件被占用"
+	, "7": "服务器错误"
 };
 var up6_err_solve = {
     errFolderCreate: "请检查UrlFdCreate地址配置是否正确\n请检查浏览器缓存是否已更新\n请检查数据库是否创建\n请检查数据库连接配置是否正确"
