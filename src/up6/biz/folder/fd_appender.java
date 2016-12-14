@@ -60,7 +60,6 @@ public class fd_appender
 
         //对空文件夹的处理，或0字节文件夹的处理
         if(this.m_root.lenLoc == 0) this.m_root.complete = true;
-        if(this.m_root.files.size() == 0) this.m_root.complete = true;
         
         //更新文件夹信息
         this.pre_udpate_fd();

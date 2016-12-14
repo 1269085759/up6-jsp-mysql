@@ -235,7 +235,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
         this.manager.RemoveQueuePost(this.idLoc);
         //从未上传列表中删除
         this.manager.RemoveQueueWait(this.idLoc);
-        this.ui.msg.text("共" + this.folderSvr.filesCount + "个文件，成功上传" + this.arrFilesComplete.length + "个文件");
+        this.ui.msg.text("共" + this.folderSvr.filesCount + "个文件，成功上传" + this.folderSvr.filesCount + "个文件");
 
         $.ajax({
             type: "GET"

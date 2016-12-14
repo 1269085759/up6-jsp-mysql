@@ -68,7 +68,7 @@ public class FileResumerPart {
 				File fp = new File(path);
 				PathTool.createDirectory( fp.getParent());//
 			    RandomAccessFile raf = new RandomAccessFile(path, "rw");
-			    raf.setLength(1);//fix(2015-03-18):取消按实际大小创建文件，减少用户上传大文件等待的时间。
+			    raf.setLength(0);//fix(2015-03-18):取消按实际大小创建文件，减少用户上传大文件等待的时间。
 			    //raf.setLength(Long.parseLong(strLen));//
 			    raf.close();
 			}
