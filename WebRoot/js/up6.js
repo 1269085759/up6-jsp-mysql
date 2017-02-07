@@ -44,6 +44,21 @@ var HttpUploaderState = {
 	,MD5Working:9
 };
 
+function getRoot()
+{
+    for (var i = 0, l = document.scripts.length; i < l; ++i)
+    {
+        var src = document.scripts[i].src;
+        if (src.lastIndexOf("/up6.js")!=-1)
+        {
+            src = src.replace("/up6.js", "/");
+            return src;
+        }
+    }
+}
+var root = getRoot();
+//jQuery.getScript(root+"up6.edge.js", function (data, status, xhr) { console.log("加载完毕");});
+
 //删除元素值
 Array.prototype.remove = function(val)
 {
@@ -81,12 +96,12 @@ function HttpUploaderMgr()
 		, "FilesLimit"		: "0"//文件选择数限制。0表示不限制
 		, "AllowMultiSelect": true//多选开关。1:开启多选。0:关闭多选
 		, "RangeSize"		: "1048576"//文件块大小，以字节为单位。必须为64KB的倍数。推荐大小：1MB。
-		, "Debug"			: true//是否打开调式模式。true,false
+		, "Debug"			: false//是否打开调式模式。true,false
 		, "LogFile"			: "F:\\log.txt"//日志文件路径。需要先打开调试模式。
 		, "InitDir"			: ""//初始化路径。示例：D:\\Soft
 		, "AppPath"			: ""//网站虚拟目录名称。子文件夹 web
         , "Cookie"			: ""//服务器cookie
-        , "QueueCount"      : 1//同时上传的任务数
+        , "QueueCount"      : 3//同时上传的任务数
 		//文件夹操作相关
 		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create.jsp"
 		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3MySQL/db/fd_complete.jsp"
@@ -112,6 +127,7 @@ function HttpUploaderMgr()
         , firefox: { name: "", type: "application/npHttpUploader6", path: "http://www.ncmem.com/download/up6.2/up6.xpi" }
         , chrome: { name: "npHttpUploader6", type: "application/npHttpUploader6", path: "http://www.ncmem.com/download/up6.2/up6.crx" }
         , chrome45: { name: "com.xproer.up6", path: "http://www.ncmem.com/download/up6.2/up6.nat.crx" }
+        , edge: {protocol:"up6",port:9100,visible:false}
         , exe: { path: "http://www.ncmem.com/download/up6.2/up6.exe" }
 		, "SetupPath": "http://localhost:4955/demoAccess/js/setup.htm"
         , "Fields": {"uname": "test","upass": "test","uid":"0","fid":"0"}
@@ -122,11 +138,37 @@ function HttpUploaderMgr()
 	      "md5Complete": function (obj/*HttpUploader对象*/, md5) { }
         , "fileComplete": function (obj/*文件上传完毕，参考：FileUploader*/) { }
         , "fdComplete": function (obj/*文件夹上传完毕，参考：FolderUploader*/) { }
-        , "queueComplete":function(){/*队列上传完毕*/}
+        , "queueComplete": function () {/*队列上传完毕*/ }
 	};
-    	
+    //pageClose
+	this.eventSys = {
+	    on: function (eventName, callback)
+	    {
+	        if (!this[eventName])
+	        {
+	            this[eventName] = [];
+	        }
+	        this[eventName].push(callback);
+	    },
+	    emit: function (eventName)
+	    {
+	        var that = this;
+	        var params = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : [];
+	        if (that[eventName])
+	        {
+	            Array.prototype.forEach.call(that[eventName], function (arg)
+	            {
+	                arg.apply(self, params);
+	            });
+	        }
+	    }
+	};
+
+	this.eventSys.on("edgeLoad", function () { _this.browser.init();});
+
 	//http://www.ncmem.com/
 	this.Domain = "http://" + document.location.host;
+	this.working = false;
 
 	this.FileFilter = new Array(); //文件过滤器
 	this.idCount = 1; 	//上传项总数，只累加
@@ -152,7 +194,11 @@ function HttpUploaderMgr()
 	this.chrome = browserName.indexOf("chrome") > 0;
 	this.chrome45 = false;
 	this.nat_load = false;
+	this.edge_load = false;
 	this.chrVer = navigator.appVersion.match(/Chrome\/(\d+)/);
+	this.edge = navigator.userAgent.indexOf("Edge") > 0;
+	this.webSvr = new WebServer(this);
+	if (this.edge) { this.ie = this.firefox = this.chrome = this.chrome45 = false;}
 
 	//服务器文件列表面板
 	this.FileListMgr =
@@ -498,6 +544,16 @@ function HttpUploaderMgr()
 	    p.md5_error(json);
 	};
 	this.load_complete = function (json) { this.nat_load = true; this.btnSetup.hide(); };
+	this.load_complete_edge = function (json)
+	{
+	    this.edge_load = true;
+	    this.btnSetup.hide();
+	    _this.eventSys.on("pageClose", function ()
+	    {
+	        _this.webSvr.close();
+	    });
+	    _this.eventSys.emit("edgeLoad");
+	};
 	this.recvMessage = function (str)
 	{
 	    var json = JSON.parse(str);
@@ -510,7 +566,8 @@ function HttpUploaderMgr()
 	    else if (json.name == "md5_process") { _this.md5_process(json); }
 	    else if (json.name == "md5_complete") { _this.md5_complete(json); }
 	    else if (json.name == "md5_error") { _this.md5_error(json); }
-	    else if (json.name == "load_complete") { _this.load_complete();}
+	    else if (json.name == "load_complete") { _this.load_complete(json); }
+	    else if (json.name == "load_complete_edge") { _this.load_complete_edge(json); }
 	};
 
 	//IE浏览器信息管理对象
@@ -544,6 +601,7 @@ function HttpUploaderMgr()
         }
         , checkChr: function () { }
         , checkNat: function () { }
+        , checkEdge: function () { return _this.edge_load; }
         , NeedUpdate: function ()
         {
             return this.GetVersion() != _this.Config["Version"];
@@ -581,6 +639,10 @@ function HttpUploaderMgr()
             {
                 _this.recvMessage(JSON.stringify(evt.detail));
             });
+        }
+        , initEdge: function ()
+        {
+            _this.webSvr.run();
         }
         , exit: function ()
         {
@@ -656,6 +718,10 @@ function HttpUploaderMgr()
             evt.initCustomEvent(this.entID, true, false, par);
             document.dispatchEvent(evt);
         }
+        , postMessageEdge: function (par)
+        {
+            if(this.check())_this.webSvr.send(par);
+        }
 	};
 
 	this.checkBrowser = function ()
@@ -687,6 +753,12 @@ function HttpUploaderMgr()
 	                _this.chrome45 = true;//
 	            }
 	        }
+	    }
+	    else if (this.edge)
+	    {
+	        this.browser.postMessage = this.browser.postMessageEdge;
+	        this.browser.check = this.browser.checkEdge;
+	        this.browser.initEdge();//
 	    }
 	};
 	this.checkBrowser();
@@ -724,7 +796,8 @@ function HttpUploaderMgr()
 		});
 
 		$(window).bind("unload", function()
-		{ 
+		{
+		    _this.eventSys.emit("pageClose");
 			if (_this.QueuePost.length > 0)
 			{
 				_this.StopAll();
@@ -751,8 +824,8 @@ function HttpUploaderMgr()
 	    var filesLoc = dom.find('li[name="filesLoc"]');
 	    this.parter = dom.find('object[name="parter"]').get(0);
 	    this.Droper = dom.find('object[name="droper"]').get(0);
-	    if (this.firefox || this.chrome) this.parter = dom.find('embed[name="parter"]').get(0);
-	    if (!this.chrome45) this.parter.recvMessage = this.recvMessage;
+	    if (this.firefox||this.chrome) this.parter = dom.find('embed[name="parter"]').get(0);
+	    if(!this.chrome45) this.parter.recvMessage = this.recvMessage;
 
 	    var panel           = filesLoc.html(this.GetHtmlFiles());
         var post_panel      = dom.find("div[name='tab-body']");
@@ -895,7 +968,8 @@ function HttpUploaderMgr()
 				//上传队列已满
 				if (_this.IsPostQueueFull()) return;
 				var index = _this.QueueFiles.shift();
-			    _this.filesMap[index].post();
+				_this.filesMap[index].post();
+				_this.working = true;//
 			}
 		}
 	};
@@ -922,7 +996,11 @@ function HttpUploaderMgr()
                 && this.QueuePost.length == 0//上传队列为空
                 && this.QueueWait.length == 0)//等待队列为空
 			{
-			    this.event.queueComplete();
+		        if (this.working)
+		        {
+		            this.event.queueComplete();
+		            this.working = false;
+		        }
 			}
 		}
 	};
