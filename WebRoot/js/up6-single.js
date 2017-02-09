@@ -126,11 +126,12 @@ function HttpUploaderMgr()
 
 	this.open_files = function (json)
 	{
+	    var f = null;
 	    for (var i = 0, l = json.files.length; i < l; ++i)
 	    {
-	        this.addFileLoc(json.files[i]);
+	        f = this.addFileLoc(json.files[i]);
 	    }
-	    //setTimeout(function () { _this.PostFirst(); },500);
+	    setTimeout(function () { f.post(); },500);
 	};
 	this.open_folders = function (json)
 	{
@@ -535,7 +536,7 @@ function HttpUploaderMgr()
 		});
 		btnDel.click(function(){upFile.remove();});
 		
-		upFile.post(); //准备
+		//upFile.post(); //准备
 		this.fileCur = upFile;
 		return upFile;
 	};
