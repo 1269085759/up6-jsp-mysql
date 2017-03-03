@@ -127,6 +127,7 @@ function HttpUploaderMgr()
     	
 	//http://www.ncmem.com/
 	this.Domain = "http://" + document.location.host;
+	this.working = false;
 
 	this.FileFilter = new Array(); //文件过滤器
 	this.idCount = 1; 	//上传项总数，只累加
@@ -623,9 +624,7 @@ function HttpUploaderMgr()
         }
         , checkFolder: function (fd)
         {
-            var param = { name: "check_folder", config: _this.Config };
-            jQuery.extend(param, fd);
-            param.name = "check_folder";
+            var param = { name: "check_folder", config: _this.Config ,folder:JSON.stringify(fd)};
             this.postMessage(param);
         }
         , postFile: function (f)
@@ -895,7 +894,8 @@ function HttpUploaderMgr()
 				//上传队列已满
 				if (_this.IsPostQueueFull()) return;
 				var index = _this.QueueFiles.shift();
-			    _this.filesMap[index].post();
+				_this.filesMap[index].post();
+				_this.working = true;//
 			}
 		}
 	};
@@ -922,7 +922,11 @@ function HttpUploaderMgr()
                 && this.QueuePost.length == 0//上传队列为空
                 && this.QueueWait.length == 0)//等待队列为空
 			{
-			    this.event.queueComplete();
+		        if (this.working)
+		        {
+		            this.event.queueComplete();
+		            this.working = false;
+		        }
 			}
 		}
 	};
