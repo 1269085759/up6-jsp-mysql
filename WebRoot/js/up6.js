@@ -624,7 +624,14 @@ function HttpUploaderMgr()
         }
         , checkFolder: function (fd)
         {
-            var param = { name: "check_folder", config: _this.Config ,folder:JSON.stringify(fd)};
+            var param = { name: "check_folder", config: _this.Config };
+            jQuery.extend(param, fd);
+            param.name = "check_folder";
+            this.postMessage(param);
+        }
+        , checkFolderNat: function (fd)
+        {
+            var param = { name: "check_folder", config: _this.Config, folder: JSON.stringify(fd) };
             this.postMessage(param);
         }
         , postFile: function (f)
@@ -681,6 +688,7 @@ function HttpUploaderMgr()
 	            if (!this.browser.checkFF())//仍然支持npapi
 	            {
 	                this.browser.postMessage = this.browser.postMessageNat;
+	                this.browser.checkFolder = this.browser.checkFolderNat;
 	                _this.firefox = false;
 	                _this.chrome = false;
 	                _this.chrome45 = true;//
