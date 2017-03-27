@@ -191,7 +191,7 @@ function HttpUploaderMgr()
 	    else if (json.name == "load_complete") { _this.load_complete(); }
 	};
 		
-    //IE浏览器信息管理对象
+    //浏览器
 	this.browser = {
 	    entID: "Uploader6Event"
 		, check: function ()//检查插件是否已安装
@@ -427,15 +427,20 @@ function HttpUploaderMgr()
 	{
 	    var html 		= this.GetHtml();
 	    var dom 		= $(document.body).append(html);
-	    this.initUI(dom);
+        $(function () {
+            _this.initUI(dom);
+        });
+		
 	};
 
 	//加截容器，上传面板，文件列表面板
 	this.loadTo = function (oid)
 	{
 	    var html 		= this.GetHtml();
-		var dom 		= $("#"+oid).html(html);
-		this.initUI(dom);
+        var dom = $("#" + oid).html(html);
+        $(function () {
+            _this.initUI(dom);
+        });		
 	};
 	
 	this.initUI = function (dom)
@@ -677,7 +682,7 @@ function FileUploader(fileLoc, mgr)
         this.ui.percent.text("(100%)");
         this.ui.msg.text("服务器存在相同文件，快速上传成功。");
         this.State = HttpUploaderState.Complete;
-        this.event.fileComplete(this);//触发事件        
+        this.event.fileComplete(this);//触发事件
     };
     this.post_error = function (json)
     {
