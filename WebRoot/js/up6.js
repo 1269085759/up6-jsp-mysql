@@ -601,6 +601,11 @@ function HttpUploaderMgr()
             jQuery.extend(param, json);
             this.postMessage(param);
         }
+        , addFolder: function (json) {
+            var param = { name: "add_folder", config: _this.Config };
+            jQuery.extend(param, json);
+            this.postMessage(param);
+        }
         , openFiles: function ()
         {
             var param = { name: "open_files", config: _this.Config };
