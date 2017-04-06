@@ -2,7 +2,7 @@
 	版权所有 2009-2016 荆门泽优软件有限公司
 	保留所有权利
 	官方网站：http://www.ncmem.com/
-	产品首页：http://www.ncmem.com/webplug/http-uploader6/
+	产品首页：http://www.ncmem.com/webapp/up6.2/index.asp
 	产品介绍：http://www.cnblogs.com/xproer/archive/2012/05/29/2523757.html
 	开发文档-ASP：http://www.cnblogs.com/xproer/archive/2012/02/17/2355458.html
 	开发文档-PHP：http://www.cnblogs.com/xproer/archive/2012/02/17/2355467.html
@@ -13,6 +13,7 @@
 	VC运行库：http://www.microsoft.com/en-us/download/details.aspx?id=29
 	联系信箱：1085617561@qq.com
 	联系QQ：1085617561
+    版本：2.2
 	更新记录：
 		2015-07-31 优化更新进度逻辑
 */
@@ -70,7 +71,7 @@ function HttpUploaderMgr()
 	this.Config = {
 		  "EncodeType"		: "utf-8"
 		, "Company"			: "荆门泽优软件有限公司"
-		, "Version"			: "2,7,103,31652"
+		, "Version"			: "2,7,104,50854"
 		, "License"			: ""//
 		, "Authenticate"	: ""//域验证方式：basic,ntlm
 		, "AuthName"		: ""//域帐号
@@ -81,7 +82,7 @@ function HttpUploaderMgr()
 		, "FilesLimit"		: "0"//文件选择数限制。0表示不限制
 		, "AllowMultiSelect": true//多选开关。1:开启多选。0:关闭多选
 		, "RangeSize"		: "1048576"//文件块大小，以字节为单位。必须为64KB的倍数。推荐大小：1MB。
-		, "Debug"			: true//是否打开调式模式。true,false
+		, "Debug"			: false//是否打开调式模式。true,false
 		, "LogFile"			: "F:\\log.txt"//日志文件路径。需要先打开调试模式。
 		, "InitDir"			: ""//初始化路径。示例：D:\\Soft
 		, "AppPath"			: ""//网站虚拟目录名称。子文件夹 web
@@ -152,7 +153,6 @@ function HttpUploaderMgr()
 	this.firefox = browserName.indexOf("firefox") > 0;
 	this.chrome = browserName.indexOf("chrome") > 0;
 	this.chrome45 = false;
-	this.nat_load = false;
 	this.chrVer = navigator.appVersion.match(/Chrome\/(\d+)/);
 
 	//服务器文件列表面板
@@ -498,7 +498,20 @@ function HttpUploaderMgr()
 	    var p = this.filesMap[json.id];
 	    p.md5_error(json);
 	};
-	this.load_complete = function (json) { this.nat_load = true; this.btnSetup.hide(); };
+    this.load_complete = function (json)
+    {
+        this.btnSetup.hide();
+        var needUpdate = true;
+        if (typeof(json.version) != "undefined")
+        {
+            if (json.version == this.Config.Version)
+            {
+                needUpdate = false;
+            }
+        }
+        if (needUpdate) this.update_notice();
+        else { this.btnSetup.hide(); }
+    };
 	this.recvMessage = function (str)
 	{
 	    var json = JSON.parse(str);
@@ -511,7 +524,7 @@ function HttpUploaderMgr()
 	    else if (json.name == "md5_process") { _this.md5_process(json); }
 	    else if (json.name == "md5_complete") { _this.md5_complete(json); }
 	    else if (json.name == "md5_error") { _this.md5_error(json); }
-	    else if (json.name == "load_complete") { _this.load_complete();}
+	    else if (json.name == "load_complete") { _this.load_complete(json);}
 	};
 
 	//IE浏览器信息管理对象
@@ -543,23 +556,6 @@ function HttpUploaderMgr()
             }
             return false;
         }
-        , checkChr: function () { }
-        , checkNat: function () { }
-        , NeedUpdate: function ()
-        {
-            return this.GetVersion() != _this.Config["Version"];
-        }
-		, GetVersion: function ()
-		{
-		    var v = null;
-		    try
-		    {
-		        v = _this.parter.Version;
-		        if (v == undefined) v = null;
-		    }
-		    catch (e) { }
-		    return v;
-		}
 		, Setup: function ()
 		{
 			//文件夹选择控件
@@ -659,7 +655,10 @@ function HttpUploaderMgr()
         }
         , postMessage:function(json)
         {
-            if(this.check()) _this.parter.postMessage(JSON.stringify(json));
+            try
+            {
+                _this.parter.postMessage(JSON.stringify(json));
+            } catch (e){ }
         }
         , postMessageNat: function (par)
         {
@@ -702,13 +701,14 @@ function HttpUploaderMgr()
 	    }
 	};
 	this.checkBrowser();
-
-	//安装检查
-	this.setup_check = function ()
-	{
-	    if (!_this.browser.check()) { this.btnSetup.show(); }
-	    else { this.btnSetup.hide(); }
-	};
+    
+    //升级通知
+    this.update_notice = function ()
+    {
+        this.btnSetup.text("升级控件");
+        this.btnSetup.css("color", "red");
+        this.btnSetup.show();
+    };
 
 	//安装控件
 	this.Install = function ()
@@ -763,8 +763,8 @@ function HttpUploaderMgr()
 	    var filesLoc = dom.find('li[name="filesLoc"]');
 	    this.parter = dom.find('object[name="parter"]').get(0);
 	    this.Droper = dom.find('object[name="droper"]').get(0);
-	    if (this.firefox || this.chrome) this.parter = dom.find('embed[name="parter"]').get(0);
-	    if (!this.chrome45) this.parter.recvMessage = this.recvMessage;
+	    if (this.firefox||this.chrome) this.parter = dom.find('embed[name="parter"]').get(0);
+	    if(!this.chrome45) this.parter.recvMessage = this.recvMessage;
 
 	    var panel           = filesLoc.html(this.GetHtmlFiles());
         var post_panel      = dom.find("div[name='tab-body']");
@@ -798,7 +798,6 @@ function HttpUploaderMgr()
 	    this.FileListMgr.filesUI.height(post_panel.height() - 28);
 
 	    this.InitContainer();
-	    this.setup_check();
 	    this.browser.init();
 	};
 	
