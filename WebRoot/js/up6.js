@@ -2,7 +2,7 @@
 	版权所有 2009-2016 荆门泽优软件有限公司
 	保留所有权利
 	官方网站：http://www.ncmem.com/
-	产品首页：http://www.ncmem.com/webplug/http-uploader6/
+	产品首页：http://www.ncmem.com/webapp/up6.2/index.asp
 	产品介绍：http://www.cnblogs.com/xproer/archive/2012/05/29/2523757.html
 	开发文档-ASP：http://www.cnblogs.com/xproer/archive/2012/02/17/2355458.html
 	开发文档-PHP：http://www.cnblogs.com/xproer/archive/2012/02/17/2355467.html
@@ -13,6 +13,7 @@
 	VC运行库：http://www.microsoft.com/en-us/download/details.aspx?id=29
 	联系信箱：1085617561@qq.com
 	联系QQ：1085617561
+    版本：2.3
 	更新记录：
 		2015-07-31 优化更新进度逻辑
 */
@@ -85,7 +86,7 @@ function HttpUploaderMgr()
 	this.Config = {
 		  "EncodeType"		: "utf-8"
 		, "Company"			: "荆门泽优软件有限公司"
-		, "Version"			: "2,7,103,31652"
+		, "Version"			: "2,7,104,50854"
 		, "License"			: ""//
 		, "Authenticate"	: ""//域验证方式：basic,ntlm
 		, "AuthName"		: ""//域帐号
@@ -543,7 +544,18 @@ function HttpUploaderMgr()
 	    var p = this.filesMap[json.id];
 	    p.md5_error(json);
 	};
-	this.load_complete = function (json) { this.nat_load = true; this.btnSetup.hide(); };
+    this.load_complete = function (json)
+    {
+        this.btnSetup.hide();
+        var needUpdate = true;
+        if (typeof (json.version) != "undefined") {
+            if (json.version == this.Config.Version) {
+                needUpdate = false;
+            }
+        }
+        if (needUpdate) this.update_notice();
+        else { this.btnSetup.hide(); }
+    };
 	this.load_complete_edge = function (json)
 	{
 	    this.edge_load = true;
@@ -568,6 +580,13 @@ function HttpUploaderMgr()
 	    else if (json.name == "md5_error") { _this.md5_error(json); }
 	    else if (json.name == "load_complete") { _this.load_complete(json); }
 	    else if (json.name == "load_complete_edge") { _this.load_complete_edge(json); }
+	    else if (json.name == "extension_complete")
+        {
+            setTimeout(function () {
+                var param = { name: "init", config: _this.Config };
+                _this.browser.postMessage(param);
+                 }, 1000);
+        }
 	};
 
 	//IE浏览器信息管理对象
@@ -599,13 +618,7 @@ function HttpUploaderMgr()
             }
             return false;
         }
-        , checkChr: function () { }
-        , checkNat: function () { }
         , checkEdge: function () { return _this.edge_load; }
-        , NeedUpdate: function ()
-        {
-            return this.GetVersion() != _this.Config["Version"];
-        }
 		, GetVersion: function ()
 		{
 		    var v = null;
@@ -720,7 +733,9 @@ function HttpUploaderMgr()
         }
         , postMessage:function(json)
         {
-            if(this.check()) _this.parter.postMessage(JSON.stringify(json));
+            try {
+                _this.parter.postMessage(JSON.stringify(json));
+            } catch (e) { }
         }
         , postMessageNat: function (par)
         {
@@ -730,7 +745,7 @@ function HttpUploaderMgr()
         }
         , postMessageEdge: function (par)
         {
-            if(this.check())_this.webSvr.send(par);
+            if (_this.edge_load) _this.webSvr.send(par);
         }
 	};
 
@@ -772,15 +787,13 @@ function HttpUploaderMgr()
 	        this.browser.initEdge();//
 	    }
 	};
-	this.checkBrowser();
-
-	//安装检查
-	this.setup_check = function ()
-	{
-	    if (!_this.browser.check()) { this.btnSetup.show(); }
-	    else { this.btnSetup.hide(); }
-	};
-
+    this.checkBrowser();
+    //升级通知
+    this.update_notice = function () {
+        this.btnSetup.text("升级控件");
+        this.btnSetup.css("color", "red");
+        this.btnSetup.show();
+    };
 	//安装控件
 	this.Install = function ()
 	{
@@ -870,7 +883,6 @@ function HttpUploaderMgr()
 	    this.FileListMgr.filesUI.height(post_panel.height() - 28);
 
 	    this.InitContainer();
-	    this.setup_check();
 	    this.browser.init();
 	};
 	
