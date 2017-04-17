@@ -13,7 +13,7 @@
 	VC运行库：http://www.microsoft.com/en-us/download/details.aspx?id=29
 	联系信箱：1085617561@qq.com
 	联系QQ：1085617561
-    版本：2.2
+    版本：2.3
 	更新记录：
 		2015-07-31 优化更新进度逻辑
 */
@@ -523,8 +523,15 @@ function HttpUploaderMgr()
 	    else if (json.name == "post_complete") { _this.post_complete(json); }
 	    else if (json.name == "md5_process") { _this.md5_process(json); }
 	    else if (json.name == "md5_complete") { _this.md5_complete(json); }
-	    else if (json.name == "md5_error") { _this.md5_error(json); }
-	    else if (json.name == "load_complete") { _this.load_complete(json);}
+        else if (json.name == "md5_error") { _this.md5_error(json); }
+        else if (json.name == "load_complete") { _this.load_complete(json); }
+        else if (json.name == "extension_complete")
+        {
+            setTimeout(function () {
+                var param = { name: "init", config: _this.Config };
+                _this.browser.postMessage(param);
+                 }, 1000);
+        }
 	};
 
 	//IE浏览器信息管理对象
