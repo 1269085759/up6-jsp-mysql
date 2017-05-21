@@ -154,7 +154,7 @@ function HttpUploaderMgr()
 	this.QueuePost = new Array(); //上传队列，数据:id1,id2,id3
 	this.arrFilesComplete = new Array(); //已上传完的文件列表
     this.filesUI = null;//上传列表面板
-    this.iePart = null;
+    this.ieParter = null;
 	this.parter = null;
 	this.Droper = null;
 	this.tmpFile = null;
@@ -702,7 +702,7 @@ function HttpUploaderMgr()
         {
             if (!_this.edge) {
                 if (_this.ie) {
-                    _this.parter = _this.iePart;
+                    _this.parter = _this.ieParter;
                     if (null != _this.Droper) _this.Droper.recvMessage = _this.recvMessage;
                 }
                 _this.parter.recvMessage = _this.recvMessage;
