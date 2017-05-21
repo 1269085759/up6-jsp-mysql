@@ -11,6 +11,7 @@ String clientCookie = request.getHeader("Cookie");
     <script type="text/javascript" src="js/jquery-1.4.min.js"></script>
     <script type="text/javascript" src="js/json2.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/up6.config.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/up6.app.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/up6.edge.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/up6.file.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/up6.folder.js" charset="utf-8"></script>

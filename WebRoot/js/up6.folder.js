@@ -20,7 +20,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
     this.FileListMgr = mgr.FileListMgr;//文件列表管理器
     this.Config = mgr.Config;
     this.fields = jQuery.extend({}, mgr.Config.Fields);//每一个对象自带一个fields幅本
-    this.browser = mgr.browser;
+    this.app = mgr.app;
     this.LocalFile = ""; //判断是否存在相同项
     this.FileName = "";
 
@@ -80,7 +80,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
         this.ui.btn.post.hide();
         this.State = HttpUploaderState.MD5Working;
 		var par = jQuery.extend(this.folderSvr,{id:this.idLoc});
-        this.browser.checkFolder(par);
+        this.app.checkFolder(par);
     };
     this.post_fd = function ()
     {
@@ -88,7 +88,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
         this.ui.btn.post.hide();
         this.State = HttpUploaderState.Posting;
 		var fd = jQuery.extend(this.folderSvr,{id:this.idLoc});
-        this.browser.postFolder({ folder: fd, fields: this.fields });
+        this.app.postFolder({ folder: fd, fields: this.fields });
     };
     this.post_error = function (json)
     {
@@ -257,7 +257,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
     //一般在StopAll()中调用
     this.stop_manual = function ()
     {
-        this.browser.stopFile({ id: this.idLoc });
+        this.app.stopFile({ id: this.idLoc });
         this.State = HttpUploaderState.Stop;
     };
     //手动点击“停止”按钮时
@@ -275,7 +275,7 @@ function FolderUploader(idLoc, fdLoc, mgr)
             return;
         }
         //
-        this.browser.stopFile({ id: this.idLoc });
+        this.app.stopFile({ id: this.idLoc });
         this.manager.RemoveQueuePost(this.idLoc);
         this.manager.AppendQueueWait(this.idLoc);
         this.ui.btn.post.show();

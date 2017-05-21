@@ -23,6 +23,12 @@ function WebServer(mgr)
             setTimeout(function () { _this.connect() }, 1000);//启动定时器
         }
     };
+    this.runChr = function () {
+        var protocol = mgr.Config.edge.protocol + "://" + mgr.Config.edge.port;
+        var html = "<iframe id='uri-fra' width=1 height=1 src='" + protocol + "'></iframe>";
+        $(document.body).append(html);
+        setTimeout(function () { _this.connect() }, 1000);//启动定时器
+    };
     this.connect = function ()
     {
         if (!_this.tryConnect) return;
