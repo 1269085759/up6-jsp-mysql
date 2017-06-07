@@ -58,34 +58,22 @@ function DownloaderMgr()
 	    //folder
         , "UrlFdCreate" : "http://localhost:8080/Uploader6.3MySQL/down2/db/fd_create.jsp"
         //x86
-		, "ClsidDown"	: "E94D2BA0-37F4-4978-B9B9-A4F548300E48"
-		, "ClsidPart"	: "6528602B-7DF7-445A-8BA0-F6F996472569"
-		, "CabPath"		: "http://www.ncmem.com/download/down2/down2.cab"
-		//x64
-		, "ClsidDown64"	: "0DADC2F7-225A-4cdb-80E2-03E9E7981AF8"
-		, "ClsidPart64"	: "19799DD1-7357-49de-AE5D-E7A010A3172C"
-		, "CabPath64"	: "http://www.ncmem.com/download/down2/down64.cab"
-		//Firefox
-		, "XpiType"		: "application/npHttpDown"
-		, "XpiPath"	    : "http://www.ncmem.com/download/down2/down2.xpi"
-		//Chrome
-		, "CrxName"		: "npHttpDown"
-		, "CrxType"		: "application/npHttpDown"
-		, "CrxPath"	    : "http://www.ncmem.com/download/down2/down2.crx"
+        , ie: {
+              part: { clsid: "6528602B-7DF7-445A-8BA0-F6F996472569", name: "Xproer.DownloaderPartition" }
+            , path: "http://www.ncmem.com/download/down2/down2.cab"
+        }
+        //x64
+        , ie64: {
+            part: { clsid: "19799DD1-7357-49de-AE5D-E7A010A3172C", name: "Xproer.DownloaderPartition64" }
+            , path: "http://www.ncmem.com/download/down2/down64.cab"
+        }
+        , firefox: { name: "", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/down2.xpi" }
+        , chrome: { name: "npHttpDown", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/down2.crx" }
 	    //Chrome 45
-        , "NatHostName" : "com.xproer.down2"//
-	    , "NatPath"		: "http://www.ncmem.com/download/down2/down2.nat.crx"
-	    , "ExePath"		: "http://www.ncmem.com/download/down2/down2.exe"
-	};
-	
-	this.ActiveX = {
-		  "Part"	: "Xproer.DownloaderPartition"
-		//64bit
-		, "Part64"	: "Xproer.DownloaderPartition64"
-	};
-
-	this.Fields = {
-        "uid" : 0
+        , chrome45: { name: "com.xproer.down2", path: "http://www.ncmem.com/download/down2/down2.nat.crx" }
+        , exe: { path: "http://www.ncmem.com/download/down2/down2.exe" }
+        , edge: {protocol:"down2",port:9700,visible:false}
+        , "Fields": {"uname": "test","upass": "test","uid":"0","fid":"0"}
 	};
 
     this.event = {
@@ -101,7 +89,14 @@ function DownloaderMgr()
 	this.chrome = browserName.indexOf("chrome") > 0;
 	this.chrome45 = false;
 	this.nat_load = false;
-	this.chrVer = navigator.appVersion.match(/Chrome\/(\d+)/);
+    this.chrVer = navigator.appVersion.match(/Chrome\/(\d+)/);
+    this.edge = navigator.userAgent.indexOf("Edge") > 0;
+    this.edgeApp = new WebServer(this);
+    this.app = up6_app;
+    this.app.edgeApp = this.edgeApp;
+    this.app.Config = this.Config;
+    this.app.ins = this;
+    if (this.edge) { this.ie = this.firefox = this.chrome = this.chrome45 = false; }
 	
 	this.idCount = 1; 	//上传项总数，只累加
 	this.queueCount = 0;//队列总数
@@ -124,19 +119,9 @@ function DownloaderMgr()
 			<object id="objDownloader" classid="clsid:E94D2BA0-37F4-4978-B9B9-A4F548300E48" codebase="http://www.qq.com/HttpDownloader.cab#version=1,2,22,65068" width="1" height="1" ></object>
 			<object id="objPartition" classid="clsid:6528602B-7DF7-445A-8BA0-F6F996472569" codebase="http://www.qq.com/HttpDownloader.cab#version=1,2,22,65068" width="1" height="1" ></object>
 		*/
-	    if (this.ie)
-	    {
-	        html += '<object name="parter" classid="clsid:' + this.Config["ClsidPart"] + '"';
-	        html += ' codebase="' + this.Config["CabPath"] + '#version=' + _this.Config["Version"] + '" width="1" height="1" ></object>';
-	    }
-	    else if (this.firefox)
-	    {
-	        html += '<embed name="parter" type="' + this.Config.XpiType + '" pluginspage="' + this.Config.XpiPath + '" width="1" height="1"/>';
-	    }
-	    else if (this.chrome)
-	    {
-	        html += '<embed name="parter" type="' + this.Config.CrxType + '" pluginspage="' + this.Config.CrxPath + '" width="1" height="1"/>';
-	    }
+        html += '<object name="parter" classid="clsid:' + this.Config.ie.part.clsid + '"';
+        html += ' codebase="' + this.Config.ie.part.path + '#version=' + _this.Config["Version"] + '" width="1" height="1" ></object>';
+        html += '<embed name="ffParter" type="' + this.Config.firefox.type + '" pluginspage="' + this.Config.firefox.path + '" width="1" height="1"/>';
 		//acx += '</div>';
 	    //上传列表项模板
 	    html += '<div class="file-item file-item-single" name="fileItem">\
@@ -303,7 +288,7 @@ function DownloaderMgr()
 	this.remove_url = function (url) { this.filesUrl.remove(url); };
 	this.open_folder = function (json)
 	{
-	    this.browser.openFolder();
+	    this.app.openFolder();
 	};
 	this.down_file = function (json) { };
 	this.init_end = function (json)
@@ -351,14 +336,29 @@ function DownloaderMgr()
 	    var p = this.filesMap[json.id];
 	    p.down_stoped(json);
 	};
-	this.start_queue = function () { this.browser.startQueue();};
+	this.start_queue = function () { this.app.startQueue();};
 	this.stop_queue = function (json)
 	{
-	    this.browser.stopQueue();
+	    this.app.stopQueue();
 	};
 	this.queue_begin = function (json) { this.working = true;};
 	this.queue_end = function (json) { this.working = false;};
-	this.load_complete = function (json) { this.nat_load = true; this.btnSetup.hide(); };
+    this.load_complete = function (json) {
+        this.btnSetup.hide();
+        var needUpdate = true;
+        if (typeof (json.version) != "undefined") {
+            if (json.version == this.Config.Version) {
+                needUpdate = false;
+            }
+        }
+        if (needUpdate) this.update_notice();
+        else { this.btnSetup.hide(); }
+    };
+    this.load_complete_edge = function (json) {
+        this.edge_load = true;
+        this.btnSetup.hide();
+        _this.app.init();
+    };
 	this.recvMessage = function (str)
 	{
 	    var json = JSON.parse(str);
@@ -376,196 +376,56 @@ function DownloaderMgr()
 	    else if (json.name == "queue_complete") { _this.event.queueComplete(); }
 	    else if (json.name == "queue_begin") { _this.queue_begin(json); }
 	    else if (json.name == "queue_end") { _this.queue_end(json); }
-	    else if (json.name == "load_complete") { _this.load_complete(); }
-	};
+	    else if (json.name == "load_complete") { _this.load_complete(json); }
+	    else if (json.name == "load_complete_edge") { _this.load_complete_edge(json); }
+    };
 
-    //浏览器对象
-	this.browser = {
-	      entID: "Downloader2Event"
-	    , cbkID: "Downloader2EventCallBack"
-		, check: function ()//检查插件是否已安装
-		{
-		    return null != this.GetVersion();
-		}
-        , checkFF: function ()
-        {
-            var mimetype = navigator.mimeTypes;
-            if (typeof mimetype == "object" && mimetype.length)
-            {
-                for (var i = 0; i < mimetype.length; i++)
-                {
-                    var enabled = mimetype[i].type == _this.Config.XpiType;
-                    if (!enabled) enabled = mimetype[i].type == _this.Config.XpiType.toLowerCase();
-                    if (enabled) return mimetype[i].enabledPlugin;
-                }
-            }
-            else
-            {
-                mimetype = [_this.Config.XpiType];
-            }
-            if (mimetype)
-            {
-                return mimetype.enabledPlugin;
-            }
-            return false;
-        }
-        , checkChr: function () { return false;}
-        , checkNat: function () { return false; }
-        , NeedUpdate: function ()
-        {
-            return this.GetVersion() != _this.Config.Version;
-        }
-		, GetVersion: function ()
-		{
-		    var v = null;
-		    try
-		    {
-		        v = _this.parter.Version;
-		        if (v == undefined) v = null;
-		    }
-		    catch (e) { }
-		    return v;
-		}
-		, Setup: function ()
-		{
-		    //文件夹选择控件
-		    acx += '<object classid="clsid:' + _this.Config.ClsidPart + '"';
-		    acx += ' codebase="' + _this.Config.CabPath + '" width="1" height="1" ></object>';
-
-		    $("body").append(acx);
-		}
-        , init: function ()
-        {
-            this.initNat();//
-            var param = { name: "init", config: _this.Config };
-            this.postMessage(param);
-        }
-        , initNat: function ()
-        {
-            if (!_this.chrome45) return;
-            this.exitEvent();
-            document.addEventListener(this.cbkID, function (evt)
-            {
-                _this.recvMessage(JSON.stringify(evt.detail));
-            });
-        }
-        , exit: function ()
-        {
-            var par = { name: 'exit' };
-            var evt = document.createEvent("CustomEvent");
-            evt.initCustomEvent(this.entID, true, false, par);
-            document.dispatchEvent(evt);
-        }
-        , exitEvent: function ()
-        {
-            var obj = this;
-            $(window).bind("beforeunload", function () { obj.exit(); });
-        }
-        , openFolder: function ()
-        {
-            var param = { name: "open_folder", config: _this.Config };            
-            this.postMessage(param);
-        }
-		, openPath:function(f)
-		{
-            var param = { name: "open_path", config: _this.Config };            
-            this.postMessage(param);
-		}
-		, openFile:function(f)
-		{
-            var param = { name: "open_file", config: _this.Config };            
-            this.postMessage(param);
-		}
-        , addFile: function (f)
-        {
-            _this.queueCount++;
-            var param = { name: "add_file", config: _this.Config };
-            jQuery.extend(param, f);
-            this.postMessage(param);
-        }
-        , addFolder: function (f)
-        {
-            _this.queueCount++;
-            var param = { name: "add_folder", config: _this.Config };
-            jQuery.extend(param, f, {name:"add_folder"});
-            this.postMessage(param);
-        }
-        , stopFile: function (f)
-        {
-            _this.queueCount--;
-            var param = { name: "stop_file", id: f.id, config: _this.Config };
-            this.postMessage(param);
-        }
-        , startQueue: function ()
-        {
-            var param = { name: "start_queue", config: _this.Config };
-            this.postMessage(param);
-        }
-        , stopQueue: function ()
-        {
-            var param = { name: "stop_queue", config: _this.Config };
-            this.postMessage(param);
-        }
-        , postMessage: function (json)
-        {
-            _this.parter.postMessage(JSON.stringify(json));
-        }
-        , postMessageNat: function (par)
-        {
-            var evt = document.createEvent("CustomEvent");
-            evt.initCustomEvent(this.entID, true, false, par);
-            document.dispatchEvent(evt);
-        }
-	};
-
-	this.checkVersion = function ()
+    this.checkVersion = function ()
 	{
 	    //Win64
 	    if (window.navigator.platform == "Win64")
 	    {
-	        _this.Config["CabPath"] = _this.Config["CabPath64"];
-
-	        _this.Config["ClsidDown"] = _this.Config["ClsidDown64"];
-	        _this.Config["ClsidPart"] = _this.Config["ClsidPart64"];
-
-	        _this.ActiveX["Down"] = _this.ActiveX["Down64"];
-	        _this.ActiveX["Part"] = _this.ActiveX["Part64"];
+	        jQuery.extend(this.Config.ie, this.Config.ie64);
 	    }
 	    else if (this.firefox)
-	    {
-	        this.browser.check = this.browser.checkFF;
+        {
+            if (!this.app.checkFF())//仍然支持npapi
+            {
+                this.edge = true;
+                this.app.postMessage = this.app.postMessageEdge;
+                this.edgeApp.run = this.edgeApp.runChr;
+            }
 	    }
 	    else if (this.chrome)
 	    {
-	        this.browser.check = this.browser.checkFF;
+	        this.app.check = this.app.checkFF;
 	        jQuery.extend(this.Config.firefox, this.Config.chrome);
 	        //_this.Config["XpiPath"] = _this.Config["CrxPath"];
 	        //_this.Config["XpiType"] = _this.Config["CrxType"];
 	        //44+版本使用Native Message
 	        if (parseInt(this.chrVer[1]) >= 44)
 	        {
-	            _this.firefox = true;
-	            if (!this.browser.checkFF())//仍然支持npapi
-	            {
-	                this.browser.postMessage = this.browser.postMessageNat;
-	                _this.firefox = false;
-	                _this.chrome = false;
-	                _this.chrome45 = true;//
-	            }
+                _this.firefox = true;
+                if (!this.app.checkFF())//仍然支持npapi
+                {
+                    this.edge = true;
+                    this.app.postMessage = this.app.postMessageEdge;
+                    this.edgeApp.run = this.edgeApp.runChr;
+                }
 	        }
-	    }
+        }
+        else if (this.edge) {
+            this.app.postMessage = this.app.postMessageEdge;
+        }
 	};
-	this.checkVersion();
-	this.setup_tip = function ()
-	{
-	    this.btnSetup.attr("href", this.Config.ExePath);
-	    this.btnSetup.show();
-	};
-	this.setup_check = function ()
-	{
-	    if (!_this.browser.check()) { this.setup_tip(); /*_this.browser.Setup();*/ }
-	    else { this.btnSetup.hide();}
-	};
+    this.checkVersion();
+
+    //升级通知
+    this.update_notice = function () {
+        this.btnSetup.text("升级控件");
+        this.btnSetup.css("color", "red");
+        this.btnSetup.show();
+    };
 
 	//安全检查，在用户关闭网页时自动停止所有上传任务。
 	this.safeCheck = function()
@@ -607,10 +467,9 @@ function DownloaderMgr()
 	{
 	    this.down_panel = ui.find('div[name="down_panel"]');
 	    this.btnSetup = ui.find('a[name="btnSetup"]');
-	    this.tmpFile = ui.find('div[name="fileItem"]');
-	    this.parter = ui.find('embed[name="parter"]').get(0);
-	    if (this.ie) this.parter = ui.find('object[name="parter"]').get(0);
-	    if(!this.chrome45) this.parter.recvMessage = this.recvMessage;
+        this.tmpFile = ui.find('div[name="fileItem"]');
+        this.parter = ui.find('embed[name="ffParter"]').get(0);
+        this.ieParter = ui.find('object[name="parter"]').get(0);
 
 	    var down_body = ui.find("div[name='down_body']");
 	    var down_head = ui.find('div[name="down_header"]');
@@ -622,7 +481,6 @@ function DownloaderMgr()
 	    this.spliter = ui.find('div[name="spliter"]');
 	    this.pnlFiles = down_body;
 
-	    _this.browser.init(); //
 	    //设置下载文件夹
 	    btnSetFolder.click(function () { _this.open_folder(); });
 		//清除已完成
@@ -631,8 +489,23 @@ function DownloaderMgr()
 		ui.find('a[name="btnStop"]').click(function () { _this.stop_queue(); });
 
 	    //this.LoadData();
-		this.safeCheck();//
-		this.setup_check();
+        this.safeCheck();//
+
+        $(function () {
+            if (!_this.edge) {
+                if (_this.ie) {
+                    _this.parter = _this.ieParter;
+                }
+                _this.parter.recvMessage = _this.recvMessage;
+            }
+
+            if (_this.edge) {
+                _this.edgeApp.run();
+            }
+            else {
+                _this.app.init();
+            }
+        });
 	};
 
     //加载未未完成列表

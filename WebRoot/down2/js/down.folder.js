@@ -2,10 +2,10 @@
 {
     var _this = this;
     this.ui = { msg: null, process: null, percent: null, btn: {del:null,cancel:null,down:null,stop:null},div:null,split:null};
-    this.browser = mgr.browser;
+    this.app = mgr.app;
     this.Manager = mgr;
     this.Config = mgr.Config;
-    this.fields = jQuery.extend({},mgr.Fields);//每一个对象自带一个fields幅本
+    this.fields = jQuery.extend({},mgr.Config.Fields);//每一个对象自带一个fields幅本
     this.State = HttpDownloaderState.None;
     this.event = mgr.event;
     this.fileSvr = {
@@ -61,7 +61,7 @@
 
     this.addQueue = function ()
     {
-        this.browser.addFolder(this.fileSvr);
+        this.app.addFolder(this.fileSvr);
     };
 
     //方法-开始下载
@@ -71,7 +71,7 @@
         this.ui.btn.stop.show();
         this.ui.msg.text("开始连接服务器...");
         this.State = HttpDownloaderState.Posting;        
-        this.browser.addFolder(this.fileSvr);
+        this.app.addFolder(this.fileSvr);
         this.Manager.start_queue();//下载队列
     };
 
@@ -83,12 +83,12 @@
         this.ui.btn.del.show();
         this.State = HttpDownloaderState.Stop;
         this.ui.msg.text("下载已停止");
-        this.browser.stopFile(this.fileSvr);
+        this.app.stopFile(this.fileSvr);
     };
 
     this.remove = function ()
     {
-        this.browser.stopFile(this.fileSvr);
+        this.app.stopFile(this.fileSvr);
         //从上传列表中删除
         this.ui.split.remove();
         this.ui.div.remove();
@@ -98,12 +98,12 @@
 
     this.open = function ()
     {
-        this.browser.openFile(this.fileSvr);
+        this.app.openFile(this.fileSvr);
     };
 
     this.openPath = function ()
     {
-        this.browser.openPath(this.fileSvr);
+        this.app.openPath(this.fileSvr);
     };
 
     //在出错，停止中调用

@@ -29,12 +29,12 @@ String clientCookie = request.getHeader("Cookie");
             //上传指定文件
             $("#btnUpF").click(function () {
                 var path = $("#filePath").val();
-                cbMgr.browser.addFile({ pathLoc: path });
+                cbMgr.app.addFile({ pathLoc: path });
             });
             //上传指定目录
             $("#btnUpFd").click(function () {
                 var path = $("#folderPath").val();
-                cbMgr.browser.addFolder({ pathLoc: path });
+                cbMgr.app.addFolder({ pathLoc: path });
             });
         });
     </script>
