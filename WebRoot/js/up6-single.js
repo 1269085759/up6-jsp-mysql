@@ -183,7 +183,6 @@ function HttpUploaderMgr()
 	    var p = this.filesMap[json.id];
 	    p.md5_error(json);
 	};
-    this.load_complete = function (json) { this.nat_load = true; if (this.btnSetup) this.btnSetup.hide(); };
     this.load_complete = function (json) {
         this.btnSetup.hide();
         var needUpdate = true;
