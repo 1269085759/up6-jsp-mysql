@@ -39,6 +39,7 @@ String perSvr 		= "";
 String lenSvr		= "";
 String lenLoc		= "";
 String rangeSize	= "";
+String rangeIndex	= "";
 String f_pos 		= "";// 	= request.getParameter("RangePos");
 String complete		= "false";//文件块是否已发送完毕（最后一个文件块数据）
 String fd_idSvr		= "";
@@ -87,6 +88,7 @@ while (fileItr.hasNext())
 		if(fn.equals("fd-perSvr")) fd_perSvr = fv;
 		if(fn.equals("RangePos")) f_pos = fv;
 		if(fn.equals("rangeSize")) rangeSize = fv;
+		if(fn.equals("rangeIndex")) rangeIndex = fv;
 		if(fn.equals("complete")) complete = fv;
 		if(fn.equals("pathSvr")) pathSvr = fv;//add(2015-03-19):
 	}
