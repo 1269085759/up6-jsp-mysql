@@ -387,7 +387,7 @@ function DownloaderMgr()
 	    {
 	        jQuery.extend(this.Config.ie, this.Config.ie64);
 	    }
-	    else if (this.firefox)
+	    if (this.firefox)
         {
             if (!this.app.checkFF())//仍然支持npapi
             {
