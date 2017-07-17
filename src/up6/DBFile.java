@@ -375,7 +375,7 @@ public class DBFile {
 	 * @param inf
 	 * @return
 	 */
-	public int Add(FileInf inf)
+	public void Add(FileInf inf)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("insert into up6_files(");
@@ -434,11 +434,8 @@ public class DBFile {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		int f_id = (int)db.ExecuteGenKey(cmd);
-		//int f_id = db.ExecuteScalar("select f_id from up6_files order by f_id desc limit 0,1");
-		
-		return f_id;
+		}
+		db.ExecuteNonQuery(cmd);
 	}
 	
 	/**
