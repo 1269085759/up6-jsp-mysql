@@ -1,5 +1,8 @@
-<%@ page language="java" import="up6.*" pageEncoding="UTF-8"%><%@
-	page contentType="text/html;charset=UTF-8"%><%@
+<%@ page language="java" import="up6.DBFile" pageEncoding="UTF-8"%><%@
+	page contentType="text/html;charset=UTF-8"%><%@ 
+	page import="up6.FileBlockWriter" %><%@
+	page import="up6.XDebug" %><%@
+	page import="up6.*" %><%@
 	page import="org.apache.commons.fileupload.FileItem" %><%@
 	page import="org.apache.commons.fileupload.FileItemFactory" %><%@
 	page import="org.apache.commons.fileupload.FileUploadException" %><%@
@@ -8,8 +11,7 @@
 	page import="org.apache.commons.lang.StringUtils" %><%@
 	page import="java.net.URLDecoder"%><%@ 
 	page import="java.util.Iterator"%><%@ 
-	page import="java.util.List"%><%
-/*
+	page import="java.util.List"%><%/*
 	此页面负责将文件块数据写入文件中。
 	此页面一般由控件负责调用
 	参数：
@@ -28,30 +30,27 @@
 		2014-07-23 优化代码。
 		2015-03-19 客户端提供pathSvr，此页面减少一次访问数据库的操作。
 		2016-04-09 优化文件存储逻辑，增加更新文件夹进度逻辑
+		2017-07-13 取消数据库操作
 */
 //String path = request.getContextPath();
 //String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
-String uid 			= "";// 		= request.getParameter("uid");
-String idSvr 		= "";// 		= request.getParameter("fid");
-String md5 			= "";// 			= request.getParameter("md5");
-String perSvr 		= "";
-String lenSvr		= "";
-String lenLoc		= "";
-String rangeSize	= "";
-String rangeIndex	= "";
-String f_pos 		= "";// 	= request.getParameter("RangePos");
-String complete		= "false";//文件块是否已发送完毕（最后一个文件块数据）
-String fd_idSvr		= "";
-String fd_lenSvr	= "";
-String fd_perSvr	= "0%";
-String pathSvr		= "";//add(2015-03-19):服务器文件路径由客户端提供，此页面减少一次访问数据库的操作。
+String uid 			= request.getHeader("uid");//
+String id 			= request.getHeader("id");
+String md5 			= request.getHeader("md5");
+String lenSvr		= request.getHeader("lenSvr");
+String lenLoc		= request.getHeader("lenLoc");
+String blockOffset	= request.getHeader("blockOffset");
+String blockSize	= request.getHeader("blockSize");
+String blockIndex	= request.getHeader("blockIndex");
+String complete		= request.getHeader("complete");
+String pathSvr		= request.getHeader("pathSvr");
+pathSvr = PathTool.url_decode(pathSvr);
  
 // Check that we have a file upload request
 boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 FileItemFactory factory = new DiskFileItemFactory();   
 ServletFileUpload upload = new ServletFileUpload(factory);
-//upload.setSizeMax(262144);//256KB
 List files = null;
 try 
 {
@@ -71,85 +70,23 @@ Iterator fileItr = files.iterator();
 while (fileItr.hasNext()) 
 {
 	// 得到当前文件
-	rangeFile = (FileItem) fileItr.next();
-	// 忽略简单form字段而不是上传域的文件域(<input type="text" />等)
-	if(rangeFile.isFormField())
-	{
-		String fn = rangeFile.getFieldName();
-		String fv = rangeFile.getString(); 
-		if(fn.equals("uid")) uid = fv;
-		if(fn.equals("idSvr")) idSvr = fv;
-		if(fn.equals("md5")) md5 = fv;
-		if(fn.equals("lenSvr")) lenSvr = fv;
-		if(fn.equals("lenLoc")) lenLoc = fv;
-		if(fn.equals("perSvr")) perSvr = fv;
-		if(fn.equals("fd-idSvr")) fd_idSvr = fv;
-		if(fn.equals("fd-lenSvr")) fd_lenSvr = fv;
-		if(fn.equals("fd-perSvr")) fd_perSvr = fv;
-		if(fn.equals("RangePos")) f_pos = fv;
-		if(fn.equals("rangeSize")) rangeSize = fv;
-		if(fn.equals("rangeIndex")) rangeIndex = fv;
-		if(fn.equals("complete")) complete = fv;
-		if(fn.equals("pathSvr")) pathSvr = fv;//add(2015-03-19):
-	}
-	else 
-	{
-		break;
-	}
+	rangeFile = (FileItem) fileItr.next();	
 }
 
-//参数为空
-if ( 	StringUtils.isBlank( lenSvr )
-	|| 	StringUtils.isBlank( uid )
-	|| 	StringUtils.isBlank( idSvr )
-	|| 	StringUtils.isBlank( md5 )
-	|| 	StringUtils.isBlank( f_pos) 
-	|| 	StringUtils.isBlank(pathSvr))
+//参数为空 
+if(	 StringUtils.isBlank( lenSvr )
+	|| StringUtils.isBlank( uid )
+	|| StringUtils.isBlank( id )
+	|| StringUtils.isBlank( md5 )
+	|| StringUtils.isBlank( blockOffset ) 
+	|| StringUtils.isBlank(pathSvr))
 {
-	XDebug.Output("uid", uid);
-	XDebug.Output("idSvr", idSvr);
-	XDebug.Output("md5", md5);
-	XDebug.Output("f_pos", f_pos);
 	XDebug.Output("param is null");
 	return;
 }
 
-	pathSvr	= pathSvr.replace("+","%20");	
-	pathSvr = URLDecoder.decode(pathSvr,"UTF-8");//utf-8解码//客户端使用的是encodeURIComponent编码，
-
-	XDebug.Output("perSvr", perSvr);
-	XDebug.Output("lenSvr", lenSvr);
-	XDebug.Output("lenLoc", lenLoc);
-	XDebug.Output("uid", uid);
-	XDebug.Output("idSvr", idSvr);
-	XDebug.Output("f_pos", f_pos);
-	XDebug.Output("complete", complete);
-	XDebug.Output("pathSvr",pathSvr);
-	XDebug.Output("fd_idSvr",fd_idSvr);
-	XDebug.Output("fd_lenSvr",fd_lenSvr);
-	XDebug.Output("fd_perSvr",fd_perSvr);
-	
-	//保存文件块数据
-	FileResumerPart res = new FileResumerPart();
-	res.m_RangePos = Long.parseLong(f_pos);
-	res.SaveFileRange(rangeFile, pathSvr);
-	boolean cmp = StringUtils.equals(complete,"true");
-	
-	//更新文件进度信息
-	DBFile db = new DBFile();
-	boolean fd = !StringUtils.isBlank(fd_idSvr);
-	if(fd) fd = !StringUtils.isBlank(fd_lenSvr);
-	if(fd) fd = Integer.parseInt(fd_idSvr)>0;
-	if(fd) fd = Long.parseLong(fd_lenSvr)>0;
-	if(fd)
-	{
-		db.fd_fileProcess(Integer.parseInt(uid),Integer.parseInt(idSvr),Long.parseLong(f_pos),Long.parseLong(lenSvr),perSvr,Integer.parseInt(fd_idSvr),Long.parseLong(fd_lenSvr),fd_perSvr,cmp);
-	}
-	else
-	{
-		db.f_process(Integer.parseInt(uid),Integer.parseInt(idSvr),Long.parseLong(f_pos),Long.parseLong(lenSvr),perSvr,cmp);		
-	}
+//保存文件块数据
+FileBlockWriter res = new FileBlockWriter();
+res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);	
 			
-	out.write("ok");
-
-%>
+out.write("ok");%>

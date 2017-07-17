@@ -1,4 +1,4 @@
-<%@ page language="java" import="up6.*" pageEncoding="UTF-8"%><%@
+<%@ page language="java" import="up6.DBFile" pageEncoding="UTF-8"%><%@
 	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="org.apache.commons.lang.StringUtils" %><%
 /*
@@ -11,7 +11,7 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
-String fid = request.getParameter("fid");
+String fid = request.getParameter("id");
 String uid = request.getParameter("uid");
 String callback = request.getParameter("callback");//jsonp
 int ret = 0;
@@ -20,7 +20,7 @@ if (	!StringUtils.isBlank(fid)
 	&&	!StringUtils.isBlank(uid))
 {
 	DBFile db = new DBFile();
-	db.Delete(Integer.parseInt(uid),Integer.parseInt(fid));
+	db.Delete(Integer.parseInt(uid),fid);
 	ret = 1;
 }
 %><%= callback + "(" + ret + ")" %>

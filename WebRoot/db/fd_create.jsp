@@ -1,11 +1,10 @@
 <%@ page language="java" import="up6.*" pageEncoding="UTF-8"%><%@
-	page contentType="text/html;charset=UTF-8"%><%@
+	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="com.google.gson.*" %><%@
 	page import="up6.*" %><%@
-	page import="up6.biz.*" %><%@
-	page import="up6.biz.folder.*" %><%@
 	page import="up6.model.*" %><%@
-	page import="net.sf.json.*" %><%@
+	page import="up6.biz.*" %><%@
+	page import="up6.biz.folder.*" %><%@	
 	page import="org.apache.commons.lang.StringUtils" %><%@
 	page import="java.net.URLDecoder" %><%@
 	page import="java.net.URLEncoder" %><%/*
@@ -39,6 +38,7 @@
 	更新记录：
 		2014-07-23 创建
 		2014-08-05 修复BUG，上传文件夹如果没有子文件夹时报错的问题。
+		2015-07-30 将子文件命名方式改为 md5 方式，不再使用原文件名称存储，防止冲突。
 		2016-04-09 完善存储逻辑。
 
 	JSON格式化工具：http://tool.oschina.net/codeformat/json
@@ -48,8 +48,7 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
 String folderStr = request.getParameter("folder");
-folderStr = folderStr.replaceAll("\\+","%20");
-//客户端使用的是encodeURIComponent编码，
+folderStr = folderStr.replace("+","%20");
 folderStr = URLDecoder.decode(folderStr,"UTF-8");//utf-8解码
 
 
