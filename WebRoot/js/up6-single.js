@@ -59,7 +59,7 @@ function HttpUploaderMgr()
 		, "FileSizeLimit"	: "0"//自定义允许上传的文件大小，以字节为单位。0表示不限制。字节计算工具：http://www.beesky.com/newsite/bit_byte.htm
 		, "FilesLimit"		: "0"//文件选择数限制。0表示不限制
 		, "AllowMultiSelect": false//多选开关。1:开启多选。0:关闭多选
-		, "RangeSize"		: "1048576"//文件块大小，以字节为单位。必须为64KB的倍数。推荐大小：1MB。
+		, "RangeSize"		: "2097152"//文件块大小，以字节为单位。必须为64KB的倍数。推荐大小：1MB。
 		, "Debug"			: false//是否打开调式模式。true,false
 		, "LogFile"			: "F:\\log.txt"//日志文件路径。需要先打开调试模式。
 		, "InitDir"			: ""//初始化路径。示例：D:\\Soft
