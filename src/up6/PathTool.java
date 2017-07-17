@@ -2,6 +2,8 @@ package up6;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class PathTool {
 
@@ -55,5 +57,17 @@ public class PathTool {
 			File ps = new File(a.concat(b));
 			return ps.getCanonicalPath();
 		}
+	}
+	
+	public static String url_decode(String v)
+	{
+		v = v.replace("+","%20");	
+		try {
+			v = URLDecoder.decode(v,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//utf-8解码//客户端使用的是encodeURIComponent编码，
+		return v;
 	}
 }

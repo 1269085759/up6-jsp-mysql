@@ -8,7 +8,7 @@
 	DbHelper db = new DbHelper();
 	String dbStr = "驱动："+db.m_dbDriver + " 地址："+ db.m_dbUrl;		
 	
-	PathMd5Builder pb = new PathMd5Builder();
+	PathBuilderMd5 pb = new PathBuilderMd5();
 	String pathSvr = pb.genFile(0,"md5","QQ2016	.exe");
 	pathSvr = pathSvr.replace("\\","/");
 	

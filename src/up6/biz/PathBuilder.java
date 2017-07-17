@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 
-import up6.model.xdb_files;
+import up6.model.FileInf;
 
 
 public class PathBuilder {
@@ -42,7 +42,7 @@ public class PathBuilder {
 		return path;
 	}
 	public String genFolder(int uid,String nameLoc) throws IOException{return "";}
-	public String genFile(int uid,xdb_files f) throws IOException{return "";}
+	public String genFile(int uid,FileInf f) throws IOException{return "";}
 	public String genFile(int uid,String md5,String nameLoc)throws IOException{return "";}
 
 }

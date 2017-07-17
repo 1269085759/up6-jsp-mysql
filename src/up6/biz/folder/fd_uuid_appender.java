@@ -3,69 +3,58 @@ package up6.biz.folder;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import up6.FileBlockWriter;
 import up6.PathTool;
-import up6.biz.PathUuidBuilder;
+import up6.biz.PathBuilderUuid;
+import up6.model.FileInf;
 
-
+/**
+ * uuid模式会在服务端创建文件夹层级结构，所有文件以原始名称命名。
+ * 不会检查重复文件，服务器会保存重复文件。
+ * @author Administrator
+ *
+ */
 public class fd_uuid_appender extends fd_appender
 {
 	public fd_uuid_appender()
 	{
-		this.pb = new PathUuidBuilder();
+		this.pb = new PathBuilderUuid();
 	}
 
     public void save() throws IOException, SQLException
-    {
-        this.m_root.pathRel = this.m_root.nameLoc;//
-        
+    {   
         this.m_root.pathSvr = this.pb.genFolder(this.m_root.uid, this.m_root.nameLoc);
+        this.m_root.pathSvr = this.m_root.pathSvr.replace("\\", "/");
         PathTool.createDirectory(this.m_root.pathSvr);
 
-        super.save();
+        this.save_file(this.m_root);
+        this.save_folder(this.m_root);
+        
+        //创建目录
+        for(FileInf fd : this.m_root.folders)
+        {
+        	fd.pathSvr = PathTool.combine(this.m_root.pathSvr, fd.pathRel);
+        	fd.pathSvr = fd.pathSvr.replace("\\", "/");
+        	PathTool.createDirectory(fd.pathSvr);
+        	this.save_folder( fd);
+        }
+        //创建文件
+        for(FileInf f : this.m_root.files)
+        {
+        	f.nameSvr = f.nameLoc;
+        	f.pathSvr = PathTool.combine(this.m_root.pathSvr, f.pathRel);
+        	f.pathSvr = f.pathSvr.replace("\\", "/");
+        	f.fdChild = true;
+    		FileBlockWriter fr = new FileBlockWriter();
+    		fr.CreateFile(f.pathSvr);		
+        	this.save_file(f);
+        }
+
+        this.cmd_add_f.close();
+        this.cmd_add_fd.close();
+        this.con.close();//关闭连接
     }
     protected void get_md5s(){}//不查询重复文件
-    protected void check_files_svr() { }//不查询重复文件
-
-    public void update_rel() throws IOException
-    {
-        //更新文件夹的层级ID
-    	for(int i = 0 , l = this.m_root.folders.size();i<l;++i)
-    	{
-    		fd_child fd = this.m_root.folders.get(i);
-            int pidSvr = 0;
-            if( this.map_pids.containsKey(fd.pidLoc) ) pidSvr = this.map_pids.get(fd.pidLoc);
-            fd.pidSvr = pidSvr;
-
-            //构建层级路径
-            String parentPath = this.m_root.pathSvr;
-            String parentRel = this.m_root.pathRel;
-            int parentIndex = 0;
-            if (fd.pidLoc != 0) parentIndex = this.map_fd_ids.get(fd.pidLoc);
-            if (fd.pidLoc != 0) parentPath = this.m_root.folders.get(parentIndex).pathSvr;
-            if (fd.pidLoc != 0) parentRel = this.m_root.folders.get(parentIndex).pathRel;
-            fd.pathSvr = PathTool.combine(parentPath, fd.nameLoc);
-            fd.pathRel = PathTool.combine(parentRel, fd.nameLoc);
-        }
-
-        //更新文件的层级ID
-    	for(int i = 0 , l = this.m_root.files.size();i<l;++i)
-    	{
-    		fd_file f = this.m_root.files.get(i);
-            int pidSvr = 0;
-            if( this.map_pids.containsKey(f.pidLoc) ) pidSvr = this.map_pids.get(f.pidLoc);
-            //this.map_pids.TryGetValue(f.pidLoc, out pidSvr);
-            f.pidSvr = pidSvr;
-            f.nameSvr = f.nameLoc;
-
-            //构建层级路径
-            String parentPath = this.m_root.pathSvr;
-            String parentRel = this.m_root.pathRel;
-            int parentIndex = 0;
-            if (f.pidLoc != 0) parentIndex = this.map_fd_ids.get(f.pidLoc);
-            if (f.pidLoc != 0) parentPath = this.m_root.folders.get(parentIndex).pathSvr;
-            if (f.pidLoc != 0) parentRel = this.m_root.folders.get(parentIndex).pathRel;
-            f.pathSvr = PathTool.combine(parentPath, f.nameLoc);
-            f.pathRel = PathTool.combine(parentRel, f.nameLoc);
-        }
-    }
+    protected void get_md5_files() { }//不查询重复文件
+    protected void check_files(){}
 }

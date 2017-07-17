@@ -258,15 +258,13 @@ public class FolderInf {
 	
 	public String pathLoc = "";
 	
+	//根级路径
+	public int pidRoot=0;//
 	/**
-	 * 相对路径。folder1\folder2\folder3
+	 * 相对路径。基于根节点。root\\child\\self
 	 */
 	public String pathRel="";
-	/**
-	 * 根级ID
-	 */
-	public int pidRoot=0;
-
+	
 	public int foldersCount=0;
 
 	public int idFile=0;

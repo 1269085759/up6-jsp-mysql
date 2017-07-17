@@ -26,10 +26,10 @@ if (StringUtils.isBlank(fid))
 	return;
 }
 
-xdb_files inf = new xdb_files();
+FileInf inf = new FileInf();
 DBFile db = new DBFile();
 //文件不存在
-if(!db.GetFileInfByFid(Integer.parseInt(fid),inf))
+if(!db.GetFileInfByFid(fid,inf))
 {
 	return;
 }

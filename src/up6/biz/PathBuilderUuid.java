@@ -5,10 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-import up6.model.xdb_files;
+import up6.model.FileInf;
 
 
-public class PathUuidBuilder extends PathBuilder{
+public class PathBuilderUuid extends PathBuilder{
 	/* 生成文件夹存储路径，完全与客户端文件夹结构保持一致
 	 * 格式： 	
 	 *  upload/2016/05/17/uuid/folder_name
@@ -50,7 +50,7 @@ public class PathUuidBuilder extends PathBuilder{
 	 * 	upload/uid/年/月/日/uuid/file_name
 	 * @see Xproer.PathBuilder#genFile(int, Xproer.xdb_files)
 	 */
-	public String genFile(int uid,xdb_files f) throws IOException{
+	public String genFile(int uid,FileInf f) throws IOException{
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replace("-", "");
 		
