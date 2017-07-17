@@ -101,6 +101,11 @@ var up6_app = {
         param.name = "check_folder";
         this.postMessage(param);
     }
+    , scanFolder: function (fd) {
+        var param = { name: "scan_folder"};
+        jQuery.extend(param, fd);
+        this.postMessage(param);
+    }
     , checkFolderNat: function (fd)
     {
         var param = { name: "check_folder", config: this.Config, folder: JSON.stringify(fd) };
@@ -119,9 +124,24 @@ var up6_app = {
         param.name = "post_folder";
         this.postMessage(param);
     }
+    , updateFolder: function (fd) {
+        var param = { name: "update_folder"};
+        jQuery.extend(param, fd);
+        this.postMessage(param);
+    }
+    , delFolder: function (v)
+    {
+        var param = { name: "del_folder"};
+        jQuery.extend(param, v);
+        this.postMessage(param);
+    }
     , stopFile: function (f)
     {
-        var param = { name: "stop_file", id: f.id, config: this.Config};
+        var param = { name: "stop_file", id: f.id};
+        this.postMessage(param);
+    }
+    , delFile: function (f) {
+        var param = { name: "del_file", id: f.id};
         this.postMessage(param);
     }
     , postMessage:function(json)
