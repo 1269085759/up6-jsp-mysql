@@ -107,7 +107,7 @@ function HttpUploaderMgr()
         , "Md5Thread"       : 10//最大为10
         , "FolderThread"    : 3//最大为10
 		//文件夹操作相关
-		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create.jsp"
+		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create_uuid.jsp"
 		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3MySQL/db/fd_complete.jsp"
 		, "UrlFdDel"	    : "http://localhost:8080/Uploader6.3MySQL/db/fd_del.jsp"
 		//文件操作相关
