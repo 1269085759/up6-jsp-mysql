@@ -478,7 +478,8 @@ public class DBFile {
 		try {
 			con.setAutoCommit(false);
 			Statement stmt = con.createStatement();
-			stmt.addBatch("update up6_files set f_perSvr='100%' ,f_complete=1 where f_id='" + f_id+"'");
+			stmt.addBatch("update up6_files set f_perSvr='100%' ,f_lenSvr=f_lenLoc,f_complete=1 where f_id='" + f_id+"'");
+			stmt.addBatch("update up6_files set f_perSvr='100%' ,f_lenSvr=f_lenLoc,f_complete=1 where f_pidRoot='" + f_id+"'");
 			stmt.addBatch("update up6_folders set fd_complete=1 where fd_id='" + f_id + "' and fd_uid=" + uid);
 			stmt.executeBatch();
 			con.commit();
