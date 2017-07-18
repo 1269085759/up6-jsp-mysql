@@ -85,8 +85,15 @@ if(	 StringUtils.isBlank( lenSvr )
 	return;
 }
 
-//保存文件块数据
-FileBlockWriter res = new FileBlockWriter();
-res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);	
-			
-out.write("ok");%>
+//文件块验证
+if(Integer.parseInt(blockSize) == rangeFile.getSize())
+{
+	//保存文件块数据
+	FileBlockWriter res = new FileBlockWriter();
+	res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);
+	out.write("ok");
+}
+else
+{
+	out.write("block size error");
+}%>
