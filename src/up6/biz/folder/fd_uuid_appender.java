@@ -35,6 +35,7 @@ public class fd_uuid_appender extends fd_appender
         {
         	fd.pathSvr = PathTool.combine(this.m_root.pathSvr, fd.pathRel);
         	fd.pathSvr = fd.pathSvr.replace("\\", "/");
+        	fd.uid = this.m_root.uid;
         	PathTool.createDirectory(fd.pathSvr);
         	this.save_folder( fd);
         }
@@ -45,6 +46,7 @@ public class fd_uuid_appender extends fd_appender
         	f.pathSvr = PathTool.combine(this.m_root.pathSvr, f.pathRel);
         	f.pathSvr = f.pathSvr.replace("\\", "/");
         	f.fdChild = true;
+        	f.uid = this.m_root.uid;
     		FileBlockWriter fr = new FileBlockWriter();
     		fr.CreateFile(f.pathSvr);		
         	this.save_file(f);
