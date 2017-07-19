@@ -513,9 +513,9 @@ public class DBFile {
 			cmd.setString(3, f_perSvr);
 			cmd.setInt(4, uid);
 			cmd.setString(5, f_id);
+			db.ExecuteNonQuery(cmd);
 		} catch (SQLException e) {e.printStackTrace();}
 
-		db.ExecuteNonQuery(cmd);
 		return true;
 	}
 
