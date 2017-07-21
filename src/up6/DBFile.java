@@ -370,67 +370,78 @@ public class DBFile {
 	}
 
 	/**
-	 * 添加一条文件信息，一船提供给fd_create使用。
-	 * 此处操作需要优化成存储过程，在文件数量多时可提高性能。
-	 * @param inf
+	 * 增加一条数据，在f_create中调用。
+	 * 文件名称，本地路径，远程路径，相对路径都使用原始字符串。
+	 * d:\soft\QQ2012.exe
+	 * @param model
 	 * @return
 	 */
-	public void Add(FileInf inf)
+	public void Add(FileInf model)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("insert into up6_files(");
 		sb.append(" f_id");//1
 		sb.append(",f_pid");//2
 		sb.append(",f_pidRoot");//3
-		sb.append(",f_fdChild");//4
-		sb.append(",f_uid");//5
-		sb.append(",f_nameLoc");//6
-		sb.append(",f_nameSvr");//7
-		sb.append(",f_pathLoc");//8
-		sb.append(",f_pathSvr");//9
-		sb.append(",f_md5");//10
-		sb.append(",f_lenLoc");//11
-		sb.append(",f_lenSvr");//12
-		sb.append(",f_perSvr");//13
-		sb.append(",f_sizeLoc");//14
-		sb.append(",f_complete");//15
+		sb.append(",f_fdTask");//4
+		sb.append(",f_fdChild");//5
+		sb.append(",f_uid");//6
+		sb.append(",f_pos");//7
+		sb.append(",f_md5");//8
+		sb.append(",f_lenLoc");//9
+		sb.append(",f_lenSvr");//10
+		sb.append(",f_perSvr");//11
+		sb.append(",f_sizeLoc");//12
+		sb.append(",f_nameLoc");//13
+		sb.append(",f_nameSvr");//14
+		sb.append(",f_pathLoc");//15
+		sb.append(",f_pathSvr");//16
+		sb.append(",f_pathRel");//17
+		sb.append(",f_complete");//18
 		
-		sb.append(") values(");		
-		sb.append(" ?");//sb.append("@f_id");
-		sb.append(",?");//sb.append("@f_pid");
-		sb.append(",?");//sb.append(",@f_pidRoot");
-		sb.append(",?");//sb.append(",@f_fdChild");
-		sb.append(",?");//sb.append(",@f_uid");
-		sb.append(",?");//sb.append(",@f_nameLoc");
-		sb.append(",?");//sb.append(",@f_nameSvr");
-		sb.append(",?");//sb.append(",@f_pathLoc");
-		sb.append(",?");//sb.append(",@f_pathSvr");
-		sb.append(",?");//sb.append(",@f_md5");
-		sb.append(",?");//sb.append(",@f_lenLoc");
-		sb.append(",?");//sb.append(",@f_lenSvr");
-		sb.append(",?");//sb.append(",@f_perSvr");
-		sb.append(",?");//sb.append(",@f_sizeLoc");
-		sb.append(",?");//sb.append(",@f_complete");
+		sb.append(") values(");
+		
+		sb.append(" ?");//id
+		sb.append(",?");//pid
+		sb.append(",?");//pidRoot
+		sb.append(",?");//fdTask
+		sb.append(",?");//fdChild
+		sb.append(",?");//uid
+		sb.append(",?");//pos
+		sb.append(",?");//md5
+		sb.append(",?");//lenLoc
+		sb.append(",?");//lenSvr
+		sb.append(",?");//perSvr
+		sb.append(",?");//sizeLoc
+		sb.append(",?");//nameLoc
+		sb.append(",?");//nameSvr
+		sb.append(",?");//pathLoc
+		sb.append(",?");//pathSvr
+		sb.append(",?");//pathRel
+		sb.append(",?");//complete
 		sb.append(");");
 
 		DbHelper db = new DbHelper();
 		PreparedStatement cmd = db.GetCommand(sb.toString());
 		try {
-			cmd.setString(1, inf.id);
-			cmd.setString(2, inf.pid);
-			cmd.setString(3, inf.pidRoot);
-			cmd.setBoolean(4, true);
-			cmd.setInt(5, inf.uid);
-			cmd.setString(6, inf.nameLoc);
-			cmd.setString(7, inf.nameSvr);
-			cmd.setString(8, inf.pathLoc);
-			cmd.setString(9, inf.pathSvr);
-			cmd.setString(10, inf.md5);
-			cmd.setLong(11, inf.lenLoc);
-			cmd.setLong(12, inf.lenSvr);
-			cmd.setString(13, inf.perSvr);
-			cmd.setString(14, inf.sizeLoc);
-			cmd.setBoolean(15, inf.complete);
+			cmd.setString(1, model.id);
+			cmd.setString(2, model.pid);
+			cmd.setString(3, model.pidRoot);
+			cmd.setBoolean(4, model.fdTask);
+			cmd.setBoolean(5, model.fdChild);
+			cmd.setInt(6, model.uid);
+			cmd.setLong(7, model.offset);
+			cmd.setString(8, model.md5);
+			cmd.setLong(9, model.lenLoc);
+			cmd.setLong(10, model.lenSvr);
+			cmd.setString(11, model.perSvr);
+			cmd.setString(12, model.sizeLoc);
+			cmd.setString(13, model.nameLoc);
+			cmd.setString(14, model.nameSvr);			
+			cmd.setString(15, model.pathLoc);
+			cmd.setString(16, model.pathSvr);
+			cmd.setString(17, model.pathRel);
+			cmd.setBoolean(18, model.complete);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
