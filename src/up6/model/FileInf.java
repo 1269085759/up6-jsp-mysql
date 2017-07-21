@@ -47,7 +47,7 @@ public class FileInf {
 	/**	 * 已上传大小。以字节为单位	 */
 	public long lenSvr=0;
 	/**	 * 已上传百分比。示例：10%	 */
-	public String perSvr="";
+	public String perSvr="0%";
 	public boolean complete=false;
 	public Date PostedTime = new Date();
 	public boolean deleted=false;
