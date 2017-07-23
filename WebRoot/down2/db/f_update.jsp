@@ -23,10 +23,10 @@ String per		= request.getParameter("perLoc");
 String cbk 		= request.getParameter("callback");//jsonp
 //
 
-if (StringUtils.isBlank(uid)
-	||StringUtils.isBlank(fid)
-	||StringUtils.isBlank(cbk)
-	||StringUtils.isBlank(lenLoc))
+if (StringUtils.isEmpty(uid)
+	||StringUtils.isEmpty(fid)
+	||StringUtils.isEmpty(cbk)
+	||StringUtils.isEmpty(lenLoc))
 {
 	out.write(cbk + "({\"value\":0})");
 	return;

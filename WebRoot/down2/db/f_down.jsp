@@ -29,7 +29,7 @@ pathSvr 			= PathTool.url_decode(pathSvr);
 
 if (  StringUtils.isBlank(fid)
 	||StringUtils.isBlank(blockIndex)
-	||StringUtils.isBlank(blockOffset)
+	||StringUtils.isEmpty(blockOffset)
 	||StringUtils.isBlank(blockSize)
 	||StringUtils.isBlank(pathSvr))
 {

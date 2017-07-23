@@ -34,7 +34,7 @@ pathLoc 		 = PathTool.url_decode(pathLoc);
 nameLoc			 = PathTool.url_decode(nameLoc);//utf-8解码
 
 
-if (  StringUtils.isBlank(uid)
+if (  StringUtils.isEmpty(uid)
 	||StringUtils.isBlank(pathLoc)
 	||StringUtils.isBlank(lenSvr))
 {

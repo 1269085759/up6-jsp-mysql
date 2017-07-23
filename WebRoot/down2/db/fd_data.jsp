@@ -24,7 +24,7 @@ String id	= request.getParameter("id");
 String cbk	= request.getParameter("callback");
 String json = "({\"value\":null})";
 
-if (  !StringUtils.isBlank(id)	)
+if (  !StringUtils.isEmpty(id)	)
 {
 	String data = DnFolder.all_file(id);
 	data = URLEncoder.encode(data,"utf-8");

@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 String uid 		 = request.getParameter("uid");
 String cbk  	 = request.getParameter("callback");//jsonp
 
-if (!StringUtils.isBlank(uid))
+if (!StringUtils.isEmpty(uid))
 {
 	DnFile db = new DnFile();	
 	String json = db.all_complete(Integer.parseInt(uid));

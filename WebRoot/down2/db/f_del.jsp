@@ -22,7 +22,7 @@ String fid = request.getParameter("id");
 String uid = request.getParameter("uid");
 String cbk = request.getParameter("callback");//jsonp
 
-if (	StringUtils.isBlank(uid)
+if (	StringUtils.isEmpty(uid)
 	||	StringUtils.isBlank(fid)
 	)
 {
