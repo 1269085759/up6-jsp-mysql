@@ -14,11 +14,13 @@
 文档下载：http://www.ncmem.com/download/down2/down2-doc.rar
 联系邮箱：1085617561@qq.com
 联系QQ：1085617561
+版本：2.3
 更新记录：
     2009-11-05 创建
 	2014-02-27 优化版本号。
     2015-08-13 优化
     2017-06-08 增加对edge的支持，完善逻辑。
+    2017-07-22 优化文件夹下载，优化文件下载。
 */
 function debug_msg(v) { $(document.body).append("<div>"+v+"</div>");}
 //删除元素值
@@ -42,11 +44,13 @@ function DownloaderMgr()
 		, "Debug"		: false//调试模式
 		, "LogFile"		: "f:\\log.txt"//日志文件路径。
 		, "Company"		: "荆门泽优软件有限公司"
-		, "Version"		: "1,2,56,31650"
+		, "Version"		: "1,2,58,51170"
 		, "License"		: ""//
 		, "Cookie"		: ""//
 		, "ThreadCount"	: 1//并发数
-		, "FilePart"	: 1048576//文件块大小，更新进度时使用，计算器：http://www.beesky.com/newsite/bit_byte.htm
+        , "ThreadBlock"	: 3//文件块线程数，每个文件使用多少线程下载数据。3~10
+        , "ThreadChild" : 3//子文件线程数，提供给文件夹使用。3~10
+		, "FilePart"	: 5242880//文件块大小，计算器：http://www.beesky.com/newsite/bit_byte.htm
         //file
         , "UrlCreate"   : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_create.jsp"
         , "UrlDel"      : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_del.jsp"
@@ -55,24 +59,24 @@ function DownloaderMgr()
         , "UrlUpdate"   : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_update.jsp"
         , "UrlDown"     : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_down.jsp"
 	    //folder
-        , "UrlFdCreate" : "http://localhost:8080/Uploader6.3MySQL/down2/db/fd_create.jsp"
+        , "UrlFdData"   : "http://localhost:8888/down2/db/fd_data.aspx"
         //x86
         , ie: {
               part: { clsid: "6528602B-7DF7-445A-8BA0-F6F996472569", name: "Xproer.DownloaderPartition" }
-            , path: "http://www.ncmem.com/download/down2/down2.cab"
+            , path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.cab"
         }
         //x64
         , ie64: {
             part: { clsid: "19799DD1-7357-49de-AE5D-E7A010A3172C", name: "Xproer.DownloaderPartition64" }
-            , path: "http://www.ncmem.com/download/down2/down64.cab"
+            , path: "http://www.ncmem.com/download/down2/v2.3-guid/down64.cab"
         }
-        , firefox: { name: "", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/down2.xpi" }
-        , chrome: { name: "npHttpDown", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/down2.crx" }
+        , firefox: { name: "", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.xpi" }
+        , chrome: { name: "npHttpDown", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.crx" }
 	    //Chrome 45
-        , chrome45: { name: "com.xproer.down2", path: "http://www.ncmem.com/download/down2/down2.nat.crx" }
-        , exe: { path: "http://www.ncmem.com/download/down2/down2.exe" }
+        , chrome45: { name: "com.xproer.down2", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.nat.crx" }
+        , exe: { path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.exe" }
         , edge: {protocol:"down2",port:9700,visible:false}
-        , "Fields": {"uname": "test","upass": "test","uid":"0","fid":"0"}
+        , "Fields": {"uname": "test","upass": "test","uid":"0"}
 	};
 
     this.event = {
@@ -169,24 +173,12 @@ function DownloaderMgr()
 	    });
 	    this.filesCmp.length = 0;
 	};
-	this.add_ui = function (fd/*是否是文件夹*/,url, f_name)
+	this.add_ui = function (f)
 	{
 	    //存在相同项
-	    if (this.exist_url(url)) return null;
-	    this.filesUrl.push(url);
+	    if (this.exist_url(f.id)) return null;
 
 	    var _this = this;
-	    var fileNameArray = url.split("/");
-	    var fileName = fileNameArray[fileNameArray.length - 1];
-	    var fid = this.idCount++;
-	    //自定义文件名称
-	    var fileLoc = { fileUrl: url, id: fid };
-	    //自定义名称
-	    if (typeof (f_name) == "string")
-	    {
-	        jQuery.extend(fileLoc, { nameCustom: f_name });
-	        fileName = f_name;
-	    }
 
 	    var ui = this.tmpFile.clone();
 	    var sp = this.spliter.clone();
@@ -208,18 +200,18 @@ function DownloaderMgr()
 	    var btnDel = ui.find("a[name='del']");
 	    var ui_eles = { ico:{file:uiIcoF,fd:uiIcoFD},msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel }, div: ui, split: sp };
 
-	    var downer;
-	    if (fd) { downer = new FdDownloader(fileLoc, this); }
-	    else { downer = new FileDownloader(fileLoc,this);}
-	    //var downer = new FileDownloader(fileLoc, this);
-	    this.filesMap[fid] = downer;//
+        var downer;
+        if (f.fdTask) { downer = new FdDownloader(f, this); }
+	    else { downer = new FileDownloader(f,this);}
+	    this.filesMap[f.id] = downer;//
 	    jQuery.extend(downer.ui, ui_eles);
 
-	    uiName.text(fileName);
-	    uiName.attr("title", url);
+	    uiName.text(f.nameLoc);
+	    uiName.attr("title", f.nameLoc);
 	    uiMsg.text("");
-	    uiSize.text("0字节");
-	    uiPercent.text("(0%)");
+	    uiSize.text(f.sizeSvr);
+	    uiPercent.text("("+f.perLoc+")");
+        uiProcess.width(f.perLoc);
 	    btnDel.click(function () { downer.remove(); });
 	    btnStop.click(function () { downer.stop(); });
 	    btnDown.click(function () { downer.down(); });
@@ -227,20 +219,12 @@ function DownloaderMgr()
 
 	    downer.ready(); //准备
 	    return downer;
-	};
-	this.resume_file = function (fileSvr)
-	{
-	    var f = this.add_ui(false,fileSvr.fileUrl, fileSvr.nameLoc);
-	    f.ui.size.text(fileSvr.sizeSvr);
-	    f.ui.process.css("width", fileSvr.perLoc);
-	    f.ui.percent.text("(" + fileSvr.perLoc + ")");
-	    jQuery.extend(f.fileSvr, fileSvr);
-	    f.addQueue();//添加到队列
-	};
+    };
 	this.resume_folder = function (fdSvr)
 	{	    
-	    var obj = this.add_ui(true, fdSvr.fileUrl, fdSvr.nameLoc);
+	    var obj = this.add_ui(fdSvr);
 	    if (null == obj) return;
+        obj.svr_inited = true;
 
 	    obj.ui.ico.file.hide();
 	    obj.ui.ico.fd.show();
@@ -248,30 +232,53 @@ function DownloaderMgr()
 	    obj.ui.size.text(fdSvr.sizeSvr);
 	    obj.ui.process.css("width", fdSvr.perLoc);
 	    obj.ui.percent.text("(" + fdSvr.perLoc + ")");
-	    jQuery.extend(true, obj.fileSvr, fdSvr);//
 	    
-	    obj.addQueue();
 	    return obj;
-	};
-	this.add_file = function (url,f_name)
+    };
+    this.resume_file = function (f) {
+        var obj = this.add_ui(f);
+        if (null == obj) return;
+        obj.svr_inited = true;
+
+        obj.ui.ico.file.hide();
+        obj.ui.ico.fd.show();
+        obj.ui.name.text(f.nameLoc);
+        obj.ui.size.text(f.sizeSvr);
+        obj.ui.process.css("width", f.perLoc);
+        obj.ui.percent.text("(" + f.perLoc + ")");
+
+        return obj;
+    };
+	this.init_file = function (f)
+    {
+        this.app.initFile(f);
+    };
+    this.init_folder = function (f)
+    {
+        this.app.initFolder(f);
+    };
+    this.init_file_cmp = function (json)
+    {
+        var p = this.filesMap[json.id];
+        p.init_complete(json);
+    };
+    this.add_file = function (f) {
+        var obj = this.add_ui(f);
+        if (null == obj) return;
+
+        obj.ui.ico.file.hide();
+        obj.ui.ico.fd.show();
+        this.init_file(obj.fileSvr);//
+        return obj;
+    };
+	this.add_folder = function (f)
 	{
-	    var obj = this.add_ui(false,url, f_name);
-	    if (obj != null) obj.addQueue();
-	    return obj;
-	};
-	this.add_folder = function (url,fdLoc,f_name)
-	{
-	    var obj = this.add_ui(true, url, f_name);
+	    var obj = this.add_ui(f);
 	    if (null == obj) return;
 
-	    obj.ui.name.text(fdLoc.nameLoc);
-	    obj.ui.size.text(fdLoc.sizeSvr);
 	    obj.ui.ico.file.hide();
 	    obj.ui.ico.fd.show();
-	    jQuery.extend(obj.fileSvr, fdLoc);//
-	    jQuery.extend(obj.fileSvr, { fileUrl: url });
-	    obj.initFiles();//
-	    obj.addQueue();
+        obj.load_files();//
 	    return obj;
 	};
 	this.exist_url = function (url)
@@ -305,17 +312,13 @@ function DownloaderMgr()
 	    var p = this.filesMap[json.id];
 	    p.down_process(json);
 	};
-	this.down_part = function (json)
-	{
-	    var p = this.filesMap[json.id];
-	    p.down_part(json);
-	};
 	this.down_error = function (json)
 	{
 	    var p = this.filesMap[json.id];
 	    p.down_error(json);
     };
     this.down_open_folder = function (json) {
+        //用户选择的路径
         //json.path
     };
 	this.down_recv_size = function (json)
@@ -364,14 +367,13 @@ function DownloaderMgr()
 	this.recvMessage = function (str)
 	{
 	    var json = JSON.parse(str);
-	         if (json.name == "open_files") { _this.open_files(json); }
-        else if (json.name == "open_folder") { _this.down_open_folder(json); }
+	         if (json.name == "init_file_cmp") { _this.init_file_cmp(json); }
+	    else if (json.name == "open_folder") { _this.down_open_folder(json); }
 	    else if (json.name == "down_recv_size") { _this.down_recv_size(json); }
 	    else if (json.name == "down_recv_name") { _this.down_recv_name(json); }
 	    else if (json.name == "init_end") { _this.init_end(json); }
 	    else if (json.name == "down_begin") { _this.down_begin(json); }
 	    else if (json.name == "down_process") { _this.down_process(json); }
-	    else if (json.name == "down_part") { _this.down_part(json); }
 	    else if (json.name == "down_error") { _this.down_error(json); }
 	    else if (json.name == "down_complete") { _this.down_complete(json); }
 	    else if (json.name == "down_stoped") { _this.down_stoped(json); }
@@ -490,7 +492,6 @@ function DownloaderMgr()
 		ui.find('a[name="btnStart"]').click(function () { _this.start_queue(); });
 		ui.find('a[name="btnStop"]').click(function () { _this.stop_queue(); });
 
-	    //this.LoadData();
         this.safeCheck();//
 
         $(function () {
