@@ -32,7 +32,7 @@ if (!StringUtils.isEmpty(uid))
 	{
 		System.out.println("上传文件列表："+json);
 		json = URLEncoder.encode(json,"utf-8");
-		json = json.replaceAll("\\+","%20");
+		json = json.replace("\\+","%20");
 		out.write(cbk + "({\"value\":\""+json+"\"})");
 		return;
 	}
