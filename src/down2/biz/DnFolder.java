@@ -79,7 +79,7 @@ public class DnFolder
         sb.append(",f_lenSvr");
         sb.append(",f_sizeLoc");        
         sb.append(" from up6_files");
-        sb.append(" where f_pidRoot=@pidRoot");
+        sb.append(" where f_pidRoot=?");
 
         ArrayList<DnFileInf> files = new ArrayList<DnFileInf>();
 		DbHelper db = new DbHelper();
