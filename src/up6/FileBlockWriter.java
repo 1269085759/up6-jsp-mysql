@@ -23,7 +23,7 @@ public class FileBlockWriter {
 			PathTool.createDirectory(ps.getParent());
 			
 		    RandomAccessFile raf = new RandomAccessFile(pathSvr, "rw");
-		    raf.setLength(1);//
+		    raf.setLength(0);//
 		    raf.close();
 
 		} catch (IOException e) {

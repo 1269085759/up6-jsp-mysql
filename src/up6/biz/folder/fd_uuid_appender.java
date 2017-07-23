@@ -25,6 +25,7 @@ public class fd_uuid_appender extends fd_appender
     {   
         this.m_root.pathSvr = this.pb.genFolder(this.m_root.uid, this.m_root.nameLoc);
         this.m_root.pathSvr = this.m_root.pathSvr.replace("\\", "/");
+        this.m_root.pidRoot = "";
         PathTool.createDirectory(this.m_root.pathSvr);
 
         this.save_file(this.m_root);

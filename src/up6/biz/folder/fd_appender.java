@@ -149,7 +149,7 @@ public class fd_appender
         try {
 			this.cmd_add_f.setString(1, f.id);//id
 	        this.cmd_add_f.setString(2, f.pid);//pid
-	        this.cmd_add_f.setString(3, this.m_root.id);//pidRoot
+	        this.cmd_add_f.setString(3, f.pidRoot);//pidRoot
 	        this.cmd_add_f.setBoolean(4, f.fdTask);//fdTask
 	        this.cmd_add_f.setBoolean(5, f.fdChild);//f_fdChild
 	        this.cmd_add_f.setInt(6, f.uid);//f_uid

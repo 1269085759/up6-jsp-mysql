@@ -18,12 +18,8 @@ String sqlDir = PathTool.combine(pathParent,"sql");
 String downDir = PathTool.combine(pathParent,"sql.down");
 DbHelper db = new DbHelper();
 String[] sql_clear = {
-					 "DROP PROCEDURE if exists f_process"
-					,"DROP PROCEDURE if exists fd_process"
-					,"DROP PROCEDURE if exists fd_files_add_batch"
-					,"DROP PROCEDURE if exists fd_files_check"
+					 "DROP PROCEDURE if exists fd_files_check"
 					,"DROP PROCEDURE if exists fd_add_batch"
-					,"DROP PROCEDURE if exists fd_remove"
 					,"DROP TABLE IF EXISTS up6_files"
 					,"DROP TABLE IF EXISTS up6_folders"
 					,"DROP TABLE IF EXISTS down_files"
