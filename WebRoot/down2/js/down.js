@@ -59,7 +59,7 @@ function DownloaderMgr()
         , "UrlUpdate"   : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_update.jsp"
         , "UrlDown"     : "http://localhost:8080/Uploader6.3MySQL/down2/db/f_down.jsp"
 	    //folder
-        , "UrlFdData"   : "http://localhost:8888/Uploader6.3MySQLdown2/db/fd_data.aspx"
+        , "UrlFdData"   : "http://localhost:8888/Uploader6.3MySQL/down2/db/fd_data.jsp"
         //x86
         , ie: {
               part: { clsid: "6528602B-7DF7-445A-8BA0-F6F996472569", name: "Xproer.DownloaderPartition" }
