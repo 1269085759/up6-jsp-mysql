@@ -1,6 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%><%@ 
 	page contentType="text/html;charset=UTF-8"%><%@ 
-	page import="down2.biz.*" %><%@ 
+	page import="down2.biz.*" %><%@  
+	page import="down2.model.*" %><%@  
 	page import="java.net.URLDecoder" %><%@ 
 	page import="java.net.URLEncoder" %><%@ 
 	page import="org.apache.commons.lang.*" %><%@ 
@@ -10,30 +11,25 @@
 	page import="com.google.gson.annotations.SerializedName" %><%@ 
 	page import="java.io.*" %><%
 /*
-	加载未完成的文件和文件夹任务。
+	
+    从up6_files中获取文件夹文件列表
 	更新记录：
-		2015-05-13
+		2015-05-13 创建
 		2016-07-29 更新
 */
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
-String uid 		 = request.getParameter("uid");
-String cbk		 = request.getParameter("callback");
+String id	= request.getParameter("id");
+String cbk	= request.getParameter("callback");
+String json = "({\"value\":null})";
 
-if (!StringUtils.isBlank(uid))
+if (  !StringUtils.isBlank(id)	)
 {
-	String json = DnFile.all_uncmp( Integer.parseInt(uid));
-	
-	if(!StringUtils.isBlank(json))
-	{
-		json = URLEncoder.encode(json,"utf-8");
-		json = json.replaceAll("\\+","%20");//
-		json = cbk + "({\"value\":\""+json+"\"})";
-		out.write(json);
-		return;
-	}
+	String data = DnFolder.all_file(id);
+	data = URLEncoder.encode(data,"utf-8");
+	data = data.replace("+","%20");
+	json = "({\"\":\""+data+"\"})";
 }
-
-out.write(cbk + "({\"value\":null})");
+out.write(json);
 %>

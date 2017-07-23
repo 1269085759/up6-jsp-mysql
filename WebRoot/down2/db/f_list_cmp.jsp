@@ -26,8 +26,8 @@ String cbk  	 = request.getParameter("callback");//jsonp
 
 if (!StringUtils.isBlank(uid))
 {
-	cmp_builder cb = new cmp_builder();
-	String json = cb.read(Integer.parseInt(uid));
+	DnFile db = new DnFile();	
+	String json = db.all_complete(Integer.parseInt(uid));
 	if(!StringUtils.isBlank(json))
 	{
 		System.out.println("上传文件列表："+json);

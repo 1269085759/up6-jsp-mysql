@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%><%@ 
 	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="down2.model.*" %><%@
-	page import="down2.biz.*" %><%@ 
+	page import="down2.biz.*" %><%@
+	page import="up6.*" %><%@ 
 	page import="java.net.URLDecoder" %><%@ 
 	page import="java.net.URLEncoder" %><%@ 
 	page import="org.apache.commons.lang.*" %><%@ 
@@ -16,25 +17,25 @@
 		2012-05-24 完善
 		2012-06-29 增加创建文件逻辑，
 		2016-01-08 规范json返回值格式和数据
+		2017-07-23 添加逻辑更新，取消自动生成ID
 */
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
+String id 		 = request.getParameter("id");
 String uid 		 = request.getParameter("uid");
-String nameLoc 	 = request.getParameter("nameCustom");
+String fdTask 	 = request.getParameter("fdTask");
+String nameLoc 	 = request.getParameter("nameLoc");
 String pathLoc	 = request.getParameter("pathLoc");
-String pathSvr	 = request.getParameter("fileUrl");
 String lenSvr 	 = request.getParameter("lenSvr");
 String sizeSvr 	 = request.getParameter("sizeSvr"); 
 String cbk  	 = request.getParameter("callback");//jsonp
-pathLoc 		 = pathLoc.replaceAll("\\+","%20");
-nameLoc			 = pathSvr.replaceAll("\\+","%20");
-pathLoc			 = URLDecoder.decode(pathLoc,"UTF-8");//utf-8解码
-nameLoc			 = URLDecoder.decode(pathSvr,"UTF-8");//utf-8解码
+pathLoc 		 = PathTool.url_decode(pathLoc);
+nameLoc			 = PathTool.url_decode(nameLoc);//utf-8解码
 
-if (StringUtils.isBlank(uid)
+
+if (  StringUtils.isBlank(uid)
 	||StringUtils.isBlank(pathLoc)
-	||StringUtils.isBlank(pathSvr)
 	||StringUtils.isBlank(lenSvr))
 {
 	out.write(cbk + "({\"value\":null}) ");
@@ -42,15 +43,16 @@ if (StringUtils.isBlank(uid)
 }
 
 DnFileInf	inf = new DnFileInf();
+inf.id	= id;
 inf.uid = Integer.parseInt(uid);
 inf.nameLoc = nameLoc;
 inf.pathLoc = pathLoc;
-inf.fileUrl = pathSvr;
 inf.lenSvr = Long.parseLong(lenSvr);
 inf.sizeSvr = sizeSvr;
+inf.fdTask = fdTask == "1";
 
 DnFile db = new DnFile();
-inf.idSvr = db.Add(inf);
+db.Add(inf);
 
 Gson gson = new Gson();
 String json = gson.toJson(inf);

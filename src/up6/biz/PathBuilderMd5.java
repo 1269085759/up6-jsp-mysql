@@ -6,12 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import up6.PathTool;
-import up6.model.FolderInf;
 import up6.model.FileInf;
 
 
 public class PathBuilderMd5 extends PathBuilder {
-	public String genFolder(int uid,FolderInf fd){return "";}
+	
 	/* 所有文件均以md5模式存储
 	 * 格式：
 	 * 	upload/年/月/日/md5.ext 

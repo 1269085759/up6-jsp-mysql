@@ -20,59 +20,40 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
-String fid 	= request.getParameter("fid");
-if (StringUtils.isBlank(fid))
-{
-	return;
-}
+String fid 			= request.getHeader("id");
+String blockIndex 	= request.getHeader("blockIndex");//基于1
+String blockOffset 	= request.getHeader("blockOffset");//块偏移，相对于整个文件
+String blockSize 	= request.getHeader("blockSize");//块大小（当前需要下载的大小）
+String pathSvr 		= request.getHeader("pathSvr");//文件在服务器的位置
+pathSvr 			= PathTool.url_decode(pathSvr);
 
-FileInf inf = new FileInf();
-DBFile db = new DBFile();
-//文件不存在
-if(!db.GetFileInfByFid(fid,inf))
+if (  StringUtils.isBlank(fid)
+	||StringUtils.isBlank(blockIndex)
+	||StringUtils.isBlank(blockOffset)
+	||StringUtils.isBlank(blockSize)
+	||StringUtils.isBlank(pathSvr))
 {
+	response.setStatus(500);
 	return;
 }
-File f = new File(inf.pathSvr);
+File f = new File(pathSvr);
 long fileLen = f.length();
-RandomAccessFile raf = new RandomAccessFile(inf.pathSvr,"r");
+RandomAccessFile raf = new RandomAccessFile(pathSvr,"r");
 FileInputStream in = new FileInputStream( raf.getFD() );
 
-String fileName = inf.nameLoc;//QQ.exe
-fileName = URLEncoder.encode(fileName,"UTF-8");
-fileName = fileName.replaceAll("\\+","%20");
 response.setContentType("application/x-download");
 response.setHeader("Pragma","No-cache");  
 response.setHeader("Cache-Control","no-cache");  
 response.setDateHeader("Expires", 0);
-response.addHeader("Content-Disposition","attachment;filename=" + fileName);
 
 OutputStream os = null;
 try
 {
 	os = response.getOutputStream();
-	String range = request.getHeader("Range");
-	long rangePos = 0;
-	if(range != null)
-	{
-		//客户端提交的字段：0-100
-		String[] rs = range.split("-");//bytes=10254
-		int numBegin = rs[0].indexOf("=")+1;
-		String pos = rs[0].substring(numBegin);
-		
-		rangePos = Long.parseLong(pos);//起始位置
-	}
-	response.addHeader("Content-Length",Long.toString(inf.lenLoc-rangePos));
-	
-	response.setHeader("Content-Range",new StringBuffer()
-		.append("bytes ")
-		.append(rangePos)//起始位置
-		.append("-")
-		.append(Long.toString(fileLen-1)).toString()//结束位置
-		);
-	byte[] b = new byte[1024];
+	response.addHeader("Content-Length",blockSize);
+	byte[] b = new byte[1048576];
 	int i = 0;
-	in.skip(rangePos);//定位索引
+	in.skip(Long.parseLong(blockOffset) );//定位索引
 	
 	while((i = in.read(b)) > 0 )
 	{
@@ -86,7 +67,7 @@ try
 	out.clear();
 	out = pageContext.pushBody();
 }
-catch(Exception e){}
+catch(Exception e){response.setStatus(500);}
 finally
 {	
 	if(os != null)

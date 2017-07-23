@@ -18,7 +18,7 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 
-String fid = request.getParameter("idSvr");
+String fid = request.getParameter("id");
 String uid = request.getParameter("uid");
 String cbk = request.getParameter("callback");//jsonp
 
@@ -29,6 +29,5 @@ if (	StringUtils.isBlank(uid)
 	out.write(cbk + "({\"value\":null})");
 	return;
 }
-DnFile.Delete(fid,uid);
-DnFile.delFiles(fid,uid);
+DnFile.Delete(fid,Integer.parseInt(uid) );
 out.write(cbk+"({\"value\":1})");%>

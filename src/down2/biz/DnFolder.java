@@ -1,62 +1,20 @@
 package down2.biz;
 
-import com.google.gson.Gson;
-
-import down2.model.DnFolderInf;
-import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
-
-import up6.DBFile;
 import up6.DbHelper;
-import up6.model.FileInf;
-import up6.model.FolderInf;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+
+import down2.model.DnFileInf;
 
 public class DnFolder 
 {
     public DnFolder()
     { }
     
-    public static int Add(DnFolderInf inf)
-    {
-		StringBuilder sb = new StringBuilder();
-		sb.append("insert into down_folders(");		
-		sb.append(" fd_name");
-		sb.append(",fd_uid");
-		sb.append(",fd_mac");
-		sb.append(",fd_pathLoc");
-		sb.append(",fd_id_old");
-		
-		sb.append(") values(");		
-		
-		sb.append(" ?");//sb.append("@fd_name");
-		sb.append(",?");//sb.append(",@fd_uid");
-		sb.append(",?");//sb.append(",@fd_mac");
-		sb.append(",?");//sb.append(",@fd_pathLoc");
-		sb.append(",?");//sb.append(",@fd_id_old");
-		sb.append(")");
-
-		DbHelper db = new DbHelper();
-		//PreparedStatement cmd = db.GetCommand(sb.toString(),"fd_id");
-		PreparedStatement cmd = db.GetCommandPK(sb.toString());
-		try {
-			cmd.setString(1, inf.nameLoc);
-			cmd.setInt(2, inf.uid);
-			cmd.setString(3, inf.mac);
-			cmd.setString(4, inf.pathLoc);
-			cmd.setInt(5, inf.fdID);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		int fid = (int)db.ExecuteGenKey(cmd);		
-		
-		return fid;    	
-    }
     
     public static void Clear()
     {
@@ -110,72 +68,43 @@ public class DnFolder
         }    	
     }
     
-    
-    /**
-     * 获取文件夹JSON数据结构
-     * @param fid
-     * @param root
-     * @return
-     * {files:"文件列表",length:100,ids:"1,2,3,4,5,6"}
-     */
-    public static String GetFolderData(int fid,FolderInf root)
+    public static String all_file(String id)
     {
-        StringBuilder sb = new StringBuilder();
+    	StringBuilder sb = new StringBuilder();
         sb.append("select ");
-        sb.append(" xf.fd_name");
-        sb.append(",xf.fd_length");
-        sb.append(",xf.fd_size");
-        sb.append(",xf.fd_pid");
-        sb.append(",xf.fd_pathLoc");
-        sb.append(",xf.fd_pathSvr");
-        sb.append(",xf.fd_folders");
-        sb.append(",xf.fd_files");
-        sb.append(",xf.fd_filesComplete");
-        sb.append(" from down_folders as df");
-        sb.append(" left join xdb_files as xf");
-        sb.append(" on xf.f_fID = df.fd_id");
-        sb.append(" where df.fd_id=? and xf.fd_complete=1");
+        sb.append(" f_id");
+        sb.append(",f_nameLoc");
+        sb.append(",f_pathSvr");
+        sb.append(",f_pathRel");
+        sb.append(",f_lenSvr");
+        sb.append(",f_sizeLoc");        
+        sb.append(" from up6_files");
+        sb.append(" where f_pidRoot=@pidRoot");
 
-        DbHelper db = new DbHelper();
-        PreparedStatement cmd = db.GetCommand(sb.toString());
-        try
-        {
-			cmd.setInt(1, fid );			
+        ArrayList<DnFileInf> files = new ArrayList<DnFileInf>();
+		DbHelper db = new DbHelper();
+		PreparedStatement cmd = db.GetCommand(sb.toString());
+		try
+		{
+			cmd.setString(1,id);
 			ResultSet r = db.ExecuteDataSet(cmd);
 			while (r.next())
 			{
-				root.nameLoc	= r.getString(1);
-				root.lenLoc	    = r.getLong(2);
-			    root.size		= r.getString(3);
-				root.pidSvr		= r.getInt(4);
-			    root.idSvr		= r.getInt(5);
-			    root.pathLoc	= r.getString(8);
-				root.pathSvr	= r.getString(8);
-				root.folders	= r.getShort(1);
-				root.filesCount = r.getInt(8);
-				root.filesComplete = r.getInt(10);
+				DnFileInf f		= new DnFileInf();
+				f.f_id			= r.getString(1);
+				f.nameLoc		= r.getString(2);
+				f.pathSvr		= r.getString(3);
+				f.pathRel		= r.getString(4);
+				f.lenSvr		= r.getLong(5);
+				f.sizeSvr		= r.getString(6);
+			    
+				files.add(f);
 			}
-			r.close();
-			cmd.close();
-			cmd.getConnection().close();
-        }
-        catch(SQLException e)
-        {
-        	e.printStackTrace();
-        }
+			cmd.close();//auto close ResultSet
+		}
+		catch (SQLException e){e.printStackTrace();}
 
-        //取文件信息
-        ArrayList<FileInf> files = new ArrayList<FileInf>();        
-        ArrayList<String> ids = new ArrayList<String>();
-        DBFile.GetCompletes(fid, files,ids);
-        
         Gson g = new Gson();
-        String filesJson = g.toJson(files);
-
-        JSONObject obj = JSONObject.fromObject(root);//报错
-        obj.element("files",filesJson);
-        obj.element("length",root.lenLoc);        
-        obj.element("ids",StringUtils.join(ids.toArray(),",") );
-        return obj.toString();    	
+	    return g.toJson( files );	
     }
 }
