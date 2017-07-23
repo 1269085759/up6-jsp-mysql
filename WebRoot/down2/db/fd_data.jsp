@@ -29,7 +29,7 @@ if (  !StringUtils.isEmpty(id)	)
 	String data = DnFolder.all_file(id);
 	data = URLEncoder.encode(data,"utf-8");
 	data = data.replace("+","%20");
-	json = "({\"\":\""+data+"\"})";
+	json = "({\"value\":\""+data+"\"})";
 }
 out.write(json);
 %>
