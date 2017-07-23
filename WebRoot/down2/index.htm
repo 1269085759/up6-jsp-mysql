@@ -39,8 +39,7 @@
                         var tdName = tmp.find('td[name="name"]');
                         var tdSize = tmp.find('td[name="size"]');
                         var tdOp = tmp.find('td[name="op"]');
-
-
+                        var f = item;
                         if (f.fdTask ) { tdType.text("文件夹"); }
                         else { tdType.text("文件"); }
                         tdName.text(f.nameLoc);

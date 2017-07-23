@@ -204,7 +204,7 @@ public class DnFile
 				f.f_id			= r.getString(1);
 				f.fdTask		= r.getBoolean(2);
 				f.nameLoc		= r.getString(3);
-				f.sizeLoc		= r.getString(4);
+				f.sizeSvr		= r.getString(4);
 				f.lenSvr		= r.getLong(5);
 				f.pathSvr		= r.getString(6);
 			    
