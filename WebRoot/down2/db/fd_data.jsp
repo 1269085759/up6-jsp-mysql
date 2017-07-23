@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%><%@ 
 	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="down2.biz.*" %><%@  
-	page import="down2.model.*" %><%@  
+	page import="down2.model.*" %><%@
+	page import="up6.*" %><%@  
 	page import="java.net.URLDecoder" %><%@ 
 	page import="java.net.URLEncoder" %><%@ 
 	page import="org.apache.commons.lang.*" %><%@ 
@@ -27,6 +28,7 @@ String json = "({\"value\":null})";
 if (  !StringUtils.isEmpty(id)	)
 {
 	String data = DnFolder.all_file(id);
+	XDebug.Output("文件列表",data);
 	data = URLEncoder.encode(data,"utf-8");
 	data = data.replace("+","%20");
 	json = "({\"value\":\""+data+"\"})";
