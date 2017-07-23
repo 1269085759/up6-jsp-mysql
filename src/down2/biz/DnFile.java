@@ -202,11 +202,11 @@ public class DnFile
 
 				f.id			= uuid;
 				f.f_id			= r.getString(1);
-				f.nameLoc		= r.getString(2);
-				f.pathLoc		= r.getString(3);
-				f.perLoc		= r.getString(4);
-				f.sizeSvr		= r.getString(5);
-				f.fdTask		= r.getBoolean(6);
+				f.fdTask		= r.getBoolean(2);
+				f.nameLoc		= r.getString(3);
+				f.sizeLoc		= r.getString(4);
+				f.lenSvr		= r.getLong(5);
+				f.pathSvr		= r.getString(6);
 			    
 				files.add(f);
 			}
