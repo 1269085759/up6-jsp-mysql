@@ -23,15 +23,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 String id	= request.getParameter("id");
 String cbk	= request.getParameter("callback");
-String json = "({\"value\":null})";
+String json = cbk + "({\"value\":null})";
 
 if (  !StringUtils.isEmpty(id)	)
 {
 	String data = DnFolder.all_file(id);
-	XDebug.Output("文件列表",data);
+	//XDebug.Output("文件列表",data);
 	data = URLEncoder.encode(data,"utf-8");
 	data = data.replace("+","%20");
-	json = "({\"value\":\""+data+"\"})";
+	json = cbk + "({\"value\":\""+data+"\"})";
 }
 out.write(json);
 %>
