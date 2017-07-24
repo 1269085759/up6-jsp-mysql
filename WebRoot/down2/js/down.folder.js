@@ -15,7 +15,7 @@
         , nameLoc: ""//自定义文件名称
         , folderLoc: this.Config["Folder"]
         , pathLoc: ""
-        , fileUrl:""
+        , fileUrl: ""
         , cmpCount: 0
         , fileCount: 0
         , lenLoc: 0
@@ -27,7 +27,7 @@
         , files:null
     };
     var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields)
-    jQuery.extend(this.fileSvr, fileLoc,{fileUrl:url});//覆盖配置
+    jQuery.extend(this.fileSvr, fileLoc, {fileUrl:url});//覆盖配置
 
     this.hideBtns = function ()
     {
@@ -110,13 +110,9 @@
 
     this.open = function ()
     {
-        this.app.openFile(this.fileSvr);
+        this.app.openPath({ id: this.fileSvr.id, path: this.fileSvr.pathLoc });
     };
 
-    this.openPath = function ()
-    {
-        this.app.openPath(this.fileSvr);
-    };
     this.init_complete = function (json)
     {
         jQuery.extend(this.fileSvr, json, {files:null});
@@ -219,12 +215,11 @@
     {
         this.hideBtns();
         this.event.downComplete(this);//biz event
-        //this.ui.btn.del.text("打开");
+        this.ui.btn.open.show();
         this.ui.process.css("width", "100%");
         this.ui.percent.text("(100%)");
         this.ui.msg.text("文件数：" + json.fileCount + " 成功：" + json.cmpCount);
         this.State = HttpDownloaderState.Complete;
-        //this.SvrDelete();
         this.Manager.filesCmp.push(this);
         this.svr_delete();
     };

@@ -64,15 +64,11 @@ var up6_app = {
         $(window).bind("beforeunload", function () { obj.exit(); });
     }
     , openFolder: function () {
-        var param = { name: "open_folder"};
+        var param = { name: "open_folder" };
         this.postMessage(param);
     }
     , openPath: function (f) {
-        var param = { name: "open_path" };
-        this.postMessage(param);
-    }
-    , openFile: function (f) {
-        var param = { name: "open_file" };
+        var param = jQuery.extend({},f,{ name: "open_path" });
         this.postMessage(param);
     }
     , initFile: function (f) {

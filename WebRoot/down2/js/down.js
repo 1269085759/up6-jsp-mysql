@@ -141,6 +141,7 @@ function DownloaderMgr()
 						<a class="btn-box hide" name="stop" title="停止"><div>停止</div></a>\
                         <a class="btn-box" name="cancel" title="取消">取消</a>\
 						<a class="btn-box hide" name="del" title="删除"><div>删除</div></a>\
+						<a class="btn-box hide" name="open" title="打开"><div>打开</div></a>\
 					</div>\
 				</div>';
 		//分隔线
@@ -210,7 +211,8 @@ function DownloaderMgr()
 	    var btnStop = ui.find("a[name='stop']");
 	    var btnDown = ui.find("a[name='down']");
 	    var btnDel = ui.find("a[name='del']");
-	    var ui_eles = { ico:{file:uiIcoF,fd:uiIcoFD},msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel }, div: ui, split: sp };
+        var btnOpen = ui.find("a[name='open']");
+        var ui_eles = { ico: { file: uiIcoF, fd: uiIcoFD }, msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel, open: btnOpen }, div: ui, split: sp };
 
         var downer;
         if (f.fdTask) { downer = new FdDownloader(f, this); }
@@ -227,7 +229,8 @@ function DownloaderMgr()
 	    btnDel.click(function () { downer.remove(); });
 	    btnStop.click(function () { downer.stop(); });
 	    btnDown.click(function () { downer.down(); });
-	    btnCancel.click(function () { downer.remove(); });
+        btnCancel.click(function () { downer.remove(); });
+        btnOpen.click(function () { downer.open(); });
 
 	    downer.ready(); //准备
 	    return downer;
