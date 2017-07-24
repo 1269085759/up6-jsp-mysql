@@ -164,6 +164,18 @@ function DownloaderMgr()
 	    return html;
 	};
 
+    this.to_params= function (param, key) {
+        var paramStr = "";
+        if (param instanceof String || param instanceof Number || param instanceof Boolean) {
+            paramStr += "&" + key + "=" + encodeURIComponent(param);
+        } else {
+            $.each(param, function (i) {
+                var k = key == null ? i : key + (param instanceof Array ? "[" + i + "]" : "." + i);
+                paramStr += '&' + _this.to_params(this, k);
+            });
+        }
+        return paramStr.substr(1);
+    };
 	this.set_config = function (v) { jQuery.extend(this.Config, v); };
 	this.clearComplete = function ()
 	{
