@@ -34,40 +34,45 @@ if (  StringUtils.isBlank(fid)
 	||StringUtils.isBlank(pathSvr))
 {
 	response.setStatus(500);
+	response.setHeader("err","参数为空");
 	return;
 }
 File f = new File(pathSvr);
 long fileLen = f.length();
-RandomAccessFile raf = new RandomAccessFile(pathSvr,"r");
-FileInputStream in = new FileInputStream( raf.getFD() );
 
 response.setContentType("application/x-download");
 response.setHeader("Pragma","No-cache");  
-response.setHeader("Cache-Control","no-cache");  
+response.setHeader("Cache-Control","no-cache");
+response.addHeader("Content-Length",blockSize);  
 response.setDateHeader("Expires", 0);
 
-OutputStream os = null;
+OutputStream os = response.getOutputStream();
 try
 {
-	os = response.getOutputStream();
-	response.addHeader("Content-Length",blockSize);
+	RandomAccessFile raf = new RandomAccessFile(pathSvr,"r");
+
 	byte[] b = new byte[1048576];
 	int i = 0;
-	in.skip(Long.parseLong(blockOffset) );//定位索引
+	raf.seek( Long.parseLong(blockOffset) );//定位索引
 	
-	while((i = in.read(b)) > 0 )
+	while((i = raf.read(b)) > 0 )
 	{
 		os.write(b, 0, i);
 	}
 	os.flush();
-	os.close();		
+	os.close();
+	raf.close();
 	os = null;
 	response.flushBuffer();	
 	
 	out.clear();
 	out = pageContext.pushBody();
 }
-catch(Exception e){response.setStatus(500);}
+catch(Exception e)
+{
+	response.setStatus(500);
+	e.printStackTrace();
+}
 finally
 {	
 	if(os != null)
@@ -77,6 +82,4 @@ finally
 	}
 	out.clear();
 	out = pageContext.pushBody();
-}
-in.close();
-in = null;%>
+}%>
