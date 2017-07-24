@@ -2,6 +2,8 @@
 	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="up6.*" %><%@
 	page import="up6.model.*" %><%@ 
+	page import="java.nio.*" %><%@
+	page import="java.nio.channels.*" %><%@
 	page import="java.net.URLDecoder" %><%@ 
 	page import="java.net.URLEncoder" %><%@ 
 	page import="org.apache.commons.lang.*" %><%@ 
@@ -50,17 +52,21 @@ OutputStream os = response.getOutputStream();
 try
 {
 	RandomAccessFile raf = new RandomAccessFile(pathSvr,"r");
+	FileChannel fc = raf.getChannel();
+	ByteBuffer bb = ByteBuffer.allocate(1048576);//1MB
 
-	byte[] b = new byte[1048576];
-	int i = 0;
+	int readLen = 0;
 	raf.seek( Long.parseLong(blockOffset) );//定位索引
 	
-	while((i = raf.read(b)) > 0 )
+	while((readLen = fc.read(bb)) != -1 )
 	{
-		os.write(b, 0, i);
+		bb.flip();
+		os.write(bb.array(), 0, readLen);
+		
 	}
 	os.flush();
 	os.close();
+	fc.close();
 	raf.close();
 	os = null;
 	response.flushBuffer();	
