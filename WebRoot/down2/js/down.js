@@ -267,8 +267,6 @@ function DownloaderMgr()
         var obj = this.add_ui(f);
         if (null == obj) return;
 
-        obj.ui.ico.file.hide();
-        obj.ui.ico.fd.show();
         this.init_file(obj.fileSvr);//
         return obj;
     };
@@ -277,8 +275,6 @@ function DownloaderMgr()
 	    var obj = this.add_ui(f);
 	    if (null == obj) return;
 
-	    obj.ui.ico.file.hide();
-	    obj.ui.ico.fd.show();
         obj.load_files();//
 	    return obj;
 	};
