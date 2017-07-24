@@ -62,7 +62,8 @@ function FileDownloader(fileLoc, mgr)
         this.hideBtns();
         this.ui.btn.down.show();
         this.ui.btn.cancel.show();
-        //this.pButton.style.display = "none";
+        this.ui.ico.file.show();
+        this.ui.ico.fd.hide();
         this.ui.msg.text("正在下载队列中等待...");
         this.State = HttpDownloaderState.Ready;
     };

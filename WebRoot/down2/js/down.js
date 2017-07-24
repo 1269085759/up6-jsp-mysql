@@ -215,7 +215,7 @@ function DownloaderMgr()
         var ui_eles = { ico: { file: uiIcoF, fd: uiIcoFD }, msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel, open: btnOpen }, div: ui, split: sp };
 
         var downer;
-        if (f.fdTask) { downer = new FdDownloader(f, this); }
+        if (f.fdTask) { downer = new FdDownloader(f, this);}
 	    else { downer = new FileDownloader(f,this);}
 	    this.filesMap[f.id] = downer;//
 	    jQuery.extend(downer.ui, ui_eles);
@@ -255,8 +255,8 @@ function DownloaderMgr()
         if (null == obj) return;
         obj.svr_inited = true;
 
-        obj.ui.ico.file.hide();
-        obj.ui.ico.fd.show();
+        obj.ui.ico.file.show();
+        obj.ui.ico.fd.hide();
         obj.ui.name.text(f.nameLoc);
         obj.ui.size.text(f.sizeSvr);
         obj.ui.process.css("width", f.perLoc);
