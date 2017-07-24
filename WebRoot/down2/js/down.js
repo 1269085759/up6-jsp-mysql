@@ -240,13 +240,6 @@ function DownloaderMgr()
 	    var obj = this.add_ui(fdSvr);
 	    if (null == obj) return;
         obj.svr_inited = true;
-
-	    obj.ui.ico.file.hide();
-	    obj.ui.ico.fd.show();
-	    obj.ui.name.text(fdSvr.nameLoc);
-	    obj.ui.size.text(fdSvr.sizeSvr);
-	    obj.ui.process.css("width", fdSvr.perLoc);
-	    obj.ui.percent.text("(" + fdSvr.perLoc + ")");
 	    
 	    return obj;
     };
@@ -254,13 +247,6 @@ function DownloaderMgr()
         var obj = this.add_ui(f);
         if (null == obj) return;
         obj.svr_inited = true;
-
-        obj.ui.ico.file.show();
-        obj.ui.ico.fd.hide();
-        obj.ui.name.text(f.nameLoc);
-        obj.ui.size.text(f.sizeSvr);
-        obj.ui.process.css("width", f.perLoc);
-        obj.ui.percent.text("(" + f.perLoc + ")");
 
         return obj;
     };
