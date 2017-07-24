@@ -197,8 +197,8 @@ function FileUploader(fileLoc, mgr)
     this.md5_complete = function (json)
     {
         this.fileSvr.md5 = json.md5;
-        this.event.md5Complete(this, json.md5);//biz event
         this.ui.msg.text("MD5计算完毕，开始连接服务器...");
+        this.event.md5Complete(this, json.md5);//biz event
 
         var loc_path = encodeURIComponent(this.fileSvr.pathLoc);
         var loc_len = this.fileSvr.lenLoc;

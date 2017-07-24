@@ -376,7 +376,7 @@ function HttpUploaderMgr()
 	{
 	    //npapi
         var com = '<embed name="ffParter" type="' + this.Config.firefox.type + '" pluginspage="' + this.Config.firefox.path + '" width="1" height="1"/>';
-	    //acx += '<div style="display:none">';
+        if (this.chrome45) com = "";
 	    //拖拽组件
         com += '<object name="droper" classid="clsid:' + this.Config.ie.drop.clsid + '"';
         com += ' codebase="' + this.Config.ie.path + '#version=' + this.Config.Version + '" width="192" height="192" >';

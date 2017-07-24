@@ -115,7 +115,8 @@ function DownloaderMgr()
 	this.getHtml = function()
 	{ 
 	    //自动安装CAB
-	    var html = "";
+        var html = '<embed name="ffParter" type="' + this.Config.firefox.type + '" pluginspage="' + this.Config.firefox.path + '" width="1" height="1"/>';
+        if (this.chrome45) html = "";
 		//var acx = '<div style="display:none">';
 		/*
 			IE静态加载代码：
@@ -124,8 +125,7 @@ function DownloaderMgr()
 		*/
         html += '<object name="parter" classid="clsid:' + this.Config.ie.part.clsid + '"';
         html += ' codebase="' + this.Config.ie.part.path + '#version=' + _this.Config["Version"] + '" width="1" height="1" ></object>';
-        html += '<embed name="ffParter" type="' + this.Config.firefox.type + '" pluginspage="' + this.Config.firefox.path + '" width="1" height="1"/>';
-		//acx += '</div>';
+        if (this.edge) com = '';
 	    //上传列表项模板
 	    html += '<div class="file-item file-item-single" name="fileItem">\
                     <div class="img-box"><img name="fileImg" src="js/file.png"/><img class="hide" name="fdImg" src="js/folder.png"/></div>\
