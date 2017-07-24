@@ -32,7 +32,7 @@ String sizeSvr 	 = request.getParameter("sizeSvr");
 String cbk  	 = request.getParameter("callback");//jsonp
 pathLoc 		 = PathTool.url_decode(pathLoc);
 nameLoc			 = PathTool.url_decode(nameLoc);//utf-8解码
-
+sizeSvr 		 = PathTool.url_decode(sizeSvr);
 
 if (  StringUtils.isEmpty(uid)
 	||StringUtils.isBlank(pathLoc)

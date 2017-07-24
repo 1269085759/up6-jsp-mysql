@@ -21,7 +21,6 @@ String fid 		= request.getParameter("id");
 String uid 		= request.getParameter("uid");
 String lenLoc	= request.getParameter("lenLoc");
 String per		= request.getParameter("perLoc");
-per 			= PathTool.url_decode(per);
 String cbk 		= request.getParameter("callback");//jsonp
 //
 
