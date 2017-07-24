@@ -1,7 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%><%@ 
 	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="down2.biz.*" %><%@
-	page import="down2.model.*" %><%@ 
+	page import="down2.model.*" %><%@
+	page import="up6.*" %><%@ 
 	page import="java.net.URLDecoder" %><%@ 
 	page import="java.net.URLEncoder" %><%@ 
 	page import="org.apache.commons.lang.*" %><%@ 
@@ -20,6 +21,7 @@ String fid 		= request.getParameter("id");
 String uid 		= request.getParameter("uid");
 String lenLoc	= request.getParameter("lenLoc");
 String per		= request.getParameter("perLoc");
+per 			= PathTool.url_decode(per);
 String cbk 		= request.getParameter("callback");//jsonp
 //
 
