@@ -52,21 +52,21 @@ OutputStream os = response.getOutputStream();
 try
 {
 	RandomAccessFile raf = new RandomAccessFile(pathSvr,"r");
-	FileChannel fc = raf.getChannel();
-	ByteBuffer bb = ByteBuffer.allocate(1048576);//1MB
-
+	
+	int readToLen = Integer.parseInt(blockSize);
 	int readLen = 0;
 	raf.seek( Long.parseLong(blockOffset) );//定位索引
+	byte[] data = new byte[1048576];
 	
-	while((readLen = fc.read(bb)) != -1 )
+	while( readToLen > 0 )
 	{
-		bb.flip();
-		os.write(bb.array(), 0, readLen);
+		readLen = raf.read(data,0,Math.min(1048576,readToLen) );
+		readToLen -= readLen;
+		os.write(data, 0, readLen);
 		
 	}
 	os.flush();
-	os.close();
-	fc.close();
+	os.close();	
 	raf.close();
 	os = null;
 	response.flushBuffer();	
