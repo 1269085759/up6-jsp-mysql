@@ -26,7 +26,7 @@
         , fdTask: true
         , files:null
     };
-    var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields)
+    var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields);
     jQuery.extend(this.fileSvr, fileLoc, {fileUrl:url});//覆盖配置
 
     this.hideBtns = function ()
@@ -43,8 +43,18 @@
         this.hideBtns();
         this.ui.btn.down.show();
         this.ui.btn.cancel.show();
+        this.ui.ico.file.hide();
+        this.ui.ico.fd.show();
         this.ui.msg.text("正在下载队列中等待...");
         this.State = HttpDownloaderState.Ready;
+    };
+    //自定义配置,
+    this.reset_fields = function (v) {
+        if (v == null) return;
+        jQuery.extend(this.fields, v);
+        //单独拼接url
+        var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields);
+        jQuery.extend(this.fileSvr, { fileUrl: url });//覆盖配置
     };
 
     //加载文件列表
@@ -126,7 +136,7 @@
     this.svr_update = function (json)
     {
         var param = jQuery.extend({}, this.fields, { time: new Date().getTime() });
-        jQuery.extend(param, { id: this.fileSvr.id, lenLoc: this.fileSvr.lenLoc, perLoc: encodeURIComponent(this.fileSvr.perLoc) });
+        jQuery.extend(param, { id: this.fileSvr.id, lenLoc: this.fileSvr.lenLoc, perLoc: this.fileSvr.perLoc });
 
         $.ajax({
             type: "GET"
@@ -246,7 +256,7 @@
         this.event.downError(this, json.code);//biz event
         this.ui.msg.text(DownloadErrorCode[json.code+""]);
         this.State = HttpDownloaderState.Error;
-        this.svr_update();
+        //this.SvrUpdate();
     };
 
     this.down_stoped = function (json)

@@ -45,7 +45,7 @@ function FileDownloader(fileLoc, mgr)
         , complete: false
         , fdTask: false
     };
-    var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields)
+    var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields);
     jQuery.extend(this.fileSvr, fileLoc, { fileUrl: url });//覆盖配置
 
     this.hideBtns = function ()
@@ -66,6 +66,15 @@ function FileDownloader(fileLoc, mgr)
         this.ui.ico.fd.hide();
         this.ui.msg.text("正在下载队列中等待...");
         this.State = HttpDownloaderState.Ready;
+    };
+    //自定义配置,
+    this.reset_fields = function (v)
+    {
+        if (v == null) return;
+        jQuery.extend(this.fields, v);
+        //单独拼接url
+        var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields);
+        jQuery.extend(this.fileSvr, { fileUrl: url });//覆盖配置
     };
 
     //方法-开始下载
@@ -110,8 +119,7 @@ function FileDownloader(fileLoc, mgr)
     //在出错，停止中调用
     this.svr_update = function ()
     {
-        var param = jQuery.extend({}, this.fields, { time: new Date().getTime() });
-        jQuery.extend(param, { id: this.fileSvr.id, lenLoc: this.fileSvr.lenLoc, perLoc: encodeURIComponent(this.fileSvr.perLoc) });
+        var param = jQuery.extend({}, this.fields, this.fileSvr, { time: new Date().getTime() });
         $.ajax({
             type: "GET"
             , dataType: 'jsonp'

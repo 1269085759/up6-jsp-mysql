@@ -215,7 +215,7 @@ function DownloaderMgr()
         var ui_eles = { ico: { file: uiIcoF, fd: uiIcoFD }, msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel, open: btnOpen }, div: ui, split: sp };
 
         var downer;
-        if (f.fdTask) { downer = new FdDownloader(f, this);}
+        if (f.fdTask) { downer = new FdDownloader(f, this); }
 	    else { downer = new FileDownloader(f,this);}
 	    this.filesMap[f.id] = downer;//
 	    jQuery.extend(downer.ui, ui_eles);
@@ -240,7 +240,7 @@ function DownloaderMgr()
 	    var obj = this.add_ui(fdSvr);
 	    if (null == obj) return;
         obj.svr_inited = true;
-	    
+
 	    return obj;
     };
     this.resume_file = function (f) {
@@ -263,17 +263,19 @@ function DownloaderMgr()
         var p = this.filesMap[json.id];
         p.init_complete(json);
     };
-    this.add_file = function (f) {
+    this.add_file = function (f,fields) {
         var obj = this.add_ui(f);
         if (null == obj) return;
+        obj.reset_fields(fields);
 
         this.init_file(obj.fileSvr);//
         return obj;
     };
-	this.add_folder = function (f)
+    this.add_folder = function (f, fields)
 	{
 	    var obj = this.add_ui(f);
-	    if (null == obj) return;
+        if (null == obj) return;
+        obj.reset_fields(fields);
 
         obj.load_files();//
 	    return obj;
