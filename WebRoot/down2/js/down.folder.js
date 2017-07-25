@@ -246,7 +246,7 @@
         this.event.downError(this, json.code);//biz event
         this.ui.msg.text(DownloadErrorCode[json.code+""]);
         this.State = HttpDownloaderState.Error;
-        //this.SvrUpdate();
+        this.svr_update();
     };
 
     this.down_stoped = function (json)
