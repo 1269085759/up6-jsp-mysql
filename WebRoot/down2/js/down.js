@@ -125,7 +125,7 @@ function DownloaderMgr()
 		*/
         html += '<object name="parter" classid="clsid:' + this.Config.ie.part.clsid + '"';
         html += ' codebase="' + this.Config.ie.part.path + '#version=' + _this.Config["Version"] + '" width="1" height="1" ></object>';
-        if (this.edge) com = '';
+        if (this.edge) html = '';
 	    //上传列表项模板
 	    html += '<div class="file-item file-item-single" name="fileItem">\
                     <div class="img-box"><img name="fileImg" src="js/file.png"/><img class="hide" name="fdImg" src="js/folder.png"/></div>\
@@ -403,8 +403,6 @@ function DownloaderMgr()
 	    {
 	        this.app.check = this.app.checkFF;
 	        jQuery.extend(this.Config.firefox, this.Config.chrome);
-	        //_this.Config["XpiPath"] = _this.Config["CrxPath"];
-	        //_this.Config["XpiType"] = _this.Config["CrxType"];
 	        //44+版本使用Native Message
 	        if (parseInt(this.chrVer[1]) >= 44)
 	        {
