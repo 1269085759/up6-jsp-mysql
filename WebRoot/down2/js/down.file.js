@@ -6,6 +6,7 @@ var DownloadErrorCode = {
 	, "3": "域名未授权"
 	, "4": "文件大小超过限制"
 	, "5": "地址为空"
+	, "6": "读取配置信息错误"
 };
 //状态
 var HttpDownloaderState = {
