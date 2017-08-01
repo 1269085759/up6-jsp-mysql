@@ -1000,17 +1000,18 @@ function HttpUploaderMgr()
 		var btnStop 	= ui.find("span[name='stop']");
 		var btnDel 		= ui.find("span[name='del']");
 		var uiPercent	= ui.find("div[name='percent']");
-        ui.find('span[name="cancel"],span[name="post"],span[name="stop"],span[name="del"]').hover(function ()
-        {
-            $(this).addClass("btn-box-hover");
-        }, function () {
-            $(this).removeClass("btn-box-hover");
-        });
 		
 		var upFile = new FileUploader(fileLoc, _this);
 		this.filesMap[fileLoc.id] = upFile;//添加到映射表
 		var ui_eles = { msg: uiMsg, process: uiProcess,percent:uiPercent, btn: { del: btnDel, cancel: btnCancel,post:btnPost,stop:btnStop }, div: ui, split: sp };
 		upFile.ui = ui_eles;
+		$.each(ui_eles.btn, function (i, n) {
+            $(n).hover(function () {
+                $(this).addClass("btn-box-hover");
+            }, function () {
+                $(this).removeClass("btn-box-hover");
+            });
+        });
 
 		uiName.text(nameLoc).attr("title", nameLoc);
 		uiSize.text(fileLoc.sizeLoc);
@@ -1078,7 +1079,14 @@ function HttpUploaderMgr()
 		var btnDel      = ui.find("span[name='del']");
 		var divPercent	= ui.find("div[name='percent']");
 		var ui_eles = { msg: divMsg,size:uiSize, process: divProcess, percent: divPercent, btn: { del: btnDel, cancel: btnCancel, post: btnPost, stop: btnStop }, split: sp, div: ui };
-
+		$.each(ui_eles.btn, function (i, e) {
+            $(e).hover(function () {
+            $(this).addClass("btn-box-hover");
+            }, function () {
+            $(this).removeClass("btn-box-hover");
+            });
+        });
+		
 		divPercent.text("(0%)");
 		divProcess.css("width",fdLoc.perSvr);
 		divMsg.text("");
