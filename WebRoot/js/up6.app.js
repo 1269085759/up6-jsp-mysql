@@ -145,7 +145,7 @@ var up6_app = {
         this.postMessage(param);
     }
     , stopQueue: function () {
-        var param = jQuery.extend({},{ name: "stop_queue",tip:false});
+        var param = { name: "stop_queue"};
         this.postMessage(param);
     }
     , postMessage:function(json)
