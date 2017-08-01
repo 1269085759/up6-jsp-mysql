@@ -300,7 +300,7 @@ function FileUploader(fileLoc, mgr)
         	this.ui.btn.stop.hide();
         	this.ui.btn.cancel.hide();
             this.ui.msg.text("传输已停止....");
-            this.app.stopFile({ id: this.fileSvr.id });
+            this.app.stopFile({ id: this.fileSvr.id ,tip:false});
             this.State = HttpUploaderState.Stop;
         }
     };

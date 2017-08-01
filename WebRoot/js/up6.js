@@ -87,7 +87,7 @@ function HttpUploaderMgr()
 	this.Config = {
 		  "EncodeType"		: "utf-8"
 		, "Company"			: "荆门泽优软件有限公司"
-		, "Version"			: "2,7,108,51167"
+		, "Version"			: "2,7,109,51179"
 		, "License"			: ""//
 		, "Authenticate"	: ""//域验证方式：basic,ntlm
 		, "AuthName"		: ""//域帐号
@@ -357,7 +357,7 @@ function HttpUploaderMgr()
 				, dataType: 'jsonp'
 				, jsonp: "callback" //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
 				, url: this.Config["UrlFdDel"]
-				, data: { uid: fileSvr.uid, id: fileSvr.id,fd_id:fileSvr.id, time: new Date().getTime() }
+				, data: { uid: fileSvr.uid, id: fileSvr.id,time: new Date().getTime() }
 			    , success:function (msg){if (msg.value == 1){ui.empty();}}
 			    , error: function () { alert("发送删除文件信息失败！"); }
 			    , complete: function (req, sta) { req = null; }
@@ -421,10 +421,10 @@ function HttpUploaderMgr()
 						<div name="msg" class="msg top-space">15.3MB 20KB/S 10:02:00</div>\
 					</div>\
 					<div class="area-r">\
-                        <a class="btn-box" name="cancel" title="取消"><img src="js/stop.png"/><div>取消</div></a>\
-                        <a class="btn-box hide" name="post" title="继续"><img src="js/post.png"/><div>继续</div></a>\
-						<a class="btn-box hide" name="stop" title="停止"><img src="js/stop.png"/><div>停止</div></a>\
-						<a class="btn-box hide" name="del" title="删除"><img src="js/del.png"/><div>删除</div></a>\
+                        <span class="btn-box" name="cancel" title="取消"><img src="js/stop.png"/><div>取消</div></span>\
+                        <span class="btn-box hide" name="post" title="继续"><img src="js/post.png"/><div>继续</div></span>\
+						<span class="btn-box hide" name="stop" title="停止"><img src="js/stop.png"/><div>停止</div></span>\
+						<span class="btn-box hide" name="del" title="删除"><img src="js/del.png"/><div>删除</div></span>\
 					</div>';
 		acx += '</div>';
 		//文件夹模板
@@ -440,10 +440,10 @@ function HttpUploaderMgr()
 						<div name="msg" class="msg top-space">15.3MB 20KB/S 10:02:00</div>\
 					</div>\
 					<div class="area-r">\
-                        <a class="btn-box" name="cancel" title="取消"><img src="js/stop.png"/><div>取消</div></a>\
-                        <a class="btn-box hide" name="post" title="继续"><img src="js/post.png"/><div>继续</div></a>\
-						<a class="btn-box hide" name="stop" title="停止"><img src="js/stop.png"/><div>停止</div></a>\
-						<a class="btn-box hide" name="del" title="删除"><img src="js/del.png"/><div>删除</div></a>\
+                        <span class="btn-box" name="cancel" title="取消"><img src="js/stop.png"/><div>取消</div></span>\
+                        <span class="btn-box hide" name="post" title="继续"><img src="js/post.png"/><div>继续</div></span>\
+						<span class="btn-box hide" name="stop" title="停止"><img src="js/stop.png"/><div>停止</div></span>\
+						<span class="btn-box hide" name="del" title="删除"><img src="js/del.png"/><div>删除</div></span>\
 					</div>';
 		acx += '</div>';
 		//分隔线
@@ -451,16 +451,16 @@ function HttpUploaderMgr()
 		//上传列表
 		acx += '<div class="files-panel" name="post_panel">\
 					<div name="post_head" class="toolbar">\
-						<a href="javascript:void(0)" class="btn" name="btnAddFiles">选择多个文件</a>\
-						<a href="javascript:void(0)" class="btn" name="btnAddFolder">选择文件夹</a>\
-						<a href="javascript:void(0)" class="btn" name="btnPasteFile">粘贴文件</a>\
-						<a href="javascript:void(0)" class="btn hide" name="btnSetup">安装控件</a>\
+						<span class="btn" name="btnAddFiles">选择多个文件</span>\
+						<span class="btn" name="btnAddFolder">选择文件夹</span>\
+						<span class="btn" name="btnPasteFile">粘贴文件</span>\
+						<span class="btn" name="btnSetup">安装控件</span>\
 					</div>\
 					<div class="content" name="post_content">\
 						<div name="post_body" class="file-post-view"></div>\
 					</div>\
 					<div class="footer" name="post_footer">\
-						<a href="javascript:void(0)" class="btn-footer" name="btnClear">清除已完成文件</a>\
+						<span class="btn-footer" name="btnClear">清除已完成文件</a>\
 					</div>\
 				</div>';
 		return acx;
@@ -657,7 +657,8 @@ function HttpUploaderMgr()
 		{
             if(this.edge) _this.edgeApp.close();
 			if (_this.QueuePost.length > 0)
-			{
+            {
+                _this.app.stopQueue();
 				_this.StopAll();
 			}
 		});
@@ -696,17 +697,32 @@ function HttpUploaderMgr()
 	    this.tmpFolder      = panel.find('div[name="folderItem"]');
 	    this.tmpSpliter     = panel.find('div[name="lineSplite"]');
 	    this.pnlHeader      = panel.find('div[name="pnlHeader"]');
-        this.btnSetup       = panel.find('a[name="btnSetup"]').attr("href",this.Config.exe.path);
+        this.btnSetup       = panel.find('span[name="btnSetup"]').click(function () {
+            window.open(this.Config.exe.path);
+        });//("href",this.Config.exe.path);
 	    //drag files
 
+        panel.find('span[class="btn"]').each(function ()
+        {
+            $(this).hover(function () {
+                $(this).addClass("btn-hover");
+            }, function () {
+                $(this).removeClass("btn-hover");
+            });
+        });
 	    //添加多个文件
-	    panel.find('a[name="btnAddFiles"]').click(function () { _this.openFile(); });
+	    panel.find('span[name="btnAddFiles"]').click(function () { _this.openFile(); });
 	    //添加文件夹
-	    panel.find('a[name="btnAddFolder"]').click(function () { _this.openFolder(); });
+        panel.find('span[name="btnAddFolder"]').click(function () { _this.openFolder(); });
 	    //粘贴文件
-	    panel.find('a[name="btnPasteFile"]').click(function () { _this.pasteFiles(); });
+        panel.find('span[name="btnPasteFile"]').click(function () { _this.pasteFiles(); });
 	    //清空已完成文件
-	    panel.find('a[name="btnClear"]').click(function () { _this.ClearComplete(); });
+        panel.find('span[name="btnClear"]').click(function () { _this.ClearComplete(); })
+            .hover(function () {
+                $(this).addClass("btn-footer-hover");
+            }, function () {
+                $(this).removeClass("btn-footer-hover");
+            });;
 
 	    this.SafeCheck();
 	    this.FileListMgr.LoadTo(filesSvr);
@@ -979,11 +995,17 @@ function HttpUploaderMgr()
 		var uiSize      = ui.find("div[name='fileSize']")
 		var uiProcess 	= ui.find("div[name='process']");
 		var uiMsg 		= ui.find("div[name='msg']");
-		var btnCancel 	= ui.find("a[name='cancel']");
-		var btnPost 	= ui.find("a[name='post']");
-		var btnStop 	= ui.find("a[name='stop']");
-		var btnDel 		= ui.find("a[name='del']");
+		var btnCancel 	= ui.find("span[name='cancel']");
+		var btnPost 	= ui.find("span[name='post']");
+		var btnStop 	= ui.find("span[name='stop']");
+		var btnDel 		= ui.find("span[name='del']");
 		var uiPercent	= ui.find("div[name='percent']");
+        ui.find('span[name="cancel"],span[name="post"],span[name="stop"],span[name="del"]').hover(function ()
+        {
+            $(this).addClass("btn-box-hover");
+        }, function () {
+            $(this).removeClass("btn-box-hover");
+        });
 		
 		var upFile = new FileUploader(fileLoc, _this);
 		this.filesMap[fileLoc.id] = upFile;//添加到映射表
@@ -1050,10 +1072,10 @@ function HttpUploaderMgr()
 		var uiSize      = ui.find("div[name='fileSize']")
 		var divProcess 	= ui.find("div[name='process']");
 		var divMsg      = ui.find("div[name='msg']");
-		var btnCancel   = ui.find("a[name='cancel']");
-		var btnPost     = ui.find("a[name='post']");
-		var btnStop     = ui.find("a[name='stop']");
-		var btnDel      = ui.find("a[name='del']");
+		var btnCancel   = ui.find("span[name='cancel']");
+		var btnPost     = ui.find("span[name='post']");
+		var btnStop     = ui.find("span[name='stop']");
+		var btnDel      = ui.find("span[name='del']");
 		var divPercent	= ui.find("div[name='percent']");
 		var ui_eles = { msg: divMsg,size:uiSize, process: divProcess, percent: divPercent, btn: { del: btnDel, cancel: btnCancel, post: btnPost, stop: btnStop }, split: sp, div: ui };
 

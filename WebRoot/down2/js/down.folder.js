@@ -11,6 +11,7 @@
     this.event = mgr.event;
     this.fileSvr = {
           id:""//
+        , f_id:""
         , uid: this.fields["uid"]
         , nameLoc: ""//自定义文件名称
         , folderLoc: this.Config["Folder"]
@@ -77,7 +78,7 @@
                 jQuery.extend(true, _this.fileSvr, { files: json });
                 _this.ui.msg.text("初始文件夹...");
                 setTimeout(function () {
-                    _this.app.initFolder(_this.fileSvr);
+                    _this.app.initFolder(jQuery.extend({},_this.Config,_this.fileSvr));
                 }, 300);
                 
             }
@@ -115,6 +116,7 @@
         //从上传列表中删除
         this.ui.split.remove();
         this.ui.div.remove();
+        this.Manager.remove_url(this.fileSvr.f_id);
         this.svr_delete();
     };
 

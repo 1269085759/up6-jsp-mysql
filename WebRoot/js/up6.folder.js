@@ -11,7 +11,7 @@ function FolderUploader(fdLoc, mgr)
     this.isFolder = true; //是文件夹
     this.folderInit = false;//文件夹已初始化
     this.Scaned = false;//是否已经扫描
-    this.folderSvr = { nameLoc: "",nameSvr:"",lenLoc:0,sizeLoc: "0byte", lenSvr: 0,perSvr:"0%", id:"",uid: mgr.Config.Fields["uid"], foldersCount: 0, filesCount: 0, filesComplete: 0, pathLoc: "", pathSvr: "", pathRel: "", pidRoot: "", complete: false, folders: [], files: [] };
+    this.folderSvr = { nameLoc: "",nameSvr:"",lenLoc:0,sizeLoc: "0byte", lenSvr: 0,perSvr:"0%", id:"",uid: 0, foldersCount: 0, filesCount: 0, filesComplete: 0, pathLoc: "", pathSvr: "", pathRel: "", pidRoot: "", complete: false, folders: [], files: [] };
     jQuery.extend(true,this.folderSvr, fdLoc);//续传信息
     this.manager = mgr;
     this.event = mgr.event;
@@ -69,6 +69,20 @@ function FolderUploader(fdLoc, mgr)
             alert(up6_err_solve.errFolderCreate);
         });
         this.ui.btn.post.show();
+    };
+    this.svr_remove = function ()
+    {
+        var param = { uid: this.fields["uid"], id: this.id, time: new Date().getTime() };
+        $.ajax({
+            type: "GET"
+            , dataType: 'jsonp'
+            , jsonp: "callback" //自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+            , url: this.Config["UrlFdDel"]
+            , data: param
+            , success: function (msg) { }
+            , error: function (req, txt, err) { alert("删除文件夹失败！" + req.responseText); }
+            , complete: function (req, sta) { req = null; }
+        });
     };
     //上传，创建文件夹结构信息
     this.post = function ()
@@ -318,6 +332,7 @@ function FolderUploader(fdLoc, mgr)
     {
         this.app.delFolder({ id: this.id });
         this.manager.Delete(this.id);
+        this.svr_remove();
         this.ui.div.remove();
         this.ui.split.remove();
     };
