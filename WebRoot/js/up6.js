@@ -87,7 +87,7 @@ function HttpUploaderMgr()
 	this.Config = {
 		  "EncodeType"		: "utf-8"
 		, "Company"			: "荆门泽优软件有限公司"
-		, "Version"			: "2,7,109,51179"
+		, "Version"			: "2,7,110,51249"
 		, "License"			: ""//
 		, "Authenticate"	: ""//域验证方式：basic,ntlm
 		, "AuthName"		: ""//域帐号
@@ -144,6 +144,7 @@ function HttpUploaderMgr()
         , "fileComplete": function (obj/*文件上传完毕，参考：FileUploader*/) { }
         , "fdComplete": function (obj/*文件夹上传完毕，参考：FolderUploader*/) { }
         , "queueComplete": function () {/*队列上传完毕*/ }
+        , "addFdError": function (json) {/*添加文件夹失败*/ }
 	};
 
 	//http://www.ncmem.com/
@@ -557,7 +558,10 @@ function HttpUploaderMgr()
 	    this.edge_load = true;
         this.btnSetup.hide();
         _this.app.init();
-	};
+    };
+    this.add_folder_error = function (json) {
+        this.event.addFdError(json);
+    };
 	this.recvMessage = function (str)
 	{
 	    var json = JSON.parse(str);
@@ -573,6 +577,7 @@ function HttpUploaderMgr()
 	    else if (json.name == "md5_process") { _this.md5_process(json); }
 	    else if (json.name == "md5_complete") { _this.md5_complete(json); }
 	    else if (json.name == "md5_error") { _this.md5_error(json); }
+	    else if (json.name == "add_folder_error") { _this.add_folder_error(json); }
 	    else if (json.name == "load_complete") { _this.load_complete(json); }
 	    else if (json.name == "load_complete_edge") { _this.load_complete_edge(json); }
 	    else if (json.name == "extension_complete")
