@@ -7,6 +7,7 @@ var DownloadErrorCode = {
 	, "4": "文件大小超过限制"
 	, "5": "地址为空"
 	, "6": "读取配置信息错误"
+    , "7": "本地目录不存在"
 };
 //状态
 var HttpDownloaderState = {
