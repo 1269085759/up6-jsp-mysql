@@ -49,27 +49,28 @@ fileSvr.nameSvr = md5 + "." + PathTool.getExtention(fileSvr.nameLoc);
 //所有单个文件均以md5方式存储
 PathBuilderMd5 pb = new PathBuilderMd5();
 fileSvr.pathSvr = pb.genFile(fileSvr.uid,fileSvr);
+fileSvr.pathSvr = fileSvr.pathSvr.replace("\\","/");
 
-	DBFile db = new DBFile();
-	FileInf fileExist = new FileInf();
+DBFile db = new DBFile();
+FileInf fileExist = new FileInf();
+
+boolean exist = db.exist_file(md5,fileExist);
+//数据库已存在相同文件，且有上传进度，则直接使用此信息
+if(exist && fileExist.lenSvr > 1)
+{
+	fileSvr.pathSvr 		= fileExist.pathSvr;
+	fileSvr.perSvr 			= fileExist.perSvr;
+	fileSvr.lenSvr 			= fileExist.lenSvr;
+	fileSvr.complete		= fileExist.complete;
+	db.Add(fileSvr);
+}//此文件不存在
+else
+{
+	db.Add(fileSvr);
 	
-	boolean exist = db.exist_file(md5,fileExist);
-	//数据库已存在相同文件，且有上传进度，则直接使用此信息
-	if(exist && fileExist.lenSvr > 1)
-	{
-		fileSvr.pathSvr 		= fileExist.pathSvr;
-		fileSvr.perSvr 			= fileExist.perSvr;
-		fileSvr.lenSvr 			= fileExist.lenSvr;
-		fileSvr.complete		= fileExist.complete;
-		db.Add(fileSvr);
-	}//此文件不存在
-	else
-	{
-		db.Add(fileSvr);
-		
-		FileBlockWriter fr = new FileBlockWriter();
-		fr.CreateFile(fileSvr.pathSvr);		
-	}
+	FileBlockWriter fr = new FileBlockWriter();
+	fr.CreateFile(fileSvr.pathSvr);		
+}
 
 Gson gson = new Gson();
 String json = gson.toJson(fileSvr);
