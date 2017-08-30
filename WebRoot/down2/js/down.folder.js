@@ -103,8 +103,6 @@
     {
         this.svr_update();
         this.hideBtns();
-        this.ui.btn.down.show();
-        this.ui.btn.del.show();
         this.State = HttpDownloaderState.Stop;
         this.ui.msg.text("下载已停止");
         this.app.stopFile(this.fileSvr);
