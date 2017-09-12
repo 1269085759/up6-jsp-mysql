@@ -4,7 +4,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import up6.model.FileInf;
+import com.google.gson.Gson;
 
 /*
  * 原型
@@ -15,6 +17,64 @@ public class DBFile {
 	{
 	}	
 
+	static public String GetAllUnComplete(int f_uid)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("select ");
+		sb.append(" f_id");
+		sb.append(",f_fdTask");		
+		sb.append(",f_nameLoc");
+		sb.append(",f_pathLoc");
+		sb.append(",f_md5");
+		sb.append(",f_lenLoc");
+		sb.append(",f_sizeLoc");
+		sb.append(",f_pos");
+		sb.append(",f_lenSvr");
+		sb.append(",f_perSvr");
+		sb.append(",f_complete");
+		sb.append(",f_pathSvr");//fix(2015-03-16):修复无法续传文件的问题。
+		sb.append(" from up6_files ");//change(2015-03-18):联合查询文件夹数据
+		sb.append(" where f_uid=? and f_deleted=0 and f_fdChild=0 and f_complete=0;");//fix(2015-03-18):只加载未完成列表
+
+		ArrayList<FileInf> files = new ArrayList<FileInf>();
+		DbHelper db = new DbHelper();
+		PreparedStatement cmd = db.GetCommand(sb.toString());
+		try {
+			cmd.setInt(1, f_uid);
+			ResultSet r = db.ExecuteDataSet(cmd);
+			while(r.next())
+			{
+				FileInf f 		= new FileInf();
+				f.uid			= f_uid;
+				f.id 			= r.getString(1);
+				f.fdTask 		= r.getBoolean(2);				
+				f.nameLoc 		= r.getString(3);
+				f.pathLoc 		= r.getString(4);
+				f.md5 			= r.getString(5);
+				f.lenLoc 		= r.getLong(6);
+				f.sizeLoc 		= r.getString(7);
+				f.offset 		= r.getLong(8);
+				f.lenSvr 		= r.getLong(9);
+				f.perSvr 		= r.getString(10);
+				f.complete 		= r.getBoolean(11);
+				f.pathSvr		= r.getString(12);//fix(2015-03-19):修复无法续传文件的问题。
+				files.add(f);
+				
+			}
+			r.close();
+			cmd.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(files.size() < 1) return null;
+		
+		Gson g = new Gson();
+	    return g.toJson( files);//bug:arrFiles为空时，此行代码有异常	
+	}
+	
 	/// <summary>
 	/// 根据文件MD5获取文件信息
 	/// </summary>
@@ -236,31 +296,6 @@ public class DBFile {
 			cmd.setString(1, md5);
 			db.ExecuteNonQuery(cmd);//在部分环境中测试发现执行后没有效果。
 		} catch (SQLException e) {e.printStackTrace();}
-	}
-
-	/// <summary>
-	/// 检查相同MD5文件是否有已经上传完的文件
-	/// </summary>
-	/// <param name="md5"></param>
-	public boolean HasCompleteFile(String md5)
-	{
-		//为空
-		if (md5 == null) return false;
-		if(md5.isEmpty()) return false;
-
-		String sql = "select f_id from up6_files where f_complete=1 and f_md5=?";
-		DbHelper db = new DbHelper();
-		PreparedStatement cmd = db.GetCommand(sql);
-
-		try {
-			cmd.setString(1, md5);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		boolean ret = db.Execute(cmd);
-
-		return ret;
 	}
 
 	/// <summary>
