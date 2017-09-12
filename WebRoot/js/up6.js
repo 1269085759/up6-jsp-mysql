@@ -376,18 +376,21 @@ function HttpUploaderMgr()
 	this.GetHtmlContainer = function()
 	{
 	    //npapi
-        var com = '<embed name="ffParter" type="' + this.Config.firefox.type + '" pluginspage="' + this.Config.firefox.path + '" width="1" height="1"/>';
-        if (this.chrome45) com = "";
-	    //拖拽组件
-        com += '<object name="droper" classid="clsid:' + this.Config.ie.drop.clsid + '"';
-        com += ' codebase="' + this.Config.ie.path + '#version=' + this.Config.Version + '" width="192" height="192" >';
-        com += '</object>';
-        if (this.edge) com = '';
+	    var com = '<embed name="ffParter" type="' + this.Config.firefox.type + '" pluginspage="' + this.Config.firefox.path + '" width="1" height="1"/>';
+	    if (this.chrome45) com = "";
+	    if (this.ie)
+	    {
+	        //拖拽组件
+	        com += '<object name="droper" classid="clsid:' + this.Config.ie.drop.clsid + '"';
+	        com += ' codebase="' + this.Config.ie.path + '#version=' + this.Config.Version + '" width="192" height="192" >';
+	        com += '</object>';
+	    }
+	    if (this.edge) com = '';
 	    //文件夹选择控件
-        com += '<object name="parter" classid="clsid:' + this.Config.ie.part.clsid + '"';
+	    com += '<object name="parter" classid="clsid:' + this.Config.ie.part.clsid + '"';
 	    com += ' codebase="' + this.Config.ie.path + '#version=' + this.Config.Version + '" width="1" height="1" ></object>';
-		
-		var html = '<div class="tab-panel">\
+
+	    var html = '<div class="tab-panel">\
 						<ul id="cbHeader" class="tab-item">\
 							<li id="liPnlUploader" class="hover">上传新文件</li>\
 							<li id="liPnlFiles" >文件列表</li>\
@@ -397,7 +400,7 @@ function HttpUploaderMgr()
 							<ul name="cbItem" class="cbItem"><li name="filesSvr"></li></ul>\
 						</div>\
 					</div>';
-		return com + html;
+	    return com + html;
 	};
 	
 	//文件上传面板。
@@ -702,7 +705,7 @@ function HttpUploaderMgr()
 	    this.tmpSpliter     = panel.find('div[name="lineSplite"]');
 	    this.pnlHeader      = panel.find('div[name="pnlHeader"]');
         this.btnSetup       = panel.find('span[name="btnSetup"]').click(function () {
-            window.open(this.Config.exe.path);
+            window.open(_this.Config.exe.path);
         });//("href",this.Config.exe.path);
 	    //drag files
 
@@ -726,7 +729,7 @@ function HttpUploaderMgr()
                 $(this).addClass("btn-footer-hover");
             }, function () {
                 $(this).removeClass("btn-footer-hover");
-            });;
+            });
 
 	    this.SafeCheck();
 	    this.FileListMgr.LoadTo(filesSvr);
