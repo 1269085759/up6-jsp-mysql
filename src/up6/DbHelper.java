@@ -136,7 +136,7 @@ public class DbHelper {
 			if(autoClose)
 			{
 				cmd.close();
-				//cmd.getConnection().close();//
+				cmd.getConnection().close();//
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -157,7 +157,7 @@ public class DbHelper {
 			//cmd.execute();
 			cmd.executeUpdate();
 			cmd.close();
-			//cmd.getConnection().close();
+			cmd.getConnection().close();
 		} 
 		catch (SQLException e) 
 		{

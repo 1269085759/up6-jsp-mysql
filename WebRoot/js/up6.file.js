@@ -172,12 +172,6 @@ function FileUploader(fileLoc, mgr)
     this.post_error = function (json)
     {
         this.ui.msg.text(HttpUploaderErrorCode[json.value]);
-        var btnTxt = "续传";
-        //文件大小超过限制,文件大小为0
-        if ("4" == json.value || "5" == json.value)
-        {
-            btnTxt = "取消";
-        }
         this.ui.btn.stop.hide();
         this.ui.btn.post.show();
         this.ui.btn.del.show();
@@ -309,7 +303,6 @@ function FileUploader(fileLoc, mgr)
     this.remove = function ()
     {
         this.app.delFile(this.fileSvr);
-        this.Manager.Delete(this.fileSvr.id);
         this.ui.div.remove();
         this.ui.split.remove();
     };
