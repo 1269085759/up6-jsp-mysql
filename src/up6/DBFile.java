@@ -62,8 +62,8 @@ public class DBFile {
 				
 			}
 			r.close();
-			cmd.close();
 			cmd.getConnection().close();
+			cmd.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,8 +129,8 @@ public class DBFile {
 				fileSvr.deleted 	= r.getBoolean(16);
 				ret = true;
 			}
-			cmd.close();
 			cmd.getConnection().close();
+			cmd.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
