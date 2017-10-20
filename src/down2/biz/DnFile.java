@@ -161,6 +161,7 @@ public class DnFile
 			    
 				files.add(f);
 			}
+			cmd.getConnection().close();
 			cmd.close();//auto close ResultSet
 		}
 		catch (SQLException e){e.printStackTrace();}
@@ -210,6 +211,7 @@ public class DnFile
 			    
 				files.add(f);
 			}
+			cmd.getConnection().close();
 			cmd.close();//auto close ResultSet
 		}
 		catch (SQLException e){e.printStackTrace();}
