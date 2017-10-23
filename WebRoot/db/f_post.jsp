@@ -31,6 +31,7 @@
 		2015-03-19 客户端提供pathSvr，此页面减少一次访问数据库的操作。
 		2016-04-09 优化文件存储逻辑，增加更新文件夹进度逻辑
 		2017-07-13 取消数据库操作
+		2017-10-23 增加删除文件块缓存操作
 */
 //String path = request.getContextPath();
 //String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
