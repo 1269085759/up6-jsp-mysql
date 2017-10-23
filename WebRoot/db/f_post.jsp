@@ -79,6 +79,7 @@ if(	 StringUtils.isBlank( uid )
 	|| StringUtils.isBlank( blockOffset ) 
 	|| StringUtils.isBlank(pathSvr))
 {
+	rangeFile.delete();
 	XDebug.Output("param is null");
 	return;
 }
@@ -89,9 +90,11 @@ if(Integer.parseInt(blockSize) == rangeFile.getSize())
 	//保存文件块数据
 	FileBlockWriter res = new FileBlockWriter();
 	res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);
+	rangeFile.delete();
 	out.write("ok");
 }
 else
 {
+	rangeFile.delete();
 	out.write("block size error");
 }%>
