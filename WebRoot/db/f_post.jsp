@@ -47,6 +47,16 @@ String blockIndex	= request.getHeader("blockIndex");
 String complete		= request.getHeader("complete");
 String pathSvr		= request.getHeader("pathSvr");
 pathSvr = PathTool.url_decode(pathSvr);
+
+//参数为空 
+if(	 StringUtils.isBlank( uid )
+	|| StringUtils.isBlank( id )
+	|| StringUtils.isBlank( blockOffset ) 
+	|| StringUtils.isBlank(pathSvr))
+{
+	XDebug.Output("param is null");
+	return;
+}
  
 // Check that we have a file upload request
 boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -72,17 +82,6 @@ while (fileItr.hasNext())
 {
 	// 得到当前文件
 	rangeFile = (FileItem) fileItr.next();	
-}
-
-//参数为空 
-if(	 StringUtils.isBlank( uid )
-	|| StringUtils.isBlank( id )
-	|| StringUtils.isBlank( blockOffset ) 
-	|| StringUtils.isBlank(pathSvr))
-{
-	rangeFile.delete();
-	XDebug.Output("param is null");
-	return;
 }
 
 //文件块验证
