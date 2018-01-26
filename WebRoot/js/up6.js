@@ -1,5 +1,5 @@
 /*
-	版权所有 2009-2017 荆门泽优软件有限公司
+	版权所有 2009-2018 荆门泽优软件有限公司
 	保留所有权利
 	官方网站：http://www.ncmem.com/
 	产品首页：http://www.ncmem.com/webapp/up6.2/index.asp
@@ -25,7 +25,10 @@ var HttpUploaderErrorCode = {
 	, "4": "文件大小超过限制"
 	, "5": "文件大小为0"
 	, "6": "文件被占用"
-	, "7": "服务器错误"
+    , "7": "文件夹子元素数量超过限制"
+    , "8": "文件夹大小超过限制"
+    , "9": "文件夹子文件大小超过限制"
+	, "100": "服务器错误"
 };
 var up6_err_solve = {
     errFolderCreate: "请检查UrlFdCreate地址配置是否正确\n请检查浏览器缓存是否已更新\n请检查数据库是否创建\n请检查数据库连接配置是否正确"
@@ -87,7 +90,7 @@ function HttpUploaderMgr()
 	this.Config = {
 		  "EncodeType"		: "utf-8"
 		, "Company"			: "荆门泽优软件有限公司"
-		, "Version"			: "2,7,112,51466"
+		, "Version"			: "2,7,116,60574"
 		, "License"			: ""//
 		, "Authenticate"	: ""//域验证方式：basic,ntlm
 		, "AuthName"		: ""//域帐号
@@ -106,6 +109,8 @@ function HttpUploaderMgr()
         , "QueueCount"      : 3//同时上传的任务数
         , "Md5Thread"       : 10//最大为10
         , "FolderThread"    : 3//最大为10
+        , "FdSizeLimit"     : 0//文件夹大小限制。0表示不限制
+        , "FdChildLimit"    : 0//文件夹子元素数量限制（子文件+子文件夹）。0表示不限制
 		//文件夹操作相关
 		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create_uuid.jsp"
 		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3MySQL/db/fd_complete.jsp"

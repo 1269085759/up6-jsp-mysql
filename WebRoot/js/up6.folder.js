@@ -261,7 +261,7 @@ function FolderUploader(fdLoc, mgr)
 				}
 				catch(e)
 				{
-					_this.post_error({"value":"7"});
+					_this.post_error({"value":"100"});
 				}
 			}
 			, error: function (req, txt, err)
