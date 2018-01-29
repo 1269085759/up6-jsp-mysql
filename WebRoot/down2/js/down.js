@@ -125,7 +125,7 @@ function DownloaderMgr()
 			<object id="objPartition" classid="clsid:6528602B-7DF7-445A-8BA0-F6F996472569" codebase="http://www.qq.com/HttpDownloader.cab#version=1,2,22,65068" width="1" height="1" ></object>
 		*/
         html += '<object name="parter" classid="clsid:' + this.Config.ie.part.clsid + '"';
-        html += ' codebase="' + this.Config.ie.part.path + '#version=' + _this.Config["Version"] + '" width="1" height="1" ></object>';
+        html += ' codebase="' + this.Config.ie.path + '#version=' + _this.Config["Version"] + '" width="1" height="1" ></object>';
         if (this.edge) html = '';
 	    //上传列表项模板
 	    html += '<div class="file-item file-item-single" name="fileItem">\
