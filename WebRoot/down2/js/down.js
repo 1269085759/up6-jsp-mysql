@@ -1,5 +1,5 @@
 ﻿/*
-版权所有(C) 2009-2017 荆门泽优软件有限公司
+版权所有(C) 2009-2018 荆门泽优软件有限公司
 保留所有权利
 官方网站：http://www.ncmem.com
 产品论坛：http://bbs.ncmem.com/forum-41-1.html
@@ -14,7 +14,7 @@
 文档下载：http://www.ncmem.com/download/down2/down2-doc.rar
 联系邮箱：1085617561@qq.com
 联系QQ：1085617561
-版本：2.3
+版本：2.4.2
 更新记录：
     2009-11-05 创建
 	2014-02-27 优化版本号。
@@ -44,10 +44,10 @@ function DownloaderMgr()
 		, "Debug"		: false//调试模式
 		, "LogFile"		: "f:\\log.txt"//日志文件路径。
 		, "Company"		: "荆门泽优软件有限公司"
-		, "Version"		: "1,2,66,51250"
+		, "Version"		: "1,2,71,51661"
 		, "License"		: ""//
 		, "Cookie"		: ""//
-		, "ThreadCount"	: 1//并发数
+		, "ThreadCount"	: 3//并发数
         , "ThreadBlock"	: 3//文件块线程数，每个文件使用多少线程下载数据。3~10
         , "ThreadChild" : 3//子文件线程数，提供给文件夹使用。3~10
 		, "FilePart"	: 5242880//文件块大小，计算器：http://www.beesky.com/newsite/bit_byte.htm
@@ -64,12 +64,12 @@ function DownloaderMgr()
         //x86
         , ie: {
               part: { clsid: "6528602B-7DF7-445A-8BA0-F6F996472569", name: "Xproer.DownloaderPartition" }
-            , path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.cab"
+            , path: "http://www.ncmem.com/download/down2/2.4/down2.cab"
         }
         //x64
         , ie64: {
             part: { clsid: "19799DD1-7357-49de-AE5D-E7A010A3172C", name: "Xproer.DownloaderPartition64" }
-            , path: "http://www.ncmem.com/download/down2/v2.3-guid/down64.cab"
+            , path: "http://www.ncmem.com/download/down2/2.4/down64.cab"
         }
         , firefox: { name: "", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.xpi" }
         , chrome: { name: "npHttpDown", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.crx" }
@@ -107,11 +107,14 @@ function DownloaderMgr()
 	this.filesMap = new Object(); //本地文件列表映射表
 	this.filesCmp = new Array();//已完成列表
 	this.filesUrl = new Array();
+    this.queueWait = new Array(); //等待队列，数据:id1,id2,id3
+    this.queueWork = new Array(); //正在上传的队列，数据:id1,id2,id3
 	this.spliter = null;
 	this.pnlFiles = null;//文件上传列表面板
 	this.parter = null;
 	this.btnSetup = null;//安装控件的按钮
-	this.working = false;
+    this.working = false;
+    this.allStoped = false;//
 
 	this.getHtml = function()
 	{ 
@@ -143,6 +146,7 @@ function DownloaderMgr()
                         <span tp="btn-item" class="btn-box" name="cancel" title="取消">取消</span>\
 						<span tp="btn-item" class="btn-box hide" name="del" title="删除"><div>删除</div></span>\
 						<span tp="btn-item" class="btn-box hide" name="open" title="打开"><div>打开</div></span>\
+						<span tp="btn-item" class="btn-box hide" name="open-fd" title="文件夹"><div>文件夹</div></span>\
 					</div>\
 				</div>';
 		//分隔线
@@ -190,7 +194,7 @@ function DownloaderMgr()
 	this.add_ui = function (f)
 	{
 	    //存在相同项
-        if (this.exist_url(f.f_id)) { alert("已存在相同项"); return null; }
+        if (this.exist_url(f.f_id)) return null;
         this.filesUrl.push(f.f_id);
 
 	    var _this = this;
@@ -202,22 +206,23 @@ function DownloaderMgr()
 	    this.pnlFiles.append(ui);
 	    this.pnlFiles.append(sp);
 
-	    var uiIcoF = ui.find("img[name='fileImg']")
-	    var uiIcoFD = ui.find("img[name='fdImg']")
-	    var uiName = ui.find("div[name='fileName']")
-	    var uiSize = ui.find("div[name='fileSize']");
+	    var uiIcoF    = ui.find("img[name='fileImg']")
+	    var uiIcoFD   = ui.find("img[name='fdImg']")
+	    var uiName    = ui.find("div[name='fileName']")
+	    var uiSize    = ui.find("div[name='fileSize']");
 	    var uiProcess = ui.find("div[name='process']");
 	    var uiPercent = ui.find("div[name='percent']");
-	    var uiMsg = ui.find("div[name='msg']");
+	    var uiMsg     = ui.find("div[name='msg']");
 	    var btnCancel = ui.find("span[name='cancel']");
-        var btnStop = ui.find("span[name='stop']");
-        var btnDown = ui.find("span[name='down']");
-        var btnDel = ui.find("span[name='del']");
-        var btnOpen = ui.find("span[name='open']");
+        var btnStop   = ui.find("span[name='stop']");
+        var btnDown   = ui.find("span[name='down']");
+        var btnDel    = ui.find("span[name='del']");
+        var btnOpen   = ui.find("span[name='open']");
+        var btnOpenFd = ui.find("span[name='open-fd']");
         ui.find('span[tp="btn-item"]').hover(function () {
             $(this).addClass("btn-box-hover");
         }, function () {$(this).removeClass("btn-box-hover");});
-        var ui_eles = { ico: { file: uiIcoF, fd: uiIcoFD }, msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel, open: btnOpen }, div: ui, split: sp };
+        var ui_eles = { ico: { file: uiIcoF, fd: uiIcoFD }, msg: uiMsg, name: uiName, size: uiSize, process: uiProcess, percent: uiPercent, btn: { cancel: btnCancel, stop: btnStop, down: btnDown, del: btnDel, open: btnOpen, openFd: btnOpenFd }, div: ui, split: sp };
 
         var downer;
         if (f.fdTask) { downer = new FdDownloader(f, this); }
@@ -231,14 +236,9 @@ function DownloaderMgr()
 	    uiSize.text(f.sizeSvr);
 	    uiPercent.text("("+f.perLoc+")");
         uiProcess.width(f.perLoc);
-	    btnDel.click(function () { downer.remove(); });
-	    btnStop.click(function () { downer.stop(); });
-	    btnDown.click(function () { downer.down(); });
-        btnCancel.click(function () { downer.remove(); });
-        btnOpen.click(function () { downer.open(); });
 
-	    downer.ready(); //准备
-	    return downer;
+        downer.ready(); //准备
+        setTimeout(function () { _this.down_next(); },500);
     };
 	this.resume_folder = function (fdSvr)
 	{	    
@@ -246,14 +246,14 @@ function DownloaderMgr()
 	    if (null == obj) return;
         obj.svr_inited = true;
 
-	    return obj;
+	    //return obj;
     };
     this.resume_file = function (f) {
         var obj = this.add_ui(f);
         if (null == obj) return;
         obj.svr_inited = true;
 
-        return obj;
+        //return obj;
     };
 	this.init_file = function (f)
     {
@@ -267,22 +267,12 @@ function DownloaderMgr()
         var p = this.filesMap[json.id];
         p.init_complete(json);
     };
-    this.add_file = function (f,fields) {
+    this.add_file = function (f) {
         var obj = this.add_ui(f);
-        if (null == obj) return;
-        obj.reset_fields(fields);
-
-        this.init_file(obj.fileSvr);//
-        return obj;
     };
-    this.add_folder = function (f, fields)
+    this.add_folder = function (f)
 	{
 	    var obj = this.add_ui(f);
-        if (null == obj) return;
-        obj.reset_fields(fields);
-
-        obj.load_files();//
-	    return obj;
 	};
 	this.exist_url = function (url)
 	{
@@ -295,11 +285,33 @@ function DownloaderMgr()
 	    return v;
 	};
 	this.remove_url = function (url) { this.filesUrl.remove(url); };
+    this.remove_wait = function (id) {
+        if (this.queueWait.length == 0) return;
+        this.queueWait.remove(id);
+    };
 	this.open_folder = function (json)
 	{
 	    this.app.openFolder();
 	};
-	this.down_file = function (json) { };
+    this.down_file = function (json) { };
+    //队列控制
+    this.work_full = function () { return (this.queueWork.length + 1) > this.Config.ThreadCount; };
+    this.add_wait = function (id) { this.queueWait.push(id); };
+    this.add_work = function (id) { this.queueWork.push(id); };
+    this.del_work = function (id) {
+        if (_this.queueWork.length < 1) return;
+        this.queueWork.remove(id);
+    };
+    this.down_next = function () {
+        if (_this.allStoped) return;
+        if (_this.work_full()) return;
+        if (_this.queueWait.length < 1) return;
+        var f_id = _this.queueWait.shift();
+        var f = _this.filesMap[f_id];
+        _this.add_work(f_id);
+        f.down();
+    };
+
 	this.init_end = function (json)
 	{
 	    var p = this.filesMap[json.id];
@@ -323,6 +335,7 @@ function DownloaderMgr()
     this.down_open_folder = function (json) {
         //用户选择的路径
         //json.path
+        this.Config["Folder"] = json.path;
     };
 	this.down_recv_size = function (json)
 	{
@@ -344,9 +357,14 @@ function DownloaderMgr()
 	    var p = this.filesMap[json.id];
 	    p.down_stoped(json);
 	};
-	this.start_queue = function () { this.app.startQueue();};
+    this.start_queue = function ()
+    {
+        this.allStoped = false;
+        this.down_next();
+    };
 	this.stop_queue = function (json)
-	{
+    {
+        this.allStoped = true;
 	    this.app.stopQueue();
 	};
 	this.queue_begin = function (json) { this.working = true;};
@@ -375,6 +393,8 @@ function DownloaderMgr()
 	    else if (json.name == "down_recv_size") { _this.down_recv_size(json); }
 	    else if (json.name == "down_recv_name") { _this.down_recv_name(json); }
 	    else if (json.name == "init_end") { _this.init_end(json); }
+	    else if (json.name == "add_file") { _this.add_file(json); }
+	    else if (json.name == "add_folder") { _this.add_folder(json); }
 	    else if (json.name == "down_begin") { _this.down_begin(json); }
 	    else if (json.name == "down_process") { _this.down_process(json); }
 	    else if (json.name == "down_error") { _this.down_error(json); }
@@ -438,7 +458,7 @@ function DownloaderMgr()
         window.onbeforeunload = function (e) {
             e = e || window.event;
 
-            if (_this.working)
+            if (_this.queueWork.length > 0)
             {
                 // 兼容IE8和Firefox 4之前的版本
                 if (e) {
@@ -449,7 +469,7 @@ function DownloaderMgr()
             }
         };
         
-        window.onunload = function () { if (_this.working) { _this.stop_queue();}};
+        window.onunload = function () { if (_this.queueWork.length > 0) { _this.stop_queue();}};
 	};
 	
 	this.loadAuto = function()

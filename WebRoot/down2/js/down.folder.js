@@ -42,12 +42,19 @@
     this.ready = function ()
     {
         this.hideBtns();
+        this.ui.btn.del.click(function () { _this.remove(); });
+        this.ui.btn.stop.click(function () { _this.stop(); });
+        this.ui.btn.down.click(function () { _this.Manager.allStoped = false;_this.down(); });
+        this.ui.btn.cancel.click(function () { _this.remove(); });
+        this.ui.btn.open.click(function () { _this.open(); });
+
         this.ui.btn.down.show();
         this.ui.btn.cancel.show();
         this.ui.ico.file.hide();
         this.ui.ico.fd.show();
         this.ui.msg.text("正在下载队列中等待...");
         this.State = HttpDownloaderState.Ready;
+        this.Manager.add_wait(this.fileSvr.id);//添加到等待队列
     };
     //自定义配置,
     this.reset_fields = function (v) {
@@ -76,7 +83,7 @@
             , success: function (msg) {
                 var json = JSON.parse(decodeURIComponent(msg.value));
                 jQuery.extend(true, _this.fileSvr, { files: json });
-                _this.ui.msg.text("初始文件夹...");
+                _this.ui.msg.text("正在初始文件夹...");
                 setTimeout(function () {
                     _this.app.initFolder(jQuery.extend({},_this.Config,_this.fileSvr));
                 }, 300);
@@ -93,9 +100,13 @@
         this.hideBtns();
         this.ui.btn.stop.show();
         this.ui.msg.text("开始连接服务器...");
-        this.State = HttpDownloaderState.Posting;        
-        this.app.addFolder(this.fileSvr);
-        this.Manager.start_queue();//下载队列
+        this.State = HttpDownloaderState.Posting;
+        if (!this.svr_inited) {
+            this.load_files();
+        }
+        else {
+            this.app.downFolder(this.fileSvr);//下载队列
+        }
     };
 
     //方法-停止传输
@@ -106,6 +117,7 @@
         this.State = HttpDownloaderState.Stop;
         this.ui.msg.text("下载已停止");
         this.app.stopFile(this.fileSvr);
+        this.Manager.del_work(this.fileSvr.id);//从工作队列中删除
     };
 
     this.remove = function ()
@@ -120,16 +132,13 @@
 
     this.open = function ()
     {
-        this.app.openPath({ id: this.fileSvr.id, path: this.fileSvr.pathLoc });
+        this.app.openPath(this.fileSvr);
     };
 
     this.init_complete = function (json)
     {
-        jQuery.extend(this.fileSvr, json, {files:null});
-        if (!this.svr_inited)
-        {
-            setTimeout(function () {_this.svr_create(); }, 200);
-        }   
+        jQuery.extend(this.fileSvr, json, { files: null });
+        setTimeout(function () { _this.svr_create(); }, 200);
     };
 
     //在出错，停止中调用
@@ -223,6 +232,8 @@
 
     this.down_complete = function (json)
     {
+        this.Manager.filesCmp.push(this);
+        this.Manager.del_work(this.fileSvr.id);//从工作队列中删除
         this.hideBtns();
         this.event.downComplete(this);//biz event
         this.ui.btn.open.show();
@@ -230,8 +241,8 @@
         this.ui.percent.text("(100%)");
         this.ui.msg.text("文件数：" + json.fileCount + " 成功：" + json.cmpCount);
         this.State = HttpDownloaderState.Complete;
-        this.Manager.filesCmp.push(this);
         this.svr_delete();
+        setTimeout(function () { _this.Manager.down_next(); }, 500);
     };
 
     this.down_process = function (json)
@@ -256,7 +267,8 @@
         this.event.downError(this, json.code);//biz event
         this.ui.msg.text(DownloadErrorCode[json.code+""]);
         this.State = HttpDownloaderState.Error;
-        //this.SvrUpdate();
+        this.Manager.del_work(this.fileSvr.id);//从工作队列中删除
+        this.Manager.add_wait(this.fileSvr.id);
     };
 
     this.down_stoped = function (json)
@@ -264,5 +276,7 @@
         this.hideBtns();
         this.ui.btn.down.show();
         this.ui.btn.del.show();
+        this.Manager.del_work(this.fileSvr.id);//从工作队列中删除
+        this.Manager.add_wait(this.fileSvr.id);
     };
 }

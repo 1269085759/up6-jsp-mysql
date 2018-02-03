@@ -71,6 +71,51 @@ var up6_app = {
         var param = jQuery.extend({},f,{ name: "open_path" });
         this.postMessage(param);
     }
+    , openFile: function (f) {
+        var param = jQuery.extend(param, f, { name: "open_file" });
+        this.postMessage(param);
+    }
+    , addUrl: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend(param, f, { name: "add_url" });
+        this.postMessage(param);
+    }
+    , addUrls: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend(param, { name: "add_urls", urls: f });
+        this.postMessage(param);
+    }
+    , addJson: function (f) {
+        this.queueCount++;
+        var param = { name: "add_json" };
+        jQuery.extend(param, f);
+        this.postMessage(param);
+    }
+    , downFile: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend({}, f, { name: "down_file" });
+        this.postMessage(param);
+    }
+    , downFolder: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend({}, f, { name: "down_folder" });
+        this.postMessage(param);
+    }
+    , downUrl: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend({}, f, { name: "down_url" });
+        this.postMessage(param);
+    }
+    , downUrls: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend({}, f, { name: "down_urls" });
+        this.postMessage(param);
+    }
+    , downJson: function (f) {
+        this.queueCount++;
+        var param = jQuery.extend({}, f, { name: "down_json" });
+        this.postMessage(param);
+    }
     , initFile: function (f) {
         this.queueCount++;
         var param = jQuery.extend({}, f, { name: "init_file" });

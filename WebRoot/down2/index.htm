@@ -9,10 +9,11 @@
     <script type="text/javascript" src="js/down.app.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/down.edge.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/down.file.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/down.folder.js" charset="utf-8"></script>    
+    <script type="text/javascript" src="js/down.folder.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/down.js" charset="utf-8"></script>
     <script language="javascript" type="text/javascript">
         var downer = new DownloaderMgr();
+        downer.Config["Folder"] = "";
 
         function loadAllComplete()
         {
@@ -40,32 +41,38 @@
                         var tdSize = tmp.find('td[name="size"]');
                         var tdOp = tmp.find('td[name="op"]');
                         var f = item;
+                        f.fileUrl = downer.Config.UrlDown;
                         if (f.fdTask ) { tdType.text("文件夹"); }
                         else { tdType.text("文件"); }
                         tdName.text(f.nameLoc);
                         tdSize.text(f.sizeSvr);
                         tdOp.text("下载").css("cursor", "pointer").click(function ()
                         {
+
+                            if (downer.Config["Folder"] == "") { downer.app.openFolder();return; }
                             //文件夹
                             if ( f.fdTask )
                             {
-                                downer.add_folder(f );
+                                downer.app.addFolder(f);
                             }
                             else
                             {
-                                downer.add_file(f);
+                                downer.app.addFile(f);
                             }
                         });
                         tb.append(tmp);
                     });
+                    tb.show();
+                    $("#msg_load").hide();
                 }
                 , error: function (req, txt, err) { alert("加载上传数据失败！" + req.responseText); }
                 , complete: function (req, sta) { req = null; }
             });
         }
 
-    	$(document).ready(function ()
-    	{
+    	$(function ()
+        {
+            $("#tbCmp").hide().after("<p id='msg_load'>正在加载数据<p>");
     	    downer.loadTo("downDiv");
 
     	    //加载HttpUploader6上传的文件列表
