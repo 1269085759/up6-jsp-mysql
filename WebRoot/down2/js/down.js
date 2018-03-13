@@ -71,11 +71,11 @@ function DownloaderMgr()
             part: { clsid: "19799DD1-7357-49de-AE5D-E7A010A3172C", name: "Xproer.DownloaderPartition64" }
             , path: "http://www.ncmem.com/download/down2/2.4/down64.cab"
         }
-        , firefox: { name: "", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.xpi" }
-        , chrome: { name: "npHttpDown", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.crx" }
+        , firefox: { name: "", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/2.4/down2.xpi" }
+        , chrome: { name: "npHttpDown", type: "application/npHttpDown", path: "http://www.ncmem.com/download/down2/2.4/down2.crx" }
 	    //Chrome 45
-        , chrome45: { name: "com.xproer.down2", path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.nat.crx" }
-        , exe: { path: "http://www.ncmem.com/download/down2/v2.3-guid/down2.exe" }
+        , chrome45: { name: "com.xproer.down2", path: "http://www.ncmem.com/download/down2/2.4/down2.nat.crx" }
+        , exe: { path: "http://www.ncmem.com/download/down2/2.4/down2.exe" }
         , edge: {protocol:"down2",port:9700,visible:false}
         , "Fields": {"uname": "test","upass": "test","uid":"0"}
 	};
