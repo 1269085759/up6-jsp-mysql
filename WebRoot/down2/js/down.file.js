@@ -27,7 +27,6 @@ function FileDownloader(fileLoc, mgr)
     var _this = this;
     this.ui = { msg: null, process: null, percent: null, btn: {del:null,cancel:null,down:null,stop:null},div:null,split:null};
     this.app = mgr.app;
-    this.svr_inited = false;
     this.Manager = mgr;
     this.Config = mgr.Config;
     this.fields = jQuery.extend({},mgr.Config.Fields);//每一个对象自带一个fields幅本
@@ -47,6 +46,7 @@ function FileDownloader(fileLoc, mgr)
         , sizeSvr:"0byte"
         , complete: false
         , fdTask: false
+        , svrInit: false
     };
     var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields);
     jQuery.extend(this.fileSvr, fileLoc, { fileUrl: url });//覆盖配置
@@ -91,11 +91,17 @@ function FileDownloader(fileLoc, mgr)
     //方法-开始下载
     this.down = function ()
     {
-        this.hideBtns();
-        this.ui.btn.stop.show();
-        this.ui.msg.text("开始连接服务器...");
-        this.State = HttpDownloaderState.Posting;
-        this.app.downFile(this.fileSvr);//下载队列
+        if (this.fileSvr.svrInit) {
+            this.hideBtns();
+            this.ui.btn.stop.show();
+            this.ui.msg.text("开始连接服务器...");
+            this.State = HttpDownloaderState.Posting;
+            this.app.downFile(this.fileSvr);//下载队列
+        }
+        else
+        {
+            this.svr_create();
+        }
     };
 
     //方法-停止传输
@@ -129,7 +135,7 @@ function FileDownloader(fileLoc, mgr)
     this.init_complete = function (json)
     {
         jQuery.extend(this.fileSvr, json);
-        if (!this.svr_inited) this.svr_create();//
+        if (!this.fileSvr.svrInit) this.svr_create();//
     };
     //在出错，停止中调用
     this.svr_update = function ()
@@ -150,7 +156,7 @@ function FileDownloader(fileLoc, mgr)
     //在服务端创建一个数据，用于记录下载信息，一般在HttpDownloader_BeginDown中调用
     this.svr_create = function ()
     {
-        if (this.svr_inited) return;
+        if (this.fileSvr.svrInit) return;
         //已记录将不再记录
         var param = jQuery.extend({}, this.fields, { time: new Date().getTime() });
         jQuery.extend(param, {
@@ -172,7 +178,7 @@ function FileDownloader(fileLoc, mgr)
             {
                 if (msg.value == null) return;
                 var json = JSON.parse(decodeURIComponent(msg.value));
-                _this.svr_inited = true;
+                _this.fileSvr.svrInit = true;
                 _this.svr_create_cmp();
             }
             , error: function (req, txt, err) { alert("创建信息失败！" + req.responseText); }

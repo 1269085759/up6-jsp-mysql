@@ -2,7 +2,6 @@
 {
     var _this = this;
     this.ui = { msg: null, process: null, percent: null, btn: {del:null,cancel:null,down:null,stop:null},div:null,split:null};
-    this.svr_inited = false;
     this.app = mgr.app;
     this.Manager = mgr;
     this.Config = mgr.Config;
@@ -25,7 +24,8 @@
         , sizeSvr:"0byte"
         , complete: false
         , fdTask: true
-        , files:null
+        , files: null
+        , svrInit: false//服务器已经记录信息
     };
     var url = this.Config["UrlDown"] + "?" + this.Manager.to_params(this.fields);
     jQuery.extend(this.fileSvr, fileLoc, {fileUrl:url});//覆盖配置
@@ -69,7 +69,7 @@
     this.load_files = function ()
     {
         //已记录将不再记录
-        if (this.svr_inited) return;
+        if (this.fileSvr.svrInit) return;
         this.ui.btn.down.hide();
         this.ui.msg.text("开始加载文件列表...");
         var param = jQuery.extend({}, this.fields, { time: new Date().getTime() });
@@ -101,7 +101,7 @@
         this.ui.btn.stop.show();
         this.ui.msg.text("开始连接服务器...");
         this.State = HttpDownloaderState.Posting;
-        if (!this.svr_inited) {
+        if (!this.fileSvr.svrInit) {
             this.load_files();
         }
         else {
@@ -163,7 +163,7 @@
     this.svr_create = function ()
     {
         //已记录将不再记录
-        if (this.svr_inited) return;
+        if (this.fileSvr.svrInit) return;
         this.ui.btn.down.hide();
         this.ui.msg.text("正在创建任务...");
         var param = jQuery.extend({}, this.fields, {time: new Date().getTime() });
@@ -186,7 +186,7 @@
             {
                 _this.ui.btn.down.show();
                 _this.ui.msg.text("初始化完毕...");
-                _this.svr_inited = true;
+                _this.fileSvr.svrInit = true;
                 _this.svr_create_cmp();
             }
             , error: function (req, txt, err) { alert("创建信息失败！" + req.responseText); }

@@ -40,7 +40,7 @@ function DownloaderMgr()
 {
 	var _this = this;
 	this.Config = {
-		  "Folder"		: "F:\\ftp\\"
+		  "Folder"		: ""
 		, "Debug"		: false//调试模式
 		, "LogFile"		: "f:\\log.txt"//日志文件路径。
 		, "Company"		: "荆门泽优软件有限公司"
@@ -242,18 +242,12 @@ function DownloaderMgr()
     };
 	this.resume_folder = function (fdSvr)
 	{	    
-	    var obj = this.add_ui(fdSvr);
-	    if (null == obj) return;
-        obj.svr_inited = true;
-
-	    //return obj;
+		var fd = jQuery.extend({}, fdSvr, { svrInit: true });
+        this.add_ui(fd);
     };
     this.resume_file = function (f) {
-        var obj = this.add_ui(f);
-        if (null == obj) return;
-        obj.svr_inited = true;
-
-        //return obj;
+    	var f = jQuery.extend({}, fSvr, { svrInit: true });
+        this.add_ui(f);
     };
 	this.init_file = function (f)
     {
