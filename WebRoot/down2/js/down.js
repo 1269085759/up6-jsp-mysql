@@ -245,7 +245,7 @@ function DownloaderMgr()
 		var fd = jQuery.extend({}, fdSvr, { svrInit: true });
         this.add_ui(fd);
     };
-    this.resume_file = function (f) {
+    this.resume_file = function (fSvr) {
     	var f = jQuery.extend({}, fSvr, { svrInit: true });
         this.add_ui(f);
     };
