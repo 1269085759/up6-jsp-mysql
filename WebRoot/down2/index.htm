@@ -25,7 +25,11 @@
                 , data: { uid: downer.Config.Fields["uid"], time: new Date().getTime() }
                 , success: function (msg)
                 {
-                    if (msg.value == null) return;
+                	if (msg.value == null)
+                    {
+                        $("#msg_load").hide();
+                        return;
+                    }
 
                     var files = JSON.parse( decodeURIComponent(msg.value) );
                     var tb = $("#tbCmp");
