@@ -13,7 +13,7 @@
 	VC运行库：http://www.microsoft.com/en-us/download/details.aspx?id=29
 	联系信箱：1085617561@qq.com
 	联系QQ：1085617561
-    版本：2.3.1
+    版本：2.3.2
 	更新记录：
 		2015-07-31 优化更新进度逻辑
 */
