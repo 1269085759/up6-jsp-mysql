@@ -281,7 +281,9 @@ function DownloaderMgr()
 	this.remove_url = function (url) { this.filesUrl.remove(url); };
     this.remove_wait = function (id) {
         if (this.queueWait.length == 0) return;
-        this.queueWait.remove(id);
+        this.queueWait = $.grep(this.queueWait, function (n, i){
+            return n == id;
+        }, true);
     };
 	this.open_folder = function (json)
 	{
