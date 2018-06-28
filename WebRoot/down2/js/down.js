@@ -294,7 +294,9 @@ function DownloaderMgr()
     this.add_work = function (id) { this.queueWork.push(id); };
     this.del_work = function (id) {
         if (_this.queueWork.length < 1) return;
-        this.queueWork.remove(id);
+        this.queueWork = $.grep(this.queueWork, function (n, i){
+            return n = id;
+        }, true);
     };
     this.down_next = function () {
         if (_this.allStoped) return;
