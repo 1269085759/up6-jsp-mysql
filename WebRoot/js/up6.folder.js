@@ -18,7 +18,7 @@ function FolderUploader(fdLoc, mgr)
     this.arrFiles = new Array(); //子文件列表(未上传文件列表)，存HttpUploader对象
     this.FileListMgr = mgr.FileListMgr;//文件列表管理器
     this.Config = mgr.Config;
-    this.fields = jQuery.extend({}, mgr.Config.Fields);//每一个对象自带一个fields幅本
+    this.fields = jQuery.extend({}, mgr.Config.Fields,fdLoc.fields);//每一个对象自带一个fields幅本
     this.app = mgr.app;
     this.LocalFile = ""; //判断是否存在相同项
     this.FileName = "";

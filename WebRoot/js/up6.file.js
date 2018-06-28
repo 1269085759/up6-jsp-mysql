@@ -10,7 +10,7 @@ function FileUploader(fileLoc, mgr)
     this.event = mgr.event;
     this.FileListMgr = mgr.FileListMgr;//文件列表管理器
     this.Config = mgr.Config;
-    this.fields = jQuery.extend({}, mgr.Config.Fields);//每一个对象自带一个fields幅本
+    this.fields = jQuery.extend({}, mgr.Config.Fields,fileLoc.fields);//每一个对象自带一个fields幅本
     this.State = HttpUploaderState.None;
     this.uid = this.fields.uid;
     this.fileSvr = {
