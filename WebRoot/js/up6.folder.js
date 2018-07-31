@@ -106,7 +106,14 @@ function FolderUploader(fdLoc, mgr)
                 return;
             }
 
-            this.check_fd();//计算文件夹md5
+            if (this.Config["Md5Folder"])
+            {
+                this.check_fd();//计算文件夹md5
+            }
+            else
+            {
+                this.post_fd();
+            }
             return;
         }
     };
@@ -129,7 +136,14 @@ function FolderUploader(fdLoc, mgr)
         this.Scaned = true;
         this.ui.msg.text("扫描完毕，准备计算MD5");
         var self = this;
-        setTimeout(function () { self.post();},300);
+        if (this.Config["Md5Folder"])
+        {
+            setTimeout(function () { self.post(); }, 300);
+        }
+        else
+        {
+            setTimeout(function () { self.md5_complete(json); }, 300);
+        }
     };
     this.check_fd = function ()
     {
@@ -241,7 +255,14 @@ function FolderUploader(fdLoc, mgr)
     };
     this.md5_complete = function (json)
     {
-        jQuery.extend(this.folderSvr,json.data);
+        if (this.Config["Md5Folder"])
+        {
+            jQuery.extend(this.folderSvr, json.data);
+        }
+        else
+        {
+            jQuery.extend(this.folderSvr, json);
+        }
         //在此处增加服务器验证代码。
         this.ui.msg.text("初始化...");
 		var f_data = jQuery.extend({},this.fields,{folder: encodeURIComponent(JSON.stringify(this.folderSvr)), time: new Date().getTime()});
