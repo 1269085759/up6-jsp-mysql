@@ -1,6 +1,8 @@
 <%@ page language="java" import="up6.DBFile" pageEncoding="UTF-8"%><%@
 	page contentType="text/html;charset=UTF-8"%><%@ 
 	page import="up6.DBFolder" %><%@
+	page import="up6.model.FileInf" %><%@
+	page import="up6.biz.folder.*" %><%@
 	page import="org.apache.commons.lang.StringUtils" %><%
 /*
 	此页面主要更新文件夹数据表。已上传字段
@@ -19,6 +21,14 @@ int ret = 0;
 if (	!StringUtils.isBlank(uid)
 	||	!StringUtils.isBlank(id))
 {
+	FileInf inf = new FileInf();
+	DBFile db = new DBFile();
+	db.query(id,inf);
+	String root = inf.pathSvr;
+	
+	fd_scan sa = new fd_scan();
+	sa.scan(inf,root);
+	
 	DBFile.fd_complete(id,uid);
 	ret = 1;
 }

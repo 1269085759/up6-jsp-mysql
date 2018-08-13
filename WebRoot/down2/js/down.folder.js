@@ -101,6 +101,7 @@
         this.ui.btn.stop.show();
         this.ui.msg.text("开始连接服务器...");
         this.State = HttpDownloaderState.Posting;
+        this.Manager.remove_wait(this.fileSvr.id);
         if (!this.fileSvr.svrInit) {
             this.load_files();
         }
@@ -234,6 +235,7 @@
     {
         this.Manager.filesCmp.push(this);
         this.Manager.del_work(this.fileSvr.id);//从工作队列中删除
+        this.Manager.remove_wait(this.fileSvr.id);
         this.hideBtns();
         this.event.downComplete(this);//biz event
         this.ui.btn.open.show();

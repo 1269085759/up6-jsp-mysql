@@ -89,6 +89,7 @@ if(Integer.parseInt(blockSize) == rangeFile.getSize())
 {
 	//保存文件块数据
 	FileBlockWriter res = new FileBlockWriter();
+	res.CreateFile(pathSvr);
 	res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);
 	rangeFile.delete();
 	out.write("ok");

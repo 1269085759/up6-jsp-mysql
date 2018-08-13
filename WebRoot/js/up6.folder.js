@@ -11,7 +11,7 @@ function FolderUploader(fdLoc, mgr)
     this.isFolder = true; //是文件夹
     this.folderInit = false;//文件夹已初始化
     this.Scaned = false;//是否已经扫描
-    this.folderSvr = { nameLoc: "",nameSvr:"",lenLoc:0,sizeLoc: "0byte", lenSvr: 0,perSvr:"0%", id:"",uid: mgr.Config.Fields["uid"], foldersCount: 0, filesCount: 0, filesComplete: 0, pathLoc: "", pathSvr: "", pathRel: "", pidRoot: "", complete: false, folders: [], files: [] };
+    this.folderSvr = { nameLoc: "",nameSvr:"",lenLoc:0,sizeLoc: "0byte", lenSvr: 0,perSvr:"0%", id:"",uid: mgr.Config.Fields["uid"], foldersCount: 0, filesCount: 0, filesComplete: 0, pathLoc: "", pathSvr: "", pathRel: "", pidRoot: "", complete: false };
     jQuery.extend(true,this.folderSvr, fdLoc);//续传信息
     this.manager = mgr;
     this.event = mgr.event;
@@ -135,6 +135,10 @@ function FolderUploader(fdLoc, mgr)
         this.ui.size.text(json.sizeLoc);
         this.Scaned = true;
         this.ui.msg.text("扫描完毕，准备计算MD5");
+        
+        delete json.files;
+        delete json.folders;
+        
         var self = this;
         if (this.Config["Md5Folder"])
         {

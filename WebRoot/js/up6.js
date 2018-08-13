@@ -106,7 +106,7 @@ function HttpUploaderMgr()
 		, "InitDir"			: ""//初始化路径。示例：D:\\Soft
 		, "AppPath"			: ""//网站虚拟目录名称。子文件夹 web
         , "Cookie"			: ""//服务器cookie
-        , "Md5Folder"       : true//上传文件夹时是否计算子文件md5
+        , "Md5Folder"       : false//上传文件夹时是否计算子文件md5
         , "QueueCount"      : 3//同时上传的任务数
         , "Md5Thread"       : 10//最大为10
         , "FolderThread"    : 3//最大为10

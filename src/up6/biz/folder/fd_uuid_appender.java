@@ -32,7 +32,7 @@ public class fd_uuid_appender extends fd_appender
         this.save_folder(this.m_root);
         
         //创建目录
-        for(FileInf fd : this.m_root.folders)
+        /*for(FileInf fd : this.m_root.folders)
         {
         	fd.pathSvr = PathTool.combine(this.m_root.pathSvr, fd.pathRel);
         	fd.pathSvr = fd.pathSvr.replace("\\", "/");
@@ -51,7 +51,7 @@ public class fd_uuid_appender extends fd_appender
     		FileBlockWriter fr = new FileBlockWriter();
     		fr.CreateFile(f.pathSvr);		
         	this.save_file(f);
-        }
+        }*/
 
         this.cmd_add_f.close();
         this.cmd_add_fd.close();

@@ -319,4 +319,32 @@ public class DBFile {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean query(String id, FileInf inf)
+	{
+		boolean ret = false;
+		String sql = "select fd_pathSvr,fd_pidRoot from up6_folders where fd_id=?";
+
+		DbHelper db = new DbHelper();
+		PreparedStatement cmd = db.GetCommand(sql);
+		try {
+			cmd.setString(1, id);
+			ResultSet r = db.ExecuteDataSet(cmd);
+			if (r.next())
+			{
+				inf.id 		= id;
+				inf.pathSvr = r.getString(1);
+				inf.pidRoot = r.getString(2);
+				ret = true;
+			}
+			r.close();
+			cmd.getConnection().close();
+			cmd.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return ret;
+	}
 }
