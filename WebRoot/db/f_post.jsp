@@ -11,6 +11,7 @@
 	page import="org.apache.commons.lang.StringUtils" %><%@
 	page import="java.net.URLDecoder"%><%@ 
 	page import="java.util.Iterator"%><%@ 
+	page import="net.sf.json.JSONObject"%><%@
 	page import="java.util.List"%><%/*
 	此页面负责将文件块数据写入文件中。
 	此页面一般由控件负责调用
@@ -38,12 +39,12 @@
 
 String uid 			= request.getHeader("uid");//
 String id 			= request.getHeader("id");
-String md5 			= request.getHeader("md5");
 String lenSvr		= request.getHeader("lenSvr");
 String lenLoc		= request.getHeader("lenLoc");
 String blockOffset	= request.getHeader("blockOffset");
 String blockSize	= request.getHeader("blockSize");
 String blockIndex	= request.getHeader("blockIndex");
+String blockMd5		= request.getHeader("blockMd5");
 String complete		= request.getHeader("complete");
 String pathSvr		= request.getHeader("pathSvr");
 pathSvr = PathTool.url_decode(pathSvr);
@@ -74,6 +75,10 @@ catch (FileUploadException e)
    
 }
 
+boolean verify = false;
+String msg = "";
+String md5Svr = "";
+
 FileItem rangeFile = null;
 // 得到所有上传的文件
 Iterator fileItr = files.iterator();
@@ -84,18 +89,35 @@ while (fileItr.hasNext())
 	rangeFile = (FileItem) fileItr.next();	
 }
 
-//文件块验证
-if(Integer.parseInt(blockSize) == rangeFile.getSize())
+if(!StringUtils.isBlank(blockMd5))
+{
+	md5Svr = Md5Tool.fileToMD5(rangeFile.getInputStream());
+}
+
+verify = Integer.parseInt(blockSize) == rangeFile.getSize();
+if(!verify)
+{
+	msg = "block size error sizeSvr:" + rangeFile.getSize() + "sizeLoc:" + blockSize;
+}
+
+if(verify && !StringUtils.isBlank(blockMd5))
+{
+	verify = md5Svr == blockMd5;
+}
+
+if(verify)
 {
 	//保存文件块数据
 	FileBlockWriter res = new FileBlockWriter();
 	res.CreateFile(pathSvr);
 	res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);
-	rangeFile.delete();
-	out.write("ok");
+	
+	JSONObject o = new JSONObject();
+	o.put("msg", "ok");
+	o.put("md5", md5Svr);	
+	o.put("offset", blockOffset);//基于文件的块偏移位置
+	msg = o.toString();
 }
-else
-{
-	rangeFile.delete();
-	out.write("block size error");
-}%>
+rangeFile.delete();
+out.write(msg);
+%>

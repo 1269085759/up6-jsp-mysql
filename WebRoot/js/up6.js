@@ -13,8 +13,9 @@
 	VC运行库：http://www.microsoft.com/en-us/download/details.aspx?id=29
 	联系信箱：1085617561@qq.com
 	联系QQ：1085617561
-    版本：2.3.2
+    版本：2.3.3
 	更新记录：
+		2009-11-05 创建。
 		2015-07-31 优化更新进度逻辑
 */
 var HttpUploaderErrorCode = {
@@ -77,13 +78,6 @@ Array.prototype.remove = function(val)
 	this.length -= 1;
 }
 function debugMsg(m) { $("#msg").append(m); }
-/*
-	文件管理类
-	属性：
-		UpFileList
-	更新记录：
-		2009-11-05 创建。
-*/
 function HttpUploaderMgr()
 {
 	var _this = this;
@@ -101,6 +95,7 @@ function HttpUploaderMgr()
 		, "FilesLimit"		: "0"//文件选择数限制。0表示不限制
 		, "AllowMultiSelect": true//多选开关。1:开启多选。0:关闭多选
 		, "RangeSize"		: "2097152"//文件块大小，以字节为单位。必须为64KB的倍数。推荐大小：2MB。
+        , "BlockMd5"		: false//开启文件块MD5验证
 		, "Debug"			: false//是否打开调式模式。true,false
 		, "LogFile"			: "F:\\log.txt"//日志文件路径。需要先打开调试模式。
 		, "InitDir"			: ""//初始化路径。示例：D:\\Soft
