@@ -75,10 +75,6 @@ catch (FileUploadException e)
    
 }
 
-boolean verify = false;
-String msg = "";
-String md5Svr = "";
-
 FileItem rangeFile = null;
 // 得到所有上传的文件
 Iterator fileItr = files.iterator();
@@ -89,15 +85,19 @@ while (fileItr.hasNext())
 	rangeFile = (FileItem) fileItr.next();	
 }
 
+boolean verify = false;
+String msg = "";
+String md5Svr = "";
+long blockSizeSvr = rangeFile.getSize();
 if(!StringUtils.isBlank(blockMd5))
 {
 	md5Svr = Md5Tool.fileToMD5(rangeFile.getInputStream());
 }
 
-verify = Integer.parseInt(blockSize) == rangeFile.getSize();
+verify = Integer.parseInt(blockSize) == blockSizeSvr;
 if(!verify)
 {
-	msg = "block size error sizeSvr:" + rangeFile.getSize() + "sizeLoc:" + blockSize;
+	msg = "block size error sizeSvr:" + blockSizeSvr + "sizeLoc:" + blockSize;
 }
 
 if(verify && !StringUtils.isBlank(blockMd5))
@@ -109,7 +109,8 @@ if(verify)
 {
 	//保存文件块数据
 	FileBlockWriter res = new FileBlockWriter();
-	res.CreateFile(pathSvr);
+	//仅第一块创建
+	if( Integer.parseInt(blockIndex)==1) res.CreateFile(pathSvr);
 	res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);
 	
 	JSONObject o = new JSONObject();
