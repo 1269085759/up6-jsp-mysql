@@ -258,7 +258,7 @@ public class DBFile {
 	
 	static public void fd_scan(String id, String uid)
 	{
-		String sql = "update up6_files set f_scan=1 where f_id=? and f_uid=?;";
+		String sql = "update up6_files set f_scan=1 where f_id=? and f_uid=?";
 		
 		DbHelper db = new DbHelper();
 		PreparedStatement cmd = db.GetCommand(sql);
