@@ -19,5 +19,6 @@ CREATE TABLE IF NOT EXISTS `up6_files` (
   `f_complete` 			tinyint(1) default '0',		/*是否已上传完毕*/
   `f_time` 				timestamp NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `f_deleted` 			tinyint(1) default '0',
+  `f_scan` 				tinyint(1) default '0',
   PRIMARY KEY  (`f_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

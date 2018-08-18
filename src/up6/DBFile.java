@@ -77,6 +77,7 @@ public class DBFile {
 	
 	/// <summary>
 	/// 根据文件MD5获取文件信息
+	/// 取已上传完的文件
 	/// </summary>
 	/// <param name="md5"></param>
 	/// <param name="inf"></param>
@@ -102,7 +103,7 @@ public class DBFile {
 		sb.append(",f_complete");
 		sb.append(",f_time");
 		sb.append(",f_deleted");
-		sb.append(" from up6_files where f_md5=? order by f_lenSvr DESC limit 0,1");
+		sb.append(" from up6_files where f_md5=? and f_complete=1 order by f_lenSvr DESC limit 0,1");
 
 		DbHelper db = new DbHelper();
 		PreparedStatement cmd = db.GetCommand(sb.toString());
@@ -254,6 +255,22 @@ public class DBFile {
 			e.printStackTrace();
 		}		
 	}
+	
+	static public void fd_scan(String id, String uid)
+	{
+		String sql = "update up6_files set f_scan=1 where f_id=? and f_uid=?;";
+		
+		DbHelper db = new DbHelper();
+		PreparedStatement cmd = db.GetCommand(sql);
+		try {
+			cmd.setString(1, id);
+			cmd.setInt(2, Integer.parseInt(uid));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		db.ExecuteNonQuery(cmd);
+	}
 
 	/// <summary>
 	/// 更新上传进度
@@ -297,6 +314,21 @@ public class DBFile {
 			cmd.setString(1, md5);
 			db.ExecuteNonQuery(cmd);//在部分环境中测试发现执行后没有效果。
 		} catch (SQLException e) {e.printStackTrace();}
+	}
+	
+	public void complete(String id)
+	{
+		String sql = "update up6_files set f_lenSvr=f_lenLoc,f_perSvr='100%',f_complete=1,f_scan=1 where f_id=?";
+		DbHelper db = new DbHelper();
+		PreparedStatement cmd = db.GetCommand(sql);
+		
+		try {
+			cmd.setString(1, id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		db.ExecuteNonQuery(cmd);
 	}
 
 	/// <summary>

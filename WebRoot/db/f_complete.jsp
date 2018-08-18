@@ -17,11 +17,10 @@ String callback = request.getParameter("callback");//jsonp
 //返回值。1表示成功
 int ret = 0;
 if ( !StringUtils.isBlank(uid)
-	&& !StringUtils.isBlank(id)
-	&& !StringUtils.isBlank(md5))
+	&& !StringUtils.isBlank(id))
 {
 	DBFile db = new DBFile();
-	db.UploadComplete(md5);	
+	db.complete(id);	
 	ret = 1;
 }
 %><%=callback + "(" + ret + ")"%>

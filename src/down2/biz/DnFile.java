@@ -188,7 +188,7 @@ public class DnFile
         sb.append(",f_pathSvr");//5
         sb.append(" from up6_files ");
         //
-        sb.append(" where f_uid=? and f_deleted=0 and f_complete=1 and f_fdChild=0");
+        sb.append(" where f_uid=? and f_deleted=0 and f_complete=1 and f_fdChild=0 and f_scan=1");
 		DbHelper db = new DbHelper();
 		PreparedStatement cmd = db.GetCommand(sb.toString());
 		try

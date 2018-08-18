@@ -51,4 +51,6 @@ public class FileInf {
 	public boolean complete=false;
 	public Date PostedTime = new Date();
 	public boolean deleted=false;
+	/**	 * 是否已经扫描完毕，提供给大型文件夹使用，大型文件夹上传完毕后开始扫描。	 */
+	public boolean scaned=false;
 }

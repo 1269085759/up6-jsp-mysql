@@ -26,10 +26,14 @@ if (	!StringUtils.isBlank(uid)
 	db.query(id,inf);
 	String root = inf.pathSvr;
 	
+	//上传完毕
+	DBFile.fd_complete(id,uid);
+	
+	//扫描文件夹结构
 	fd_scan sa = new fd_scan();
 	sa.scan(inf,root);
 	
-	DBFile.fd_complete(id,uid);
+	DBFile.fd_scan(id,uid);
 	ret = 1;
 }
 out.write(cbk + "(" + ret + ")");
