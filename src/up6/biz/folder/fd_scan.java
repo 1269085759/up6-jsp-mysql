@@ -24,6 +24,116 @@ public class fd_scan
 		this.con = this.db.GetCon();		
 	}
 	
+	public void makeCmdF()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into up6_files (");
+		sb.append(" f_id");//1
+		sb.append(",f_pid");//2
+		sb.append(",f_pidRoot");//3
+		sb.append(",f_fdTask");//4
+		sb.append(",f_fdChild");//5
+		sb.append(",f_uid");//6
+		sb.append(",f_nameLoc");//7
+		sb.append(",f_nameSvr");//8
+		sb.append(",f_pathLoc");//9
+		sb.append(",f_pathSvr");//10
+		sb.append(",f_pathRel");//11
+		sb.append(",f_md5");//12
+		sb.append(",f_lenLoc");//13
+		sb.append(",f_sizeLoc");//14
+		sb.append(",f_lenSvr");//15
+		sb.append(",f_perSvr");//16
+		sb.append(",f_complete");//17
+		
+		sb.append(") values(");
+		
+		sb.append(" ?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(")");
+
+        try {
+        	this.cmd_add_f = this.con.prepareStatement(sb.toString());
+			this.cmd_add_f.setString(1, "");//id
+	        this.cmd_add_f.setString(2, "");//pid
+	        this.cmd_add_f.setString(3, "");//pidRoot
+	        this.cmd_add_f.setBoolean(4, true);//fdTask
+	        this.cmd_add_f.setBoolean(5, false);//f_fdChild
+	        this.cmd_add_f.setInt(6, 0);//f_uid
+	        this.cmd_add_f.setString(7, "");//f_nameLoc
+	        this.cmd_add_f.setString(8, "");//f_nameSvr
+	        this.cmd_add_f.setString(9, "");//f_pathLoc
+	        this.cmd_add_f.setString(10, "");//f_pathSvr
+	        this.cmd_add_f.setString(11, "");//f_pathRel
+	        this.cmd_add_f.setString(12, "");//f_md5
+	        this.cmd_add_f.setLong(13, 0);//f_lenLoc
+	        this.cmd_add_f.setString(14, "");//f_sizeLoc
+	        this.cmd_add_f.setLong(15, 0);//f_lenSvr	        
+	        this.cmd_add_f.setString(16, "");//f_perSvr
+	        this.cmd_add_f.setBoolean(17, true);//f_complete
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void makeCmdFD()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into up6_folders (");
+		sb.append(" fd_id");//1
+		sb.append(",fd_pid");//2
+		sb.append(",fd_pidRoot");//3
+		sb.append(",fd_name");//4
+		sb.append(",fd_uid");//5
+		sb.append(",fd_pathLoc");//6
+		sb.append(",fd_pathSvr");//7
+		sb.append(",fd_pathRel");//8
+		sb.append(",fd_complete");//9
+		sb.append(") values(");//
+		sb.append(" ?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(",?");
+		sb.append(")");
+
+        try {
+        	this.cmd_add_fd = this.con.prepareStatement(sb.toString());
+			this.cmd_add_fd.setString(1, "");//id
+	        this.cmd_add_fd.setString(2, "");//pid
+	        this.cmd_add_fd.setString(3, "");//pidRoot
+	        this.cmd_add_fd.setString(4, "");//name
+	        this.cmd_add_fd.setInt(5, 0);//f_uid
+	        this.cmd_add_fd.setString(6, "");//pathLoc
+	        this.cmd_add_fd.setString(7, "");//pathSvr
+	        this.cmd_add_fd.setString(8, "");//pathRel
+	        this.cmd_add_fd.setBoolean(9, true);//complete
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	protected void GetAllFiles(FileInf inf,String root)
 	{
 		File dir = new File(inf.pathSvr); 
@@ -71,49 +181,7 @@ public class fd_scan
 	
 	protected void save_file(FileInf f)
 	{		
-		StringBuilder sb = new StringBuilder();
-		sb.append("insert into up6_files (");
-		sb.append(" f_id");//1
-		sb.append(",f_pid");//2
-		sb.append(",f_pidRoot");//3
-		sb.append(",f_fdTask");//4
-		sb.append(",f_fdChild");//5
-		sb.append(",f_uid");//6
-		sb.append(",f_nameLoc");//7
-		sb.append(",f_nameSvr");//8
-		sb.append(",f_pathLoc");//9
-		sb.append(",f_pathSvr");//10
-		sb.append(",f_pathRel");//11
-		sb.append(",f_md5");//12
-		sb.append(",f_lenLoc");//13
-		sb.append(",f_sizeLoc");//14
-		sb.append(",f_lenSvr");//15
-		sb.append(",f_perSvr");//16
-		sb.append(",f_complete");//17
-		
-		sb.append(") values(");
-		
-		sb.append(" ?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(")");
-
         try {
-        	this.cmd_add_f = this.con.prepareStatement(sb.toString());
 			this.cmd_add_f.setString(1, f.id);//id
 	        this.cmd_add_f.setString(2, f.pid);//pid
 	        this.cmd_add_f.setString(3, f.pidRoot);//pidRoot
@@ -132,7 +200,6 @@ public class fd_scan
 	        this.cmd_add_f.setString(16, f.perSvr);//f_perSvr
 	        this.cmd_add_f.setBoolean(17, f.complete);//f_complete
 	        this.cmd_add_f.executeUpdate();
-	        this.cmd_add_f.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,31 +208,7 @@ public class fd_scan
 	
 	protected void save_folder(FileInf f)
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("insert into up6_folders (");
-		sb.append(" fd_id");//1
-		sb.append(",fd_pid");//2
-		sb.append(",fd_pidRoot");//3
-		sb.append(",fd_name");//4
-		sb.append(",fd_uid");//5
-		sb.append(",fd_pathLoc");//6
-		sb.append(",fd_pathSvr");//7
-		sb.append(",fd_pathRel");//8
-		sb.append(",fd_complete");//9
-		sb.append(") values(");//
-		sb.append(" ?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(",?");
-		sb.append(")");
-
-        try {
-        	this.cmd_add_fd = this.con.prepareStatement(sb.toString());
+		try {
 			this.cmd_add_fd.setString(1, f.id);//id
 	        this.cmd_add_fd.setString(2, f.pid);//pid
 	        this.cmd_add_fd.setString(3, f.pidRoot);//pidRoot
@@ -176,16 +219,19 @@ public class fd_scan
 	        this.cmd_add_fd.setString(8, f.pathRel);//pathRel
 	        this.cmd_add_fd.setBoolean(9, f.complete);//complete
 	        this.cmd_add_fd.executeUpdate();
-	        this.cmd_add_fd.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}//	
+		}
 	}
 	
 	public void scan(FileInf inf, String root) throws IOException, SQLException
 	{
+		this.makeCmdF();
+		this.makeCmdFD();
 		this.GetAllFiles(inf, root);
-		this.con.close();
+		this.cmd_add_f.close();
+        this.cmd_add_fd.close();
+        this.con.close();
 	}
 }
