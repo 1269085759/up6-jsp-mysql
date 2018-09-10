@@ -65,18 +65,6 @@ function getRoot()
 var root = getRoot();
 //jQuery.getScript(root+"up6.edge.js", function (data, status, xhr) { console.log("加载完毕");});
 
-//删除元素值
-Array.prototype.remove = function(val)
-{
-	for (var i = 0, n = 0; i < this.length; i++)
-	{
-		if (this[i] != val)
-		{
-			this[n++] = this[i];
-		}
-	}
-	this.length -= 1;
-}
 function debugMsg(m) { $("#msg").append(m); }
 function HttpUploaderMgr()
 {
@@ -151,7 +139,7 @@ function HttpUploaderMgr()
 	this.Domain = "http://" + document.location.host;
 	this.working = false;
 
-	this.FileFilter = new Array(); //文件过滤器
+    this.FileFilter = this.Config.FileFilter.split(","); //文件过滤器
 	this.filesMap = new Object(); //本地文件列表映射表
 	this.QueueFiles = new Array();//文件队列，数据:id1,id2,id3
 	this.QueueWait = new Array(); //等待队列，数据:id1,id2,id3
@@ -813,7 +801,9 @@ function HttpUploaderMgr()
     //从上传队列删除
 	this.RemoveQueuePost = function (fid) {
 	    if (_this.QueuePost.length < 1) return;
-	    this.QueuePost.remove(fid);
+	    this.QueuePost = $.grep(this.QueuePost, function (n, i) {
+            return n == fid;
+        }, true);
 	};
 	
 	//添加到上传队列
@@ -826,7 +816,9 @@ function HttpUploaderMgr()
 	this.RemoveQueue = function(fid)
 	{ 
 	    if (this.QueueFiles.length < 1) return;
-	    this.QueueFiles.remove(fid);
+	    this.QueueFiles = $.grep(this.QueueFiles, function (n, i) {
+            return n == fid;
+        }, true);
 	};
 	
 	//添加到未上传ID列表，(停止，出错)
@@ -839,7 +831,9 @@ function HttpUploaderMgr()
 	this.RemoveQueueWait = function(fid)
 	{ 
 	    if (this.QueueWait.length < 1) return;
-	    this.QueueWait.remove(fid);
+	    this.QueueWait = $.grep(this.QueueWait, function (n, i) {
+            return n == fid;
+        }, true);
 	};
 
 	//停止所有上传项
@@ -935,22 +929,16 @@ function HttpUploaderMgr()
 	根据文件后缀名称来判断。
 	*/
 	this.NeedFilter = function(fname)
-	{
-		if (_this.FileFilter.length == 0) return false;
-		var exArr = fname.split(".");
-		var len = exArr.length;
-		if (len > 0)
-		{
-			for (var i = 0, l = _this.FileFilter.length; i < l; ++i)
-			{
-				//忽略大小写
-				if (_this.FileFilter[i].toLowerCase() == exArr[len - 1].toLowerCase())
-				{
-					return true;
-				}
-			}
-		}
-		return false;
+    {
+        if (this.Config.FileFilter == "*") return false;
+        var exArr = fname.split(".");
+        var ext = exArr[exArr.length - 1].toLowerCase();//扩展名
+        var allowExt = this.Config.FileFilter.split(",");
+        for (var i = 0, l = allowExt.length; i < l; ++i)
+        {
+            if (allowExt[i].toLowerCase() == ext) return false;
+        }
+        return true;
 	};
 	
 	//打开文件选择对话框
