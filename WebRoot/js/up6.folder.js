@@ -131,7 +131,6 @@ function FolderUploader(fdLoc, mgr)
     };
     this.scan_complete = function (json)
     {
-        this.manager.RemoveQueuePost(this.id);
         this.ui.size.text(json.sizeLoc);
         this.Scaned = true;
         this.ui.msg.text("扫描完毕，准备计算MD5");
@@ -198,6 +197,8 @@ function FolderUploader(fdLoc, mgr)
         this.manager.RemoveQueuePost(this.id);
         //添加到未上传列表
         this.manager.AppendQueueWait(this.id);
+
+        this.svr_update();
 
         setTimeout(function () { _this.manager.PostNext(); }, 500);
     };
@@ -338,6 +339,7 @@ function FolderUploader(fdLoc, mgr)
     //一般在StopAll()中调用
     this.stop_manual = function ()
     {
+        this.svr_update();
         this.app.stopFile({ id: this.id ,tip:false});
         this.State = HttpUploaderState.Stop;
     };

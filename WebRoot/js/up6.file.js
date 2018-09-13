@@ -171,6 +171,7 @@ function FileUploader(fileLoc, mgr)
     };
     this.post_error = function (json)
     {
+        this.svr_update();
         this.ui.msg.text(HttpUploaderErrorCode[json.value]);
         this.ui.btn.stop.hide();
         this.ui.btn.post.show();
@@ -290,6 +291,7 @@ function FileUploader(fileLoc, mgr)
     {
         if (HttpUploaderState.Posting == this.State)
         {
+            this.svr_update();
         	this.ui.btn.post.show();
         	this.ui.btn.stop.hide();
         	this.ui.btn.cancel.hide();
