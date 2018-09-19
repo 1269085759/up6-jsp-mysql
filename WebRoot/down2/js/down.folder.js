@@ -101,6 +101,7 @@
         this.ui.btn.stop.show();
         this.ui.msg.text("开始连接服务器...");
         this.State = HttpDownloaderState.Posting;
+        this.Manager.add_work(this.fileSvr.id);
         this.Manager.remove_wait(this.fileSvr.id);
         if (!this.fileSvr.svrInit) {
             this.load_files();

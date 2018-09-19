@@ -14,7 +14,7 @@
 文档下载：http://www.ncmem.com/download/down2/down2-doc.rar
 联系邮箱：1085617561@qq.com
 联系QQ：1085617561
-版本：2.4.9
+版本：2.4.10
 更新记录：
     2009-11-05 创建
 	2014-02-27 优化版本号。
@@ -238,7 +238,7 @@ function DownloaderMgr()
         uiProcess.width(f.perLoc);
 
         downer.ready(); //准备
-        setTimeout(function () { _this.down_next(); },500);
+        //setTimeout(function () { _this.down_next(); },500);
     };
 	this.resume_folder = function (fdSvr)
 	{	    
@@ -306,7 +306,6 @@ function DownloaderMgr()
         if (_this.queueWait.length < 1) return;
         var f_id = _this.queueWait.shift();
         var f = _this.filesMap[f_id];
-        _this.add_work(f_id);
         f.down();
     };
 
@@ -363,7 +362,9 @@ function DownloaderMgr()
 	this.stop_queue = function (json)
     {
         this.allStoped = true;
-	    this.app.stopQueue();
+        $.each(this.queueWork, function (i, n) {
+            _this.filesMap[n].stop();
+        });        
 	};
 	this.queue_begin = function (json) { this.working = true;};
 	this.queue_end = function (json) { this.working = false;};
@@ -453,21 +454,22 @@ function DownloaderMgr()
 	//安全检查，在用户关闭网页时自动停止所有上传任务。
 	this.safeCheck = function()
     {
-        window.onbeforeunload = function (e) {
-            e = e || window.event;
-
+        $(window).bind("beforeunload", function (event)
+        {
             if (_this.queueWork.length > 0)
             {
-                // 兼容IE8和Firefox 4之前的版本
-                if (e) {
-                    e.returnValue = '您还有程序正在运行，确定关闭？';
-                }
-                // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
-                return '您还有程序正在运行，确定关闭？';
+				event.returnValue = "您还有程序正在运行，确定关闭？";
             }
-        };
+        });
         
-        window.onunload = function () { if (_this.queueWork.length > 0) { _this.stop_queue();}};
+		$(window).bind("unload", function()
+        {
+            if(this.edge) _this.edgeApp.close();
+            if (_this.queueWork.length > 0)
+            {
+                _this.stop_queue();
+            }
+        });
 	};
 	
 	this.loadAuto = function()

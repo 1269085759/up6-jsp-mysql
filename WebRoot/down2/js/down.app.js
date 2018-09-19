@@ -147,14 +147,6 @@ var up6_app = {
         var param = { name: "del_file", id: f.id};
         this.postMessage(param);
     }
-    , startQueue: function () {
-        var param = { name: "start_queue"};
-        this.postMessage(param);
-    }
-    , stopQueue: function () {
-        var param = { name: "stop_queue"};
-        this.postMessage(param);
-    }
     , postMessage:function(json)
     {
         try {

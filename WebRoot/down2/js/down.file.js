@@ -91,6 +91,7 @@ function FileDownloader(fileLoc, mgr)
     //方法-开始下载
     this.down = function ()
     {
+        this.Manager.add_work(this.fileSvr.id);
         if (this.fileSvr.svrInit) {
             this.hideBtns();
             this.ui.btn.stop.show();
