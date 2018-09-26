@@ -102,7 +102,8 @@ if(!verify)
 
 if(verify && !StringUtils.isBlank(blockMd5))
 {
-	verify = md5Svr == blockMd5;
+	verify = md5Svr.equals(blockMd5);
+	if(!verify) msg = "block md5 error";
 }
 
 if(verify)
