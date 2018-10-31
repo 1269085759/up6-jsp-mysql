@@ -137,6 +137,11 @@
         this.app.openPath(this.fileSvr);
     };
 
+    this.openChild = function (file)
+    {
+        this.app.openChild({ folder: this.fileSvr, "file": file });
+    };
+
     this.init_complete = function (json)
     {
         jQuery.extend(this.fileSvr, json, { files: null });

@@ -75,6 +75,10 @@ var up6_app = {
         var param = jQuery.extend(param, f, { name: "open_file" });
         this.postMessage(param);
     }
+    , openChild: function (f) {
+        var param = jQuery.extend(param, f, { name: "open_child" });
+        this.postMessage(param);
+    }
     , addUrl: function (f) {
         this.queueCount++;
         var param = jQuery.extend(param, f, { name: "add_url" });
