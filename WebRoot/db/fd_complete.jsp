@@ -3,6 +3,7 @@
 	page import="up6.DBFolder" %><%@
 	page import="up6.model.FileInf" %><%@
 	page import="up6.biz.folder.*" %><%@
+	page import="up6.biz.*" %><%@
 	page import="org.apache.commons.lang.StringUtils" %><%
 /*
 	此页面主要更新文件夹数据表。已上传字段
@@ -34,6 +35,9 @@ if (	!StringUtils.isBlank(uid)
 	sa.scan(inf,root);
 	
 	DBFile.fd_scan(id,uid);
+	
+	up6_biz_event.folder_post_complete(id);
+	
 	ret = 1;
 }
 out.write(cbk + "(" + ret + ")");

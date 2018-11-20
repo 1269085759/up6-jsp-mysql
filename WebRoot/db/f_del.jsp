@@ -1,5 +1,6 @@
 <%@ page language="java" import="up6.DBFile" pageEncoding="UTF-8"%><%@
 	page contentType="text/html;charset=UTF-8"%><%@ 
+	page import="up6.biz.*" %><%@
 	page import="org.apache.commons.lang.StringUtils" %><%
 /*
 	此页面主要用来向数据库添加一条记录。
@@ -21,6 +22,7 @@ if (	!StringUtils.isBlank(fid)
 {
 	DBFile db = new DBFile();
 	db.Delete(Integer.parseInt(uid),fid);
+	up6_biz_event.file_del(fid,Integer.parseInt(uid));
 	ret = 1;
 }
 %><%= callback + "(" + ret + ")" %>

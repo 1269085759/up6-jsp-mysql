@@ -1,5 +1,6 @@
 <%@ page language="java" import="up6.*" pageEncoding="UTF-8"%><%@
 	page contentType="text/html;charset=UTF-8"%><%@ 
+	page import="up6.biz.*" %><%@
 	page import="org.apache.commons.lang.StringUtils" %><%
 /*
 	此页面主要用来向数据库添加一条记录。
@@ -21,6 +22,7 @@ if ( !StringUtils.isBlank(uid)
 {
 	DBFile db = new DBFile();
 	db.complete(id);	
+	up6_biz_event.file_post_complete(id);
 	ret = 1;
 }
 %><%=callback + "(" + ret + ")"%>

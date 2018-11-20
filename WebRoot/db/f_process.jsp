@@ -1,5 +1,6 @@
 <%@ page language="java" import="up6.DBFile" pageEncoding="UTF-8"%><%@
 	page contentType="text/html;charset=UTF-8"%><%@ 
+	page import="up6.biz.*" %><%@
 	page import="org.apache.commons.lang.StringUtils" %><%
 
 /*
@@ -20,6 +21,7 @@ if (	!StringUtils.isBlank(id)
 	{
 		DBFile db = new DBFile();
 		db.f_process(Integer.parseInt(uid),id,Long.parseLong(offset),Long.parseLong(lenSvr),perSvr);
+		up6_biz_event.file_post_process(id);
 		ret = 1;
 	}
 %><%=callback + "({\"value\":"+ret+"})"%>

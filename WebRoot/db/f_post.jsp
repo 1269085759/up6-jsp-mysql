@@ -3,6 +3,7 @@
 	page import="up6.FileBlockWriter" %><%@
 	page import="up6.XDebug" %><%@
 	page import="up6.*" %><%@
+	page import="up6.biz.*" %><%@
 	page import="org.apache.commons.fileupload.FileItem" %><%@
 	page import="org.apache.commons.fileupload.FileItemFactory" %><%@
 	page import="org.apache.commons.fileupload.FileUploadException" %><%@
@@ -113,6 +114,7 @@ if(verify)
 	//仅第一块创建
 	if( Integer.parseInt(blockIndex)==1) res.CreateFile(pathSvr);
 	res.write( Long.parseLong(blockOffset),pathSvr,rangeFile);
+	up6_biz_event.file_post_block(id,Integer.parseInt(blockIndex));
 	
 	JSONObject o = new JSONObject();
 	o.put("msg", "ok");

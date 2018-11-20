@@ -61,6 +61,8 @@ fd_uuid_appender adder = new fd_uuid_appender();
 Gson g = new Gson();
 adder.m_root = g.fromJson(folderStr,fd_root.class);
 adder.save();//保存到数据库
+//触发事件
+up6_biz_event.folder_create(adder.m_root);
 
 String json = g.toJson(adder.m_root);
 json = URLEncoder.encode(json,"utf-8");

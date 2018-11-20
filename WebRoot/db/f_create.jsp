@@ -64,10 +64,15 @@ if(exist && fileExist.lenSvr > 1)
 	fileSvr.lenSvr 			= fileExist.lenSvr;
 	fileSvr.complete		= fileExist.complete;
 	db.Add(fileSvr);
+	
+	//触发事件
+    up6_biz_event.file_create_same(fileSvr);
 }//此文件不存在
 else
 {
 	db.Add(fileSvr);
+	//触发事件
+    up6_biz_event.file_create(fileSvr);
 	
 	FileBlockWriter fr = new FileBlockWriter();
 	fr.CreateFile(fileSvr.pathSvr);		
