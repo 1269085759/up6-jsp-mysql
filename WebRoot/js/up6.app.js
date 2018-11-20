@@ -53,9 +53,7 @@ var up6_app = {
     , exit: function ()
     {
         var par = { name: 'exit' };
-        var evt = document.createEvent("CustomEvent");
-        evt.initCustomEvent(this.entID, true, false, par);
-        document.dispatchEvent(evt);
+        this.postMessage(par);
     }
     , exitEvent: function ()
     {

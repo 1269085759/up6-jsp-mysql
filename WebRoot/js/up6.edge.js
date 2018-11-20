@@ -4,6 +4,8 @@ function WebServer(mgr)
     // 创建一个Socket实例
     this.socket = null;
     this.tryConnect = true;
+    this.exit = false;
+    this.ent = { "on_close": function () { }};
 
     this.run = function ()
     {
@@ -14,8 +16,6 @@ function WebServer(mgr)
             navigator.msLaunchUri(mgr.Config.edge.protocol+"://"+mgr.Config.edge.port, function ()
             {
                 console.log('应用打开成功');
-                //_this.connect();//
-                //alert("success");
             }, function ()
             {
                 console.log('启动失败');
@@ -41,33 +41,38 @@ function WebServer(mgr)
             _this.socket = con;
             _this.tryConnect = false;
             console.log("服务连接成功");
-            // 发送一个初始化消息
-            //socket.send('I am the client and I\'m listening!');
 
             // 监听消息
             con.onmessage = function (event)
             {
                 mgr.recvMessage(event.data);
-                //console.log('Client received a message', event);
             };
 
-            // 监听Socket的关闭
+            // 监听Socket的关闭,自动断开的处理
             con.onclose = function (event)
             {
-                //console.log('Client notified socket has closed', event);
+                console.log("连接断开");
+                //手动退出
+                if ( !this.exit)
+                {
+                    _this.tryConnect = true;
+                    _this.ent.on_close();//
+                    _this.run();
+                    setTimeout(function () { _this.connect() }, 1000);//启动定时器
+                }
             };
 
-            // 关闭Socket.... 
-            //socket.close() 
         };
         con.onerror = function (event)
         {
+            _this.run();
             console.log("连接失败");
             setTimeout(function () { _this.connect() }, 1000);//启动定时器
         };
     };
     this.close = function ()
     {
+        this.exit = true;
         if (this.socket) { this.socket.close(1000,"close");}
     };
     this.send = function (p)

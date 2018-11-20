@@ -182,7 +182,6 @@ function FolderUploader(fdLoc, mgr)
     };
     this.post_error = function (json)
     {
-        //this.ui.btn.cancel.text("续传").show();
         this.ui.msg.text(HttpUploaderErrorCode[json.value]);
         //文件大小超过限制,文件大小为0
         if (4 == json.value || 5 == json.value){}

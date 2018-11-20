@@ -13,7 +13,7 @@
 	VC运行库：http://www.microsoft.com/en-us/download/details.aspx?id=29
 	联系信箱：1085617561@qq.com
 	联系QQ：1085617561
-    版本：2.3.4
+    版本：2.3.5
 	更新记录：
 		2009-11-05 创建。
 		2015-07-31 优化更新进度逻辑
@@ -95,6 +95,7 @@ function HttpUploaderMgr()
         , "FolderThread"    : 3//最大为10
         , "FdSizeLimit"     : 0//文件夹大小限制。0表示不限制
         , "FdChildLimit"    : 0//文件夹子元素数量限制（子文件+子文件夹）。0表示不限制
+        , "ProcSaveTm"      : 60//定时保存进度。单位：秒，默认：1分钟
 		//文件夹操作相关
 		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create_uuid.jsp"
 		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3MySQL/db/fd_complete.jsp"
@@ -168,6 +169,7 @@ function HttpUploaderMgr()
 	this.ffVer = navigator.userAgent.match(/Firefox\/(\d+)/);
 	this.edge = navigator.userAgent.indexOf("Edge") > 0;
     this.edgeApp = new WebServer(this);
+    this.edgeApp.ent.on_close = function () { _this.socket_close(); };
     this.app = up6_app;
     this.app.edgeApp = this.edgeApp;
     this.app.Config = this.Config;
@@ -553,6 +555,13 @@ function HttpUploaderMgr()
     this.add_folder_error = function (json) {
         this.event.addFdError(json);
     };
+    this.socket_close = function () {
+        while (_this.QueuePost.length > 0)
+        {
+            _this.filesMap[_this.QueuePost[0]].post_stoped(null);
+        }
+		_this.QueuePost.length = 0;
+    };
 	this.recvMessage = function (str)
 	{
 	    var json = JSON.parse(str);
@@ -738,7 +747,7 @@ function HttpUploaderMgr()
             }
 
             if (_this.edge) {
-                _this.edgeApp.run();
+                _this.edgeApp.connect();
             }
             else {
                 _this.app.init();
