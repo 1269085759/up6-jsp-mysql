@@ -49,7 +49,7 @@ function HttpUploaderMgr()
 	this.Config = {
 		  "EncodeType"		: "utf-8"
 		, "Company"			: "荆门泽优软件有限公司"
-		, "Version"			: "2,7,108,51163"
+		, "Version"			: "2,7,117,60757"
 		, "License"			: ""//
 		, "Authenticate"	: ""//域验证方式：basic,ntlm
 		, "AuthName"		: ""//域帐号
@@ -66,16 +66,16 @@ function HttpUploaderMgr()
 		, "AppPath"			: ""//网站虚拟目录名称。子文件夹 web
         , "Cookie"			: ""//服务器cookie
 		//文件夹操作相关
-		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3Oracle/db/fd_create.jsp"
-		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3Oracle/db/fd_complete.jsp"
-		, "UrlFdDel"	    : "http://localhost:8080/Uploader6.3Oracle/db/fd_del.jsp"
+		, "UrlFdCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/fd_create.jsp"
+		, "UrlFdComplete"	: "http://localhost:8080/Uploader6.3MySQL/db/fd_complete.jsp"
+		, "UrlFdDel"	    : "http://localhost:8080/Uploader6.3MySQL/db/fd_del.jsp"
 		//文件操作相关
-		, "UrlCreate"		: "http://localhost:8080/Uploader6.3Oracle/db/f_create.jsp"
-		, "UrlPost"			: "http://localhost:8080/Uploader6.3Oracle/db/f_post.jsp"
-        , "UrlProcess"		: "http://localhost:8080/Uploader6.3Oracle/db/f_process.jsp"
-		, "UrlComplete"		: "http://localhost:8080/Uploader6.3Oracle/db/f_complete.jsp"
-		, "UrlList"			: "http://localhost:8080/Uploader6.3Oracle/db/f_list.jsp"
-		, "UrlDel"			: "http://localhost:8080/Uploader6.3Oracle/db/f_del.jsp"
+		, "UrlCreate"		: "http://localhost:8080/Uploader6.3MySQL/db/f_create.jsp"
+		, "UrlPost"			: "http://localhost:8080/Uploader6.3MySQL/db/f_post.jsp"
+        , "UrlProcess"		: "http://localhost:8080/Uploader6.3MySQL/db/f_process.jsp"
+		, "UrlComplete"		: "http://localhost:8080/Uploader6.3MySQL/db/f_complete.jsp"
+		, "UrlList"			: "http://localhost:8080/Uploader6.3MySQL/db/f_list.jsp"
+		, "UrlDel"			: "http://localhost:8080/Uploader6.3MySQL/db/f_del.jsp"
 	    //x86
         , ie: {
               drop: { clsid: "0868BADD-C17E-4819-81DE-1D60E5E734A6", name: "Xproer.HttpDroper6" }
