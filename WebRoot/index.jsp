@@ -23,7 +23,7 @@ String clientCookie = request.getHeader("Cookie");
     	cbMgr.Config["Cookie"] = 'JSESSIONID=<%=request.getSession().getId()%>';
     	cbMgr.Config.Fields["test"] = "test";
 
-    	$(document).ready(function()
+    	$(function()
     	{
     		cbMgr.load_to("FilePanel");
             //上传指定文件
